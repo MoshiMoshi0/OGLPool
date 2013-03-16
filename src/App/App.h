@@ -9,6 +9,7 @@
 #define APP_H_
 
 #include <SFML/Graphics.hpp>
+#include <World/Camera/FpsCamera.h>
 
 using namespace sf;
 namespace OGLPool {
@@ -28,6 +29,7 @@ class App{
         void draw();
         void update( float dt );
 
+        Camera* camera;
         RenderWindow* window;
         bool initialized;
 };

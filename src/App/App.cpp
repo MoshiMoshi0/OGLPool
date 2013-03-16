@@ -9,7 +9,7 @@
 #include <SFML/OpenGL.hpp>
 #include <iostream>
 #include <time.h>
-#include "Input.h"
+#include <App/Input.h>
 using namespace std;
 
 namespace OGLPool {
@@ -48,12 +48,22 @@ void App::draw() {
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	glLoadIdentity();
 	window->clear();
+	camera->applyView();
+
+	glColor3f(1,1,1);
+	glBegin(GL_QUADS);
+		glVertex3f( -5, 5, 5 );
+		glVertex3f( 5, 5, 5 );
+		glVertex3f( 5, -5, 5 );
+		glVertex3f( -5, -5, 5 );
+	glEnd();
 
 	window->display();
 }
 
 void App::update( float dt ) {
 	IO::Input::update();
+	camera->update( dt );
 }
 
 bool App::init() {
@@ -61,6 +71,9 @@ bool App::init() {
 
 	window = new RenderWindow(VideoMode( width, height, 24), "OpenGL Pool" );
 	window->setVerticalSyncEnabled( true );
+	camera = new FpsCamera();
+	camera->setLookAt( vec3(0,0,1) );
+
 	IO::Input::init( window );
 
 	glShadeModel(GL_SMOOTH);
@@ -68,7 +81,7 @@ bool App::init() {
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(60, (float)width/height, 0.01, 1000.0);
+    gluPerspective(90, (float)width/height, 0.001, 1000.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
@@ -78,6 +91,7 @@ bool App::init() {
 
 void App::deinit() {
 	if( window ) delete window;
+	if( camera ) delete camera;
 	initialized = false;
 }
 

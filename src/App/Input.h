@@ -7,9 +7,10 @@
 
 #include <SFML/Window.hpp>
 
+using namespace sf;
 namespace OGLPool {
 	namespace IO {
-		class Input {
+		class Input : public sf::Keyboard {
 		protected:
 			static Input* instance;
 		private:
@@ -31,15 +32,11 @@ namespace OGLPool {
 			static void update(){ instance->updateImpl(); }
 			static int getMouseX(){ return instance->mousePos.x; }
 			static int getMouseY(){ return instance->mousePos.y; }
-			static sf::Vector2i getMousePosition(){ return instance->mousePos; }
+			static Vector2i getMousePosition(){ return instance->mousePos; }
 
 			static int getMouseDX(){ return instance->mouseDisp.x; }
 			static int getMouseDY(){ return instance->mouseDisp.y; }
-			static sf::Vector2i getMouseDisplacement(){ return instance->mouseDisp; }
-
-			static bool isKeyPressed( sf::Keyboard::Key key ){ return sf::Keyboard::isKeyPressed( key ); }
+			static Vector2i getMouseDisplacement(){ return instance->mouseDisp; }
 		};
-
-		Input* Input::instance = 0;
 	}
 } /* namespace OGLPool */
