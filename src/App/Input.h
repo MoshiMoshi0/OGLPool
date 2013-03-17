@@ -19,12 +19,15 @@ namespace OGLPool {
 
 			Input(){}
 			void updateImpl(){
-				mousePos = sf::Mouse::getPosition( *(instance->window) );
+				mousePos = sf::Mouse::getPosition( *window );
 				mouseDisp = mousePos - oldMousePos;
 				oldMousePos = mousePos;
 			}
 		public:
-			Input( Window* window ){ this->window = window; }
+			Input( Window* window ){
+				this->window = window;
+				mousePos = oldMousePos = sf::Mouse::getPosition( *window );
+			}
 			static void init( Window* window ){
 				instance = new Input( window );
 			}
