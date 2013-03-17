@@ -15,9 +15,11 @@ namespace OGLPool {
 class FpsCamera: public OGLPool::Camera {
 public:
 	FpsCamera();
+	FpsCamera( vec3 pos );
 	virtual ~FpsCamera();
 
-	void rotateX( float angle );
+	void setLookAt( vec3 lookAt );
+	void rotateY( float angle );
 	virtual void update( float dt );
 };
 

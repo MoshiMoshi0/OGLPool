@@ -17,6 +17,7 @@ namespace OGLPool {
 class Camera {
 public:
 	Camera();
+	Camera( vec3 pos );
 	virtual ~Camera();
 
 	virtual void applyView();

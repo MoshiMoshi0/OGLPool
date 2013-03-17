@@ -18,6 +18,10 @@ Camera::Camera() {
 	forward = vec3( 0, 0, -1.0 );
 }
 
+Camera::Camera( vec3 pos ) : Camera() {
+	this->pos = pos;
+}
+
 Camera::~Camera() {}
 
 void Camera::applyView(){
@@ -42,13 +46,13 @@ void Camera::moveRight( float speed ){ move( right, speed ); }
 
 void Camera::rotate( vec3 axis, float angle ){
 	quat rot = angleAxis( angle, axis );
-	forward = rot * forward;
-	right = rot * right;
-	up = rot * up;
+	forward = normalize( rot * forward );
+	right = normalize( rot * right );
+	up = normalize( rot * up );
 }
 
-void Camera::rotateX( float angle ){ rotate( up, angle ); }
-void Camera::rotateY( float angle ){ rotate( right, angle ); }
+void Camera::rotateX( float angle ){ rotate( right, angle ); }
+void Camera::rotateY( float angle ){ rotate( up, angle ); }
 void Camera::rotateZ( float angle ){ rotate( forward, angle ); }
 
 } /* namespace OGLPool */
