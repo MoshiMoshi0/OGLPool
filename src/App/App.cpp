@@ -52,10 +52,24 @@ void App::draw() {
 
 	glColor3f(1,1,1);
 	glBegin(GL_QUADS);
-		glVertex3f( -5, 5, 5 );
-		glVertex3f( 5, 5, 5 );
-		glVertex3f( 5, -5, 5 );
-		glVertex3f( -5, -5, 5 );
+		glVertex3f( -5, 0, 5 );
+		glVertex3f( 5, 0, 5 );
+		glVertex3f( 5, 0, -5 );
+		glVertex3f( -5, 0, -5 );
+	glEnd();
+
+	glBegin(GL_LINES);
+		glColor3f( 1,0,0);
+		glVertex3f(0,0,0);
+		glVertex3f(10,0,0);
+
+		glColor3f( 0,1,0);
+		glVertex3f(0,0,0);
+		glVertex3f(0,10,0);
+
+		glColor3f( 0,0,1);
+		glVertex3f(0,0,0);
+		glVertex3f(0,0,10);
 	glEnd();
 
 	window->display();
@@ -71,11 +85,15 @@ bool App::init() {
 
 	window = new RenderWindow(VideoMode( width, height, 24), "OpenGL Pool" );
 	window->setVerticalSyncEnabled( true );
-	camera = new FpsCamera();
-	camera->setLookAt( vec3(0,0,1) );
+
+	world = new World();
+
+	camera = new FpsCamera( vec3(5, 5, 5) );
+	camera->setLookAt( vec3() );
 
 	IO::Input::init( window );
 
+	glLineWidth( 4 );
 	glShadeModel(GL_SMOOTH);
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -91,6 +109,7 @@ bool App::init() {
 
 void App::deinit() {
 	if( window ) delete window;
+	if( world ) delete world;
 	if( camera ) delete camera;
 	initialized = false;
 }
