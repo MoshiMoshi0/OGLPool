@@ -10,6 +10,7 @@
 #include <iostream>
 #include <time.h>
 #include <App/Input.h>
+#include <Entity/Sphere.h>
 using namespace std;
 
 namespace OGLPool {
@@ -72,12 +73,15 @@ void App::draw() {
 		glVertex3f(0,0,10);
 	glEnd();
 
+	world->render();
+
 	window->display();
 }
 
 void App::update( float dt ) {
 	IO::Input::update();
 	camera->update( dt );
+	world->update( dt );
 }
 
 bool App::init() {
@@ -87,12 +91,14 @@ bool App::init() {
 	window->setVerticalSyncEnabled( true );
 
 	world = new World();
+	world->addEntity( new Sphere( 5, vec3( 0, 10, 0 ) ) );
 
 	camera = new FpsCamera( vec3(5, 5, 5) );
 	camera->setLookAt( vec3() );
 
 	IO::Input::init( window );
 
+	glEnable( GL_DEPTH_TEST );
 	glLineWidth( 4 );
 	glShadeModel(GL_SMOOTH);
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
