@@ -24,6 +24,7 @@ public:
 
 	virtual void render(){};
 	virtual void update( float dt ){};
+	virtual void applyTransform();
 	virtual void applyForce( const vec3& f );
 	virtual void applyOffsetForce( const vec3& f, const vec3& p );
 	virtual void applyTorque( const vec3& f, const vec3& p );
@@ -55,15 +56,16 @@ public:
 
 	float mass;
 	float massInv;
-	vec3 force;
+	vec3 pos;
 	vec3 vel;
+	vec3 force;
+
+	quat rot;
 	vec3 angVel;
 	vec3 torque;
+
 	mat3 inertia;
 	mat3 inertiaInv;
-	vec3 pos;
-	quat rot;
-
 protected:
 	int id;
 };
