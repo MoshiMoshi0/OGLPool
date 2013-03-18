@@ -6,12 +6,22 @@
  */
 
 #include "World.h"
+#include <algorithm>
+
+using namespace std;
 
 namespace OGLPool {
 
 World::World() {}
 
-World::~World() {}
+World::~World() {
+	entities.erase( remove_if( entities.begin(), entities.end(),
+		[](Entity* element) -> bool {
+			delete element;
+			return true;
+		}
+	), entities.end() );
+}
 
 void World::render(){
 	for( auto it = entities.begin(); it != entities.end(); it++ ){
