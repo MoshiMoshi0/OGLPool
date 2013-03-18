@@ -6,7 +6,10 @@
  */
 
 #include "Sphere.h"
+#include <Entity/Integration/RK4.h>
+#include <glm/gtx/vector_access.hpp>
 
+using namespace glm;
 namespace OGLPool {
 
 Sphere::Sphere( float radius ) : Entity() {
@@ -31,12 +34,17 @@ Sphere::~Sphere() {
 }
 
 void Sphere::update( float dt ){
-
+	if( massInv > 0 ){
+		RK4::integrate( this, dt );
+		set( force, .0f,.0f,.0f );
+		set( torque, .0f,.0f,.0f );
+	}
 }
 
 void Sphere::render(){
+	glColor3f( 0.5,0.2,0.5 );
 	glPushMatrix();
-		glTranslatef( pos.x, pos.y, pos.z );
+		applyTransform();
 		gluSphere( quadric , radius , gluSlices , gluStacks );
 	glPopMatrix();
 }
