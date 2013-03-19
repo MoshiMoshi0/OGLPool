@@ -31,15 +31,19 @@ vec3 Entity::toWorldAxis( const vec3& v ) const { return rot * v; }
 vec3 Entity::toWorld( const vec3& v ) const { return rot * v + pos; }
 mat3 Entity::toWorld( const mat3& mat ) const {
 	mat3 mRot = toMat3( rot );
-	return mRot * mat * inverse( mat );
+	return mRot * mat * inverse( mRot );
 }
 
 void Entity::applyTransform(){
-	glMultMatrixf( value_ptr( translate( mat4(1.0f), pos) * toMat4(rot ) ) );
+	glMultMatrixf( value_ptr( translate( mat4(1.0f), pos) * toMat4( rot ) ) );
 }
 void Entity::applyForce( const vec3& f ){ force += f; }
 void Entity::applyOffsetForce( const vec3& f, const vec3& p ){ applyForce( f ); applyTorque( f, p ); }
 void Entity::applyTorque( const vec3& f, const vec3& p ){ torque += cross( f, p - pos ); }
+void Entity::applyImpulse( const vec3& r, const vec3& i ){
+	vel += massInv * i;
+	angVel += getWorldInertiaInv() * cross(r, i);
+}
 
 vec3 Entity::getAngVel() const { return angVel; }
 void Entity::setAngVel( vec3 angVel ) { this->angVel = angVel; }
@@ -49,7 +53,14 @@ void Entity::setForce( vec3 force ) { this->force = force; }
 
 mat3 Entity::getInertia() const { return inertia; }
 mat3 Entity::getWorldInertia() const { return toWorld( inertia ); }
-void Entity::setInertia( mat3 inertia ) { this->inertia = inertia; this->inertiaInv = inverse( inertia ); }
+void Entity::setInertia( mat3 inertia ) {
+	this->inertia = inertia;
+	if(determinant( inertia ) != 0){
+		this->inertiaInv = inverse( inertia );
+	}else{
+		this->inertiaInv = mat3(0.0f);
+	}
+}
 mat3 Entity::getInertiaInv() const { return inertiaInv; }
 mat3 Entity::getWorldInertiaInv() const { return toWorld( inertiaInv ); }
 
