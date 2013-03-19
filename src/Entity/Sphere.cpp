@@ -19,6 +19,7 @@ Sphere::Sphere( float radius ) : Entity() {
 
 	float x = 2.0f / 5.0f * mass * radius * radius;
 	setInertia( mat3(x,0,0,0,x,0,0,0,x) );
+	setMass( 1 );
 
 	quadric = gluNewQuadric();
 	gluQuadricDrawStyle(quadric, GLU_LINE );

@@ -17,7 +17,7 @@ int Entity::s_id = 0;
 
 Entity::Entity() {
 	id = Entity::s_id++;
-	setMass( 1 );
+	setMass( 0 );
 }
 
 Entity::~Entity() {
