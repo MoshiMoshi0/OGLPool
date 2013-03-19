@@ -51,15 +51,15 @@ void App::draw() {
 	window->clear();
 	camera->applyView();
 
-	glColor3f(1,1,1);
+	/*glColor3f(1,1,1);
 	glBegin(GL_QUADS);
 		glVertex3f( -5, 0, 5 );
 		glVertex3f( 5, 0, 5 );
 		glVertex3f( 5, 0, -5 );
 		glVertex3f( -5, 0, -5 );
-	glEnd();
+	glEnd();*/
 
-	glBegin(GL_LINES);
+	/*glBegin(GL_LINES);
 		glColor3f( 1,0,0);
 		glVertex3f(0,0,0);
 		glVertex3f(10,0,0);
@@ -71,7 +71,7 @@ void App::draw() {
 		glColor3f( 0,0,1);
 		glVertex3f(0,0,0);
 		glVertex3f(0,0,10);
-	glEnd();
+	glEnd();*/
 
 	world->render();
 
@@ -92,9 +92,8 @@ bool App::init() {
 	IO::Input::init( window );
 
 	world = new World();
-	world->addEntity( new Sphere( 5, vec3( 0, 10, 0 ) ) );
 
-	camera = new FpsCamera( vec3(5, 5, 5) );
+	camera = new FpsCamera( vec3(15, 15, 15) );
 	camera->setLookAt( vec3() );
 
 	glEnable(GL_DEPTH_TEST);

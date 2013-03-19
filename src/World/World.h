@@ -8,8 +8,9 @@
 #ifndef WORLD_H_
 #define WORLD_H_
 
-#include <list>
+#include <vector>
 #include <Entity/Entity.h>
+#include <Entity/Plane.h>
 
 using namespace std;
 namespace OGLPool {
@@ -24,7 +25,9 @@ public:
 
 	void addEntity( Entity* e );
 private:
-	list< Entity* > entities;
+	vector< Entity* > entities;
+	Plane* plane;
+	vec3 gravity;
 };
 
 } /* namespace OGLPool */
