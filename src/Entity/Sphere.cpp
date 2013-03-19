@@ -13,13 +13,13 @@ using namespace glm;
 namespace OGLPool {
 
 Sphere::Sphere( float radius ) : Entity() {
+	setMass( 1 );
 	this->radius = radius;
 	this->gluSlices = 36;
 	this->gluStacks = 18;
 
 	float x = 2.0f / 5.0f * mass * radius * radius;
 	setInertia( mat3(x,0,0,0,x,0,0,0,x) );
-	setMass( 1 );
 
 	quadric = gluNewQuadric();
 	gluQuadricDrawStyle(quadric, GLU_LINE );
