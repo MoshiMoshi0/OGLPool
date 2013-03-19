@@ -14,26 +14,28 @@
 
 using namespace sf;
 namespace OGLPool {
+
 class App{
-    public:
-        App( int width, int height );
-        virtual ~App();
-        int start();
+public:
+	App( int width, int height );
+	virtual ~App();
+	int start();
 
-        int width;
-        int height;
-    private:
-        void poolEvents();
-        void run();
-        bool init();
-        void deinit();
-        void draw();
-        void update( float dt );
+	int width;
+	int height;
+private:
+	void poolEvents();
+	void run();
+	bool init();
+	void deinit();
+	void draw();
+	void update( float dt );
 
-        World* world;
-        Camera* camera;
-        RenderWindow* window;
-        bool initialized;
+	World* world;
+	Camera* camera;
+	RenderWindow* window;
+	bool initialized;
 };
+
 } /* namespace OGLPool */
 #endif /* APP_H_ */

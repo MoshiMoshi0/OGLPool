@@ -12,7 +12,6 @@
 #include <glm/gtc/type_ptr.hpp>
 using namespace std;
 
-
 namespace OGLPool {
 int Entity::s_id = 0;
 
@@ -54,7 +53,7 @@ void Entity::setInertia( mat3 inertia ) { this->inertia = inertia; this->inertia
 mat3 Entity::getInertiaInv() const { return inertiaInv; }
 mat3 Entity::getWorldInertiaInv() const { return toWorld( inertiaInv ); }
 
-float Entity::getMass() const {	return mass; }
+float Entity::getMass() const { return mass; }
 void Entity::setMass( float mass ) {this->mass = mass; this->massInv = ( mass > 0 ? 1.f/mass : 0.0f ); }
 float Entity::getMassInv() const { return massInv; }
 

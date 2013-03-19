@@ -103,13 +103,13 @@ bool App::init() {
 	glShadeModel(GL_SMOOTH);
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(90, (float)width/height, 0.001f, 1000.0f);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(90, (float)width/height, 0.001f, 1000.0f);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 
-    initialized = true;
+	initialized = true;
 	return true;
 }
 

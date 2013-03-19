@@ -37,15 +37,15 @@ void RK4::integrate( Entity* e, float dt ){
 	Derivative c = eval(e, dt*0.5f, b);
 	Derivative d = eval(e, dt, c);
 
-    vec3 vel = 1/6.f * ( a.vel + 2.0f * (b.vel + c.vel ) + d.vel );
+	vec3 vel = 1/6.f * ( a.vel + 2.0f * (b.vel + c.vel ) + d.vel );
 	vec3 acc = 1/6.f * ( a.acc + 2.0f  * (b.acc + c.acc ) + d.acc );
 	quat spin = 1/6.f * ( a.spin + 2.0f  * (b.spin + c.spin ) + d.spin );
 	vec3 angAcc = 1/6.f * ( a.angAcc + 2.0f  * (b.angAcc + c.angAcc ) + d.angAcc );
 
-    e->pos = e->pos + vel * dt;
-    e->vel = e->vel + acc * dt;
-    e->angVel = e->angVel + angAcc * dt;
-    e->rot = normalize( e->rot + spin * dt );
+	e->pos = e->pos + vel * dt;
+	e->vel = e->vel + acc * dt;
+	e->angVel = e->angVel + angAcc * dt;
+	e->rot = normalize( e->rot + spin * dt );
 }
 
 } /* namespace OGLPool */
