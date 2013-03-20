@@ -37,4 +37,8 @@ void FpsCamera::rotateY( float angle ){
 	rotate( vec3(0,1,0), angle );
 }
 
+void FpsCamera::moveUp( float speed ){
+	move( vec3(0,1,0), speed );
+}
+
 } /* namespace OGLPool */

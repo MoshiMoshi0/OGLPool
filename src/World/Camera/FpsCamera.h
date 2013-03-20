@@ -20,6 +20,7 @@ public:
 
 	void setLookAt( vec3 lookAt );
 	void rotateY( float angle );
+	void moveUp( float speed );
 	virtual void update( float dt );
 };
 
