@@ -16,6 +16,10 @@ namespace OGLPool {
 
 class ContactInfo {
 public:
+	enum {
+		INVALID = -1, OVERLAPPING = 1, COLLIDING
+	};
+
 	ContactInfo();
 	virtual ~ContactInfo();
 
@@ -23,17 +27,24 @@ public:
 	vec3 getContactPoint();
 	float getDepth();
 	float getContactTime();
+	bool isOverlapping();
+	bool isColliding();
+	bool isValid();
 
 	void setNormal(vec3 normal);
 	void setContactPoint(vec3 point);
 	void setDepth(float depth);
 	void setContactTime( float time );
+	void setOverlapping( bool f );
+	void setColliding( bool f );
 private:
 	vec3 normal;
 	vec3 point;
 
 	float depth;
 	float time;
+
+	int contactType;
 };
 
 } /* namespace OGLPool */
