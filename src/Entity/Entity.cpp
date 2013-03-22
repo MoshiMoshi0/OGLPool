@@ -39,7 +39,7 @@ void Entity::applyTransform(){
 }
 void Entity::applyForce( const vec3& f ){ force += f; }
 void Entity::applyOffsetForce( const vec3& f, const vec3& p ){ applyForce( f ); applyTorque( f, p ); }
-void Entity::applyTorque( const vec3& f, const vec3& p ){ torque += cross( f, p - pos ); }
+void Entity::applyTorque( const vec3& f, const vec3& p ){ torque += cross( f, p ); }
 void Entity::applyImpulse( const vec3& r, const vec3& i ){
 	vel += massInv * i;
 	angVel += getWorldInertiaInv() * cross(r, i);
