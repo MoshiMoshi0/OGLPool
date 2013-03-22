@@ -51,30 +51,7 @@ void App::draw() {
 	window->clear();
 	camera->applyView();
 
-	/*glColor3f(1,1,1);
-	glBegin(GL_QUADS);
-		glVertex3f( -5, 0, 5 );
-		glVertex3f( 5, 0, 5 );
-		glVertex3f( 5, 0, -5 );
-		glVertex3f( -5, 0, -5 );
-	glEnd();*/
-
-	/*glBegin(GL_LINES);
-		glColor3f( 1,0,0);
-		glVertex3f(0,0,0);
-		glVertex3f(10,0,0);
-
-		glColor3f( 0,1,0);
-		glVertex3f(0,0,0);
-		glVertex3f(0,10,0);
-
-		glColor3f( 0,0,1);
-		glVertex3f(0,0,0);
-		glVertex3f(0,0,10);
-	glEnd();*/
-
 	world->render();
-
 	window->display();
 }
 
