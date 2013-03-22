@@ -10,24 +10,14 @@
 #include <Entity/Sphere.h>
 #include <Physics/Physics.h>
 #include <iostream>
-using namespace std;
-
+#include <glm/gtc/random.hpp>
+#include <App/Input.h>
 using namespace std;
 
 namespace OGLPool {
 
 World::World() {
-	Sphere* s = new Sphere( 5, vec3( 3, 25, 0 ) );
-	s->setVel( vec3( 0, -0.1, 0 ) );
-	s->setAngVel( vec3(0,0.1,0) );
-	addEntity( s );
-	s = new Sphere( 5, vec3( 0, 10, 0 ) );
-	s->setVel( vec3( 0.1, 0.4, 0 ) );
-	s->setAngVel( vec3(1,0.5,0) );
-	addEntity( s );
-
-	plane = new Plane( vec3(0,1,0), vec3() );
-	addEntity( plane );
+	addEntity( new Plane( vec3(0,1,0), vec3() ) );
 	gravity = vec3(0,-1,0);
 }
 
@@ -55,25 +45,23 @@ void World::update( float dt ){
 		e->applyForce( gravity );
 	}
 
-	Sphere* s0 = (Sphere*)entities.at( 0 );
-	Sphere* s1 = (Sphere*)entities.at( 1 );
+	for( auto it0 = entities.begin(); it0 != entities.end(); it0++ ){
+		for( auto it1 = it0 + 1; it1 != entities.end(); it1++ ){
+			Entity* e0 = (*it0);
+			Entity* e1 = (*it1);
 
-	ContactInfo info;
-	if( Physics::sphereSphereTest( s0, s1, &info ) ){
-		cout << info.getContactTime() << endl;
-		Physics::response( s0, s1, &info );
+			ContactInfo info;
+			if( Physics::checkCollision( e0, e1, &info ) ){
+				Physics::response( e0, e1, &info );
+			}
+		}
 	}
 
-	info = ContactInfo();
-	if( Physics::spherePlaneTest( s0, plane, &info) ){
-		cout << "s0 " << info.getContactTime() << endl;
-		Physics::response( s0, plane, &info );
-	}
-
-	info = ContactInfo();
-	if( Physics::spherePlaneTest( s1, plane, &info) ){
-		cout << "s1 " << info.getContactTime() << endl;
-		Physics::response( s1, plane, &info );
+	if( IO::Input::onKeyPressed( IO::Input::R ) ){
+		Sphere* s = new Sphere( 5, vec3( 0, 25, 0 ) );
+		s->setVel( vec3(0.1, 0.1, 1) );
+		s->setAngVel( vec3(-0.8, 3, 0) );
+		addEntity( s );
 	}
 }
 

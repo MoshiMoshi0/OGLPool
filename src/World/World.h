@@ -26,7 +26,6 @@ public:
 	void addEntity( Entity* e );
 private:
 	vector< Entity* > entities;
-	Plane* plane;
 	vec3 gravity;
 };
 
