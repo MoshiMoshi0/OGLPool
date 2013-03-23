@@ -24,4 +24,7 @@ T& Edge<T>::operator[](int i){
 	return vertices[ i % 2 ];
 }
 
+template class Edge< vec2 >;
+template class Edge< vec3 >;
+
 } /* namespace OGLPool */
