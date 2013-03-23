@@ -24,7 +24,7 @@ public:
 
 	//@TODO getPlane();
 	Edge<T> getEdge( int i );
-	T getNormal();
+	vec3 getNormal();
 	T& operator[](int i);
 private:
 	T vertices[ 3 ];

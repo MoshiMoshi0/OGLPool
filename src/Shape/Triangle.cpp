@@ -32,10 +32,15 @@ Edge<T> Triangle<T>::getEdge( int i ){
 	return Edge<T>( vertices[i0], vertices[i1] );
 }
 
-template< class T >
-T Triangle<T>::getNormal(){
-	T v10 = vertices[1] - vertices[0];
-	T v20 = vertices[2] - vertices[0];
+template<>
+vec3 Triangle<vec2>::getNormal(){
+	return vec3(0.0f,0.0f,1.0f);
+}
+
+template<>
+vec3 Triangle<vec3>::getNormal(){
+	vec3 v10 = vertices[1] - vertices[0];
+	vec3 v20 = vertices[2] - vertices[0];
 
 	return normalize( cross( v10, v20 ) );
 }
@@ -44,5 +49,8 @@ template< class T >
 T& Triangle<T>::operator[](int i){
 	return vertices[ i % 3 ];
 }
+
+template class Triangle< vec2 >;
+template class Triangle< vec3 >;
 
 } /* namespace OGLPool */
