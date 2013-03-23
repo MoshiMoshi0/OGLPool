@@ -9,13 +9,9 @@
 
 namespace OGLPool {
 
-Circle::Circle() {
-	// TODO Auto-generated constructor stub
+Circle::Circle() {}
+Circle::Circle( vec2 p, float r ) : c(p), r(r) {}
 
-}
-
-Circle::~Circle() {
-	// TODO Auto-generated destructor stub
-}
+Circle::~Circle() {}
 
 } /* namespace OGLPool */
