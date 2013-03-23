@@ -7,7 +7,6 @@
 
 #include "Delaunay.h"
 #include <Shape/Circle.h>
-#include <iostream>
 #include <algorithm>
 using namespace std;
 
@@ -17,12 +16,12 @@ Delaunay::Delaunay() {}
 
 Delaunay::~Delaunay() {}
 
-vector< ivec3 > Delaunay::constructTris(){
+vector< ivec3 > Delaunay::getTriangleIndices(){
 	vector< ivec3 > ret;
-	for (unsigned int i = 0; i < edge.size(); ++i) {
-		DEdge e0 = edge[i];
-		for (unsigned int j = i + 1; j < edge.size(); ++j) {
-			DEdge e1 = edge[j];
+	for (unsigned int i = 0; i < edges.size(); ++i) {
+		DEdge e0 = edges[i];
+		for (unsigned int j = i + 1; j < edges.size(); ++j) {
+			DEdge e1 = edges[j];
 			if( e0.t == e1.s || e0.t == e1.t ){
 
 				int f0 = 0;
@@ -33,18 +32,19 @@ vector< ivec3 > Delaunay::constructTris(){
 				}
 
 				if( f0 != UNDEFINED ){
-					DEdge e2 = edge[ f0 ];
+					DEdge e2 = edges[ f0 ];
 
 					int i0 = e2.s;
 					int i1 = e2.t;
 					int i2 = e0.t;
-					Circle bC = Circle::circumCircle( point[i0], point[i1], point[i2] );
-					bool empty = true;
 
-					for( int l = 0; l < point.size(); l++ ){
+					Circle bC = Circle::circumCircle( points[i0], points[i1], points[i2] );
+					bool empty = true;
+					for( unsigned int l = 0; l < points.size(); l++ ){
 						if( l == i0 || l == i1 || l == i2 )
 							continue;
-						if( bC.inside( point[l] )){
+
+						if( bC.inside( points[l] )){
 							empty = false;
 							break;
 						}
@@ -56,7 +56,6 @@ vector< ivec3 > Delaunay::constructTris(){
 							continue;
 
 						ret.push_back( x );
-						cout << i0 << " " << i1 << " " << i2 << endl;
 					}
 				}
 			}
@@ -66,9 +65,8 @@ vector< ivec3 > Delaunay::constructTris(){
 }
 
 void Delaunay::triangulate( vector< vec2 > points ){
-	point = vector<vec2> (points);
+	this->points = vector<vec2> (points);
 
-	unsigned int currentEdge;
 	int nFaces = 0;
 	int s, t;
 
@@ -76,61 +74,87 @@ void Delaunay::triangulate( vector< vec2 > points ){
 
 	addEdge(s, t, UNDEFINED, UNDEFINED);
 
-	currentEdge = 0;
-	while (currentEdge < edge.size()) {
-	    if (edge[currentEdge].l == UNDEFINED)
+	unsigned int currentEdge = 0;
+	while (currentEdge < edges.size()) {
+	    if (edges[currentEdge].l == UNDEFINED)
 			completeFacet(currentEdge, nFaces);
-	    if (edge[currentEdge].r == UNDEFINED)
+	    if (edges[currentEdge].r == UNDEFINED)
 			completeFacet(currentEdge, nFaces);
 	    currentEdge++;
 	}
 }
 
-float triNorm( vec2 p1, vec2 p2, vec2 p3 ){
-	vec2 v21 = p2 - p1;
-	vec2 v31 = p3 - p1;
-	return v21.x * v31.y - v21.y * v31.x;
+vector< DEdge > Delaunay::getDEdges(){
+	return edges;
+}
+
+vector< Edge2 > Delaunay::getEdges(){
+	vector< Edge2 > es;
+
+	for( unsigned int i = 0; i < edges.size(); i++ ){
+		DEdge de = edges.at( i );
+		es.push_back( Edge2( points[ de.s ], points[ de.t ] ) );
+	}
+
+	return es;
+}
+
+vector< Triangle2 > Delaunay::getTriangles(){
+	vector< ivec3 > idx = getTriangleIndices();
+	vector< Triangle2 > ts;
+
+	for( unsigned int i = 0; i < idx.size(); i++ ){
+		ivec3 v = idx.at( i );
+		ts.push_back( Triangle2( points[ v.x ], points[ v.y ], points[ v.z ] ) );
+	}
+
+	return ts;
+}
+
+vector< vec2 > Delaunay::getPoints(){
+	return points;
 }
 
 void Delaunay::completeFacet(int eI, int nFaces) {
-	float cP;
-	unsigned int bP, u, s, t;
+	unsigned int u, s, t;
 
-	if (edge[eI].l == UNDEFINED) {
-		s = edge[eI].s;
-		t = edge[eI].t;
-	} else if (edge[eI].r == UNDEFINED) {
-		s = edge[eI].t;
-		t = edge[eI].s;
-	}else return;
+	if (edges[eI].l == UNDEFINED) {
+		s = edges[eI].s;
+		t = edges[eI].t;
+	} else if (edges[eI].r == UNDEFINED) {
+		s = edges[eI].t;
+		t = edges[eI].s;
+	} else {
+		return;
+	}
 
-	for (u = 0; u < point.size(); u++){
-		if (u == s || u == t)
+	for (u = 0; u < points.size(); u++){
+		if ( u == s || u == t )
 			continue;
-		if (triNorm(point[s], point[t], point[u]) > 0.0)
+
+		if ( determinant( mat2x2( points[s] - points[u], points[t] - points[u] ) ) > 0.0 )
 			break;
 	}
 
-	bP = u;
-	if ( bP < point.size() ){
-		Circle bC = Circle::circumCircle( point[s], point[t], point[bP] );
+	unsigned int bP = u;
+	if ( bP < points.size() ){
+		Circle bC = Circle::circumCircle( points[s], points[t], points[bP] );
 
-		for (u = bP+1; u < point.size(); u++) {
-			if (u == s || u == t)
+		for ( u = bP + 1; u < points.size(); u++ ) {
+			if ( u == s || u == t )
 				continue;
 
-			cP = triNorm(point[s], point[t], point[u]);
-
+			float cP = determinant( mat2x2( points[s] - points[u], points[t] - points[u] ) );
 			if (cP > 0.0){
-				if (bC.inside(point[u])){
+				if (bC.inside( points[u] )){
 					bP = u;
-					bC = Circle::circumCircle(point[s], point[t], point[u]);
+					bC = Circle::circumCircle(points[s], points[t], points[u]);
 				}
 			}
 		}
 	}
 
-	if ( bP < point.size() ){
+	if ( bP < points.size() ){
 		updateLeftFace(eI, s, t, nFaces);
 		nFaces++;
 
@@ -158,10 +182,10 @@ void Delaunay::findClosestNeighbours( int& u, int& v) {
 	int s, t;
 
 	s = t = 0;
-	min = 1e30f; //@TODO
-	for (i = 0; i < point.size()-1; i++) {
-	    for (j = i+1; j < point.size(); j++) {
-	    	d = distance( point[i], point[j] );
+	min = std::numeric_limits<float>::max();
+	for (i = 0; i < points.size()-1; i++) {
+	    for (j = i+1; j < points.size(); j++) {
+	    	d = distance( points[i], points[j] );
 		    if (d < min) {
 			    s = i;
 			    t = j;
@@ -173,12 +197,6 @@ void Delaunay::findClosestNeighbours( int& u, int& v) {
 	v = t;
 }
 
-/*void Delaunay::addTriangle( int s, int t, int u ){
-	addEdge(s, t);
-	addEdge(t, u);
-	addEdge(u, s);
-}*/
-
 int Delaunay::addEdge( int s, int t ){
 	return addEdge(s, t, UNDEFINED, UNDEFINED);
 }
@@ -189,24 +207,11 @@ int Delaunay::addEdge( int s, int t, int l, int r ){
 	e = findEdge(s, t);
 	if (e == UNDEFINED) {
 		if (s < t) {
-			DEdge e;
-			e.s = s;
-			e.t = t;
-			e.l = l;
-			e.r = r;
-
-			edge.push_back( e );
-			return edge.size() - 1;
+			edges.push_back( DEdge( s,t,l,r ) );
 		} else {
-			DEdge e;
-			e.s = t;
-			e.t = s;
-			e.l = r;
-			e.r = l;
-
-			edge.push_back( e );
-			return edge.size() - 1;
+			edges.push_back( DEdge(t,s,r,l) );
 		}
+		return edges.size() - 1;
 	} else {
 		return UNDEFINED;
 	}
@@ -214,10 +219,10 @@ int Delaunay::addEdge( int s, int t, int l, int r ){
 
 int Delaunay::findEdge(int s, int t){
 	bool edgeExists = false;
-	unsigned int i;
 
-	for (i = 0; i < edge.size(); i++){
-	    if ( (edge[i].s == s && edge[i].t == t) || (edge[i].s == t && edge[i].t == s)) {
+	unsigned int i;
+	for (i = 0; i < edges.size(); i++){
+	    if ( (edges[i].s == s && edges[i].t == t) || (edges[i].s == t && edges[i].t == s)) {
 			edgeExists = true;
 			break;
 	    }
@@ -228,16 +233,16 @@ int Delaunay::findEdge(int s, int t){
 }
 
 void Delaunay::updateLeftFace(int eI, int s, int t, int f){
-	if (!((edge[eI].s == s && edge[eI].t == t) || (edge[eI].s == t && edge[eI].t == s))){
-		error( "updateLeftFace: adj. matrix and edge table mismatch" );
+	if (!((edges[eI].s == s && edges[eI].t == t) || (edges[eI].s == t && edges[eI].t == s))){
+		//error( "edge table mismatch" ); @TODO ?
 	}
 
-	if (edge[eI].s == s && edge[eI].l == UNDEFINED){
-		edge[eI].l = f;
-	}else if (edge[eI].t == s && edge[eI].r == UNDEFINED){
-		edge[eI].r = f;
+	if (edges[eI].s == s && edges[eI].l == UNDEFINED){
+		edges[eI].l = f;
+	}else if (edges[eI].t == s && edges[eI].r == UNDEFINED){
+		edges[eI].r = f;
 	}else{
-		error( "updateLeftFace: attempt to overwrite edge info" );
+		//error( "attempt to overwrite edge info" ); @TODO ?
 	}
 }
 
