@@ -12,8 +12,9 @@ namespace OGLPool {
 
 class DEdge {
 public:
-	DEdge() { s = t = 0; }
-	DEdge(int s, int t) { this->s = s; this->t = t; }
+	DEdge();
+	DEdge( int s, int t );
+	DEdge( int s, int t, int l, int r );
 	virtual ~DEdge(){};
 
 	int s,t;

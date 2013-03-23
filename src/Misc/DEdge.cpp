@@ -8,5 +8,7 @@
 #include "DEdge.h"
 
 namespace OGLPool {
-
+	DEdge::DEdge() : s(0), t(0) {}
+	DEdge::DEdge(int s, int t) : s(s), t(t) {}
+	DEdge::DEdge(int s, int t, int l, int r) : s(s), t(t), l(l), r(r) {}
 } /* namespace OGLPool */
