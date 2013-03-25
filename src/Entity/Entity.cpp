@@ -44,6 +44,10 @@ void Entity::applyImpulse( const vec3& r, const vec3& i ){
 	vel += massInv * i;
 	angVel += getWorldInertiaInv() * cross(r, i);
 }
+void Entity::applyDamping( float dt ){
+	vel *= powf( 1.0f - 0.05f, dt); //@TODO damping factor
+	angVel *= powf( 1.0f - 0.1f, dt);
+}
 
 vec3 Entity::getAngVel() const { return angVel; }
 void Entity::setAngVel( vec3 angVel ) { this->angVel = angVel; }

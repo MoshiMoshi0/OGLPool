@@ -29,6 +29,7 @@ public:
 	virtual void applyOffsetForce( const vec3& f, const vec3& p );
 	virtual void applyTorque( const vec3& f, const vec3& p );
 	virtual void applyImpulse( const vec3& r, const vec3& i );
+	virtual void applyDamping( float dt );
 
 	virtual vec3 toWorldAxis( const vec3& v ) const;
 	virtual vec3 toWorld( const vec3& v ) const;

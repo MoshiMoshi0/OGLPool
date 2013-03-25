@@ -37,6 +37,7 @@ Sphere::~Sphere() {
 void Sphere::update( float dt ){
 	if( massInv > 0 ){
 		RK4::integrate( this, dt );
+		applyDamping( dt );
 		set( force, .0f,.0f,.0f );
 		set( torque, .0f,.0f,.0f );
 	}
