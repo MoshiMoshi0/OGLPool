@@ -12,7 +12,7 @@ using namespace std;
 
 namespace OGLPool {
 
-Delaunay::Delaunay() {}
+Delaunay::Delaunay() { state = VALID; }
 
 Delaunay::~Delaunay() {}
 
@@ -65,6 +65,7 @@ vector< ivec3 > Delaunay::getTriangleIndices(){
 }
 
 void Delaunay::triangulate( vector< vec2 > points ){
+	if( state == INVALID ) return;
 	this->points = vector<vec2> (points);
 
 	int nFaces = 0;
@@ -81,6 +82,31 @@ void Delaunay::triangulate( vector< vec2 > points ){
 	    if (edges[currentEdge].r == UNDEFINED)
 			completeFacet(currentEdge, nFaces);
 	    currentEdge++;
+	}
+
+	state = INVALID;
+}
+
+void Delaunay::triangulate( vector< vec2 > points, vector< Triangle2 >& tris ){
+	if( state == INVALID ) return;
+	triangulate( points );
+	vector< Triangle2 > ret = getTriangles();
+	tris.insert( tris.begin(), ret.begin(), ret.end() );
+}
+
+void Delaunay::triangulate( vector< vec3 > points3, vector< Triangle3 >& tris ){
+	if( state == INVALID ) return;
+	if( !tris.empty() ) tris.clear();
+	vector< vec2 > points2;
+	for( unsigned int i = 0; i < points3.size(); i++ ){
+		points2.push_back( vec2( points3[i].x, points3[i].z ) );
+	}
+
+	triangulate( points2 );
+
+	vector< ivec3 > idx = getTriangleIndices();
+	for( unsigned int i = 0; i < idx.size(); i++ ){
+		tris.push_back( Triangle3( points3[ idx[i].x ], points3[ idx[i].y ], points3[ idx[i].z ] ) );
 	}
 }
 

@@ -25,6 +25,8 @@ public:
 	virtual ~Delaunay();
 
 	void triangulate( vector< vec2 > points );
+	void triangulate( vector< vec2 > points, vector< Triangle2 >& tris );
+	void triangulate( vector< vec3 > points, vector< Triangle3 >& tris );
 	vector< DEdge > getDEdges();
 	vector< Edge2 > getEdges();
 	vector< vec2 > getPoints();
@@ -34,7 +36,9 @@ public:
 private:
 	enum {
 		UNDEFINED = -1,
-		UNIVERSE = 0
+		UNIVERSE = 0,
+		VALID = 1,
+		INVALID = 2
 	};
 
 	int addEdge( int s, int t );
@@ -46,6 +50,7 @@ private:
 
 	vector< DEdge > edges;
 	vector< vec2 > points;
+	int state;
 };
 
 } /* namespace OGLPool */
