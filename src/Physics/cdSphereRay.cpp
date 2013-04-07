@@ -80,12 +80,13 @@ bool sphereRayTest( vec3 rayOrigin, vec3 rayDir, vec3 pos, float radius, Contact
 		return false;
 
 	float t = t0 < 0 ? t1 : t0;
-	if( t > 0.15f || t < 0 ) return false;
+	if( t > 1 || t < 0 ) return false;
 
 	vec3 point = rayOrigin + rayDir * t;
-	info->setContactTime( t );
-	info->setContactPoint( point );
-	info->setNormal( normalize( point - pos ) );
+	info->time = t;
+	info->point0 = point;
+	info->point1 = point;
+	info->normal = normalize( point - pos );
 	info->setColliding( true );
 	return true;
 }

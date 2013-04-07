@@ -18,6 +18,8 @@ namespace OGLPool {
 namespace Physics {
 
 bool spherePlaneIntersection();
+bool spherePlaneSwept( Sphere* s, Plane* p, ContactInfo* info );
+bool spherePlaneOverlap( Sphere* s, Plane* p, ContactInfo* info );
 bool spherePlaneTest( Sphere* s, Plane* p, ContactInfo* info );
 
 } /* namespace Physics */

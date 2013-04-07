@@ -16,19 +16,22 @@ bool sphereSphereIntersection( Sphere* s0, Sphere* s1 ){
 }
 
 bool sphereSphereOverlap( Sphere* s0, Sphere* s1, ContactInfo* info ){
+	vec3 dp = s1->pos - s0->pos;
+	float r = s0->radius + s1->radius;
+	if( dot( dp, dp) <= r*r ){
+		vec3 n = normalize( dp );
+		info->point0 = s0->pos + n * s0->radius;
+		info->point1 = s1->pos - n * s1->radius;
+		info->depth = r - length( dp );
+		info->normal = n;
+		info->setOverlapping( true );
+		return true;
+	}
 	return false;
 }
 
 bool sphereSphereSwept( Sphere* s0, Sphere* s1, ContactInfo* info ){
-	vec3 dp = s1->pos - s0->pos;
-	float r = s0->radius + s1->radius;
-	if( dot( dp, dp) <= r*r ){
-		info->setOverlapping( true );
-		info->setDepth( r - length( dp ) );
-		info->setNormal( normalize( dp ) );
-		return true;
-	}
-	vec3 dir = s1->vel - s0->vel;
+	vec3 dir = (s1->vel - s0->vel) * info->deltaTime;
 	return sphereRayTest( s1->pos, dir, s0->pos, s0->radius + s1->radius, info );
 }
 
