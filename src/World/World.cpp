@@ -50,17 +50,17 @@ void World::update( float dt ){
 			Entity* e0 = (*it0);
 			Entity* e1 = (*it1);
 
-			ContactInfo info;
+			ContactInfo info( dt );
 			if( Physics::checkCollision( e0, e1, &info ) ){
-				Physics::response( e0, e1, &info );
+				Physics::response( &info );
 			}
 		}
 	}
 
 	if( IO::Input::onKeyPressed( IO::Input::R ) ){
-		Sphere* s = new Sphere( 5, vec3( 0, 25, 0 ) );
-		s->setVel( vec3(0.1, 0.1, 1) );
-		s->setAngVel( vec3(-0.8, 3, 0) );
+		Sphere* s = new Sphere( 5, vec3( 0, 100, 0 ) );
+		//s->setVel( vec3(0.1, 0.1, 1) );
+		s->setAngVel( vec3(-2.8, 1, 0) );
 		addEntity( s );
 	}
 }
