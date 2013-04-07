@@ -12,9 +12,13 @@ using namespace std;
 
 namespace OGLPool {
 
-Delaunay::Delaunay() { state = VALID; }
+Delaunay::Delaunay() { state = DState::VALID; }
 
 Delaunay::~Delaunay() {}
+
+bool Delaunay::isValid(){
+	return state == DState::VALID;
+}
 
 vector< ivec3 > Delaunay::getTriangleIndices(){
 	vector< ivec3 > ret;
@@ -65,10 +69,10 @@ vector< ivec3 > Delaunay::getTriangleIndices(){
 }
 
 void Delaunay::triangulate( vector< vec2 > points ){
-	if( state == INVALID ) return;
+	if( state == DState::INVALID ) return;
 	this->points = vector<vec2> (points);
 
-	int nFaces = 0;
+	nFaces = 0;
 	int s, t;
 
 	findClosestNeighbours( s, t );
@@ -78,24 +82,24 @@ void Delaunay::triangulate( vector< vec2 > points ){
 	unsigned int currentEdge = 0;
 	while (currentEdge < edges.size()) {
 	    if (edges[currentEdge].l == UNDEFINED)
-			completeFacet(currentEdge, nFaces);
+			completeFacet(currentEdge);
 	    if (edges[currentEdge].r == UNDEFINED)
-			completeFacet(currentEdge, nFaces);
+			completeFacet(currentEdge);
 	    currentEdge++;
 	}
 
-	state = INVALID;
+	state = DState::INVALID;
 }
 
 void Delaunay::triangulate( vector< vec2 > points, vector< Triangle2 >& tris ){
-	if( state == INVALID ) return;
+	if( state == DState::INVALID ) return;
 	triangulate( points );
 	vector< Triangle2 > ret = getTriangles();
 	tris.insert( tris.begin(), ret.begin(), ret.end() );
 }
 
 void Delaunay::triangulate( vector< vec3 > points3, vector< Triangle3 >& tris ){
-	if( state == INVALID ) return;
+	if( state == DState::INVALID ) return;
 	if( !tris.empty() ) tris.clear();
 	vector< vec2 > points2;
 	for( unsigned int i = 0; i < points3.size(); i++ ){
@@ -141,9 +145,7 @@ vector< vec2 > Delaunay::getPoints(){
 	return points;
 }
 
-void Delaunay::completeFacet(int eI, int nFaces) {
-	unsigned int u, s, t;
-
+void Delaunay::completeFacet(int eI) {
 	if (edges[eI].l == UNDEFINED) {
 		s = edges[eI].s;
 		t = edges[eI].t;
@@ -162,7 +164,7 @@ void Delaunay::completeFacet(int eI, int nFaces) {
 			break;
 	}
 
-	unsigned int bP = u;
+	bP = u;
 	if ( bP < points.size() ){
 		Circle bC = Circle::circumCircle( points[s], points[t], points[bP] );
 
@@ -171,7 +173,7 @@ void Delaunay::completeFacet(int eI, int nFaces) {
 				continue;
 
 			float cP = determinant( mat2x2( points[s] - points[u], points[t] - points[u] ) );
-			if (cP > 0.0){
+			if (cP > 0.0f){
 				if (bC.inside( points[u] )){
 					bP = u;
 					bC = Circle::circumCircle(points[s], points[t], points[u]);
@@ -203,24 +205,19 @@ void Delaunay::completeFacet(int eI, int nFaces) {
 }
 
 void Delaunay::findClosestNeighbours( int& u, int& v) {
-	unsigned int i, j;
 	float d, min;
-	int s, t;
 
-	s = t = 0;
 	min = std::numeric_limits<float>::max();
-	for (i = 0; i < points.size()-1; i++) {
-	    for (j = i+1; j < points.size(); j++) {
+	for (unsigned int i = 0; i < points.size()-1; i++) {
+	    for (unsigned int j = i+1; j < points.size(); j++) {
 	    	d = distance( points[i], points[j] );
 		    if (d < min) {
-			    s = i;
-			    t = j;
+			    u = i;
+			    v = j;
 			    min = d;
 			}
 		}
 	}
-	u = s;
-	v = t;
 }
 
 int Delaunay::addEdge( int s, int t ){
@@ -228,12 +225,11 @@ int Delaunay::addEdge( int s, int t ){
 }
 
 int Delaunay::addEdge( int s, int t, int l, int r ){
-	int e;
+	int e = findEdge(s, t);
 
-	e = findEdge(s, t);
 	if (e == UNDEFINED) {
 		if (s < t) {
-			edges.push_back( DEdge( s,t,l,r ) );
+			edges.push_back( DEdge(s,t,l,r) );
 		} else {
 			edges.push_back( DEdge(t,s,r,l) );
 		}
@@ -244,18 +240,13 @@ int Delaunay::addEdge( int s, int t, int l, int r ){
 }
 
 int Delaunay::findEdge(int s, int t){
-	bool edgeExists = false;
-
-	unsigned int i;
-	for (i = 0; i < edges.size(); i++){
+	for (unsigned int i = 0; i < edges.size(); i++){
 	    if ( (edges[i].s == s && edges[i].t == t) || (edges[i].s == t && edges[i].t == s)) {
-			edgeExists = true;
-			break;
+	    	return i;
 	    }
 	}
 
-	if (edgeExists) return i;
-	else return UNDEFINED;
+	return DEdgeType::UNDEFINED;
 }
 
 void Delaunay::updateLeftFace(int eI, int s, int t, int f){

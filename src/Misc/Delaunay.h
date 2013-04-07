@@ -32,25 +32,27 @@ public:
 	vector< vec2 > getPoints();
 	vector< Triangle2 > getTriangles();
 	vector< ivec3 > getTriangleIndices();
+	bool isValid();
 
-private:
-	enum {
-		UNDEFINED = -1,
-		UNIVERSE = 0,
-		VALID = 1,
-		INVALID = 2
+	enum DEdgeType {
+		UNDEFINED = -2,
+		UNIVERSE = -1,
 	};
+private:
+	enum class DState { VALID, INVALID };
 
 	int addEdge( int s, int t );
 	int addEdge( int s, int t, int l, int r );
 	int findEdge(int s, int t);
 	void updateLeftFace(int eI, int s, int t, int f);
-	void completeFacet(int eI, int nFaces);
+	void completeFacet(int eI);
 	void findClosestNeighbours( int& u, int& v);
 
 	vector< DEdge > edges;
 	vector< vec2 > points;
-	int state;
+	int nFaces;
+	DState state;
+	unsigned int u, s, t, bP;
 };
 
 } /* namespace OGLPool */
