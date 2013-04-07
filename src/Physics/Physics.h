@@ -16,6 +16,8 @@
 namespace OGLPool {
 	namespace Physics {
 		bool checkCollision( Entity* e0, Entity* e1, ContactInfo* info ){
+			info->e0 = e0;
+			info->e1 = e1;
 			auto *i0 = &typeid (*e0);
 			auto *i1 = &typeid (*e1);
 

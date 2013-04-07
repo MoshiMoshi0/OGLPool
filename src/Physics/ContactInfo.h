@@ -8,6 +8,7 @@
 #ifndef CONTACTINFO_H_
 #define CONTACTINFO_H_
 
+#include <Entity/Entity.h>
 #include <glm/glm.hpp>
 
 using namespace glm;
@@ -20,30 +21,28 @@ public:
 		INVALID = -1, OVERLAPPING = 1, COLLIDING
 	};
 
-	ContactInfo();
+	ContactInfo( float deltaTime );
 	virtual ~ContactInfo();
 
-	vec3 getNormal();
-	vec3 getContactPoint();
-	float getDepth();
-	float getContactTime();
 	bool isOverlapping();
 	bool isColliding();
 	bool isValid();
 
-	void setNormal(vec3 normal);
-	void setContactPoint(vec3 point);
-	void setDepth(float depth);
-	void setContactTime( float time );
 	void setOverlapping( bool f );
 	void setColliding( bool f );
-private:
+
+	Entity* e0;
+	Entity* e1;
+
 	vec3 normal;
-	vec3 point;
+	vec3 point0;
+	vec3 point1;
 
 	float depth;
 	float time;
 
+	float deltaTime;
+private:
 	int contactType;
 };
 
