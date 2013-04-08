@@ -24,9 +24,9 @@ public:
 	Delaunay();
 	virtual ~Delaunay();
 
-	void triangulate( vector< vec2 > points );
-	void triangulate( vector< vec2 > points, vector< Triangle2 >& tris );
-	void triangulate( vector< vec3 > points, vector< Triangle3 >& tris );
+	void triangulate( const vector< vec2 >& points );
+	void triangulate( const vector< vec2 >& points, vector< Triangle2 >& tris );
+	void triangulate( const vector< vec3 >& points, vector< Triangle3 >& tris );
 	vector< DEdge > getDEdges();
 	vector< Edge2 > getEdges();
 	vector< vec2 > getPoints();

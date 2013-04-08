@@ -22,59 +22,38 @@ bool Delaunay::isValid(){
 
 vector< ivec3 > Delaunay::getTriangleIndices(){
 	vector< ivec3 > ret;
-	for (unsigned int i = 0; i < edges.size(); ++i) {
-		DEdge e0 = edges[i];
-		for (unsigned int j = i + 1; j < edges.size(); ++j) {
-			DEdge e1 = edges[j];
-			if( e0.t == e1.s || e0.t == e1.t ){
 
-				int f0 = 0;
-				if( e0.t == e1.t ){
-					f0 = findEdge( e0.s, e1.s );
-				} else {
-					f0 = findEdge(e0.s, e1.t );
-				}
+	for( int i = 0; i < nFaces; i++ ){
+		bool firstEdge = true;
+		int i0, i1, i2;
 
-				if( f0 != UNDEFINED ){
-					DEdge e2 = edges[ f0 ];
+		for( int j = 0; j < edges.size(); j++ ){
+			DEdge e = edges[j];
 
-					int i0 = e2.s;
-					int i1 = e2.t;
-					int i2 = e0.t;
-
-					Circle bC = Circle::circumCircle( points[i0], points[i1], points[i2] );
-					bool empty = true;
-					for( unsigned int l = 0; l < points.size(); l++ ){
-						if( l == i0 || l == i1 || l == i2 )
-							continue;
-
-						if( bC.inside( points[l] )){
-							empty = false;
-							break;
-						}
-					}
-
-					if( empty ){
-						ivec3 x = ivec3( i0, i1, i2 );
-						if( find(ret.begin(), ret.end(), x) != ret.end())
-							continue;
-
-						ret.push_back( x );
-					}
+			if( i == e.l || i == e.r ){
+				if( firstEdge ){
+					i0 = e.s;
+					i1 = e.t;
+					firstEdge = false;
+				}else{
+					i2 = (e.s == i0 || e.s == i1) ? e.t : e.s;
+					break;
 				}
 			}
 		}
+
+		ret.push_back( ivec3(i0,i1,i2) );
 	}
+
 	return ret;
 }
 
-void Delaunay::triangulate( vector< vec2 > points ){
+void Delaunay::triangulate( const vector< vec2 >& points ){
 	if( state == DState::INVALID ) return;
 	this->points = vector<vec2> (points);
 
-	nFaces = 0;
+	u = s = t = bP = nFaces = 0;
 	int s, t;
-
 	findClosestNeighbours( s, t );
 
 	addEdge(s, t, UNDEFINED, UNDEFINED);
@@ -91,14 +70,14 @@ void Delaunay::triangulate( vector< vec2 > points ){
 	state = DState::INVALID;
 }
 
-void Delaunay::triangulate( vector< vec2 > points, vector< Triangle2 >& tris ){
+void Delaunay::triangulate( const vector< vec2 >& points, vector< Triangle2 >& tris ){
 	if( state == DState::INVALID ) return;
 	triangulate( points );
 	vector< Triangle2 > ret = getTriangles();
 	tris.insert( tris.begin(), ret.begin(), ret.end() );
 }
 
-void Delaunay::triangulate( vector< vec3 > points3, vector< Triangle3 >& tris ){
+void Delaunay::triangulate( const vector< vec3 >& points3, vector< Triangle3 >& tris ){
 	if( state == DState::INVALID ) return;
 	if( !tris.empty() ) tris.clear();
 	vector< vec2 > points2;
@@ -184,7 +163,6 @@ void Delaunay::completeFacet(int eI) {
 
 	if ( bP < points.size() ){
 		updateLeftFace(eI, s, t, nFaces);
-		nFaces++;
 
 		eI = findEdge(bP, s);
 		if (eI == UNDEFINED){
@@ -199,6 +177,7 @@ void Delaunay::completeFacet(int eI) {
 		} else {
 			updateLeftFace(eI, t, bP, nFaces);
 		}
+		nFaces++;
 	} else {
 		updateLeftFace(eI, s, t, UNIVERSE);
 	}
