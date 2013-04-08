@@ -137,5 +137,9 @@ void App::poolEvents() {
 			gluPerspective(90, w/h, 0.001f, 1000.0f);
 		}
 	}
+
+	if( IO::Input::isKeyPressed( IO::Input::Escape ) ){
+		window->close();
+	}
 }
 } /* namespace OGLPool */
