@@ -109,7 +109,7 @@ bool App::init() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	IO::Input::setFocus( false );
+	IO::Input::setFocus( true );
 	initialized = true;
 	return true;
 }
