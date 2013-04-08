@@ -43,6 +43,8 @@ namespace OGLPool {
 			static int getMouseDY(){ return instance->mouseDisp.y; }
 			static Vector2i getMouseDisplacement(){ return instance->mouseDisp; }
 			static void setFocus( bool focus ){ instance->hasFocus = focus; }
+
+			static bool isKeyPressed( Key key ){ return instance->hasFocus && Keyboard::isKeyPressed(key); }
 		};
 	}
 } /* namespace OGLPool */

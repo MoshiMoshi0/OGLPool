@@ -79,7 +79,7 @@ void App::draw() {
 }
 
 void App::update( float dt ) {
-	if( hasFocus ) IO::Input::update();
+	IO::Input::update();
 	camera->update( dt );
 	world->update( dt );
 }
