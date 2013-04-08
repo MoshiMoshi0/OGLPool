@@ -138,7 +138,7 @@ void App::poolEvents() {
 		}
 	}
 
-	if( IO::Input::isKeyPressed( IO::Input::Escape ) ){
+	if( hasFocus && IO::Input::isKeyPressed( IO::Input::Escape ) ){
 		window->close();
 	}
 }
