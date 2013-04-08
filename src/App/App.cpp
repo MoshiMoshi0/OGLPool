@@ -109,6 +109,7 @@ bool App::init() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
+	hasFocus = false;
 	initialized = true;
 	return true;
 }
@@ -130,6 +131,10 @@ void App::poolEvents() {
 			hasFocus = false;
 		}else if(e.type == Event::GainedFocus){
 			hasFocus = true;
+		}else if (e.type == Event::Resized){
+			float w = e.size.width; float h = e.size.height;
+			glViewport( 0,0,w,h );
+			gluPerspective(90, w/h, 0.001f, 1000.0f);
 		}
 	}
 }
