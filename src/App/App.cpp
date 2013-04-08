@@ -79,7 +79,7 @@ void App::draw() {
 }
 
 void App::update( float dt ) {
-	IO::Input::update();
+	if( hasFocus ) IO::Input::update();
 	camera->update( dt );
 	world->update( dt );
 }
@@ -126,6 +126,10 @@ void App::poolEvents() {
 	while (window->pollEvent(e)) {
 		if (e.type == Event::Closed) {
 			window->close();
+		}else if(e.type == Event::LostFocus){
+			hasFocus = false;
+		}else if(e.type == Event::GainedFocus){
+			hasFocus = true;
 		}
 	}
 }
