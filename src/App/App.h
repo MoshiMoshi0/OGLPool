@@ -35,7 +35,6 @@ private:
 	Camera* camera;
 	RenderWindow* window;
 	bool initialized;
-	bool hasFocus;
 };
 
 } /* namespace OGLPool */

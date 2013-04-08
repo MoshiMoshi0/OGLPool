@@ -16,9 +16,11 @@ namespace OGLPool {
 		private:
 			sf::Window* window;
 			sf::Vector2i mousePos, oldMousePos, mouseDisp;
+			bool hasFocus;
 
 			Input(){}
 			void updateImpl(){
+				if( !hasFocus ) return;
 				mousePos = sf::Mouse::getPosition( *window );
 				mouseDisp = mousePos - oldMousePos;
 				oldMousePos = mousePos;
@@ -40,6 +42,7 @@ namespace OGLPool {
 			static int getMouseDX(){ return instance->mouseDisp.x; }
 			static int getMouseDY(){ return instance->mouseDisp.y; }
 			static Vector2i getMouseDisplacement(){ return instance->mouseDisp; }
+			static void setFocus( bool focus ){ instance->hasFocus = focus; }
 		};
 	}
 } /* namespace OGLPool */

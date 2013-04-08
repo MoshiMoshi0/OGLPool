@@ -109,7 +109,7 @@ bool App::init() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	hasFocus = false;
+	IO::Input::setFocus( false );
 	initialized = true;
 	return true;
 }
@@ -128,9 +128,9 @@ void App::poolEvents() {
 		if (e.type == Event::Closed) {
 			window->close();
 		}else if(e.type == Event::LostFocus){
-			hasFocus = false;
+			IO::Input::setFocus( false );
 		}else if(e.type == Event::GainedFocus){
-			hasFocus = true;
+			IO::Input::setFocus( true );
 		}else if (e.type == Event::Resized){
 			float w = e.size.width; float h = e.size.height;
 			glViewport( 0,0,w,h );
@@ -138,7 +138,7 @@ void App::poolEvents() {
 		}
 	}
 
-	if( hasFocus && IO::Input::isKeyPressed( IO::Input::Escape ) ){
+	if( IO::Input::isKeyPressed( IO::Input::Escape ) ){
 		window->close();
 	}
 }
