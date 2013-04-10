@@ -16,10 +16,6 @@ Delaunay::Delaunay() { state = DState::VALID; }
 
 Delaunay::~Delaunay() {}
 
-bool Delaunay::isValid(){
-	return state == DState::VALID;
-}
-
 vector< ivec3 > Delaunay::getTriangleIndices(){
 	vector< ivec3 > ret;
 

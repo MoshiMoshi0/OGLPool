@@ -33,7 +33,6 @@ public:
 	vector< vec2 > getPoints();
 	vector< Triangle2 > getTriangles();
 	vector< ivec3 > getTriangleIndices();
-	bool isValid();
 
 	enum DEdgeType {
 		UNDEFINED = -2,
