@@ -29,12 +29,10 @@ unsigned int Polygon::size(){
 
 void Polygon::addEdge( vec2 v0, vec2 v1 ){
 	edges.push_back( Edge2( v0, v1 ) );
-	points.push_back( v0 );
 }
 
 void Polygon::addEdge( Edge2 e ){
 	edges.push_back( e );
-	points.push_back( e[0] );
 }
 
 } /* namespace OGLPool */

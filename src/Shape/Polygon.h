@@ -30,7 +30,6 @@ protected:
 
 private:
 	vector< Edge2 > edges;
-	vector< vec2 > points;
 };
 
 } /* namespace OGLPool */
