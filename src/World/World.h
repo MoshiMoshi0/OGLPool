@@ -10,6 +10,7 @@
 
 #include <list>
 #include <Entity/Entity.h>
+#include <Shape/RandomPolygon.h>
 
 using namespace std;
 namespace OGLPool {
@@ -25,6 +26,8 @@ public:
 	void addEntity( Entity* e );
 private:
 	list< Entity* > entities;
+
+	RandomPolygon rp;
 };
 
 } /* namespace OGLPool */

@@ -14,22 +14,11 @@
 #include <vector>
 #include <App/Input.h>
 #include <iostream>
-#include <Shape/RandomPolygon.h>
 using namespace std;
 
 namespace OGLPool {
 
-vector< vec2 > points;
-Delaunay d;
-RandomPolygon rp;
-World::World() {
-	/*for( int i = 0; i < 5; i++ ){
-		points.push_back( linearRand( vec2(-1.0f,-1.0f ), vec2(1.0f,1.0f) ) * 20.0f );
-	}
-
-	d.triangulate( points );*/
-	rp = RandomPolygon();
-}
+World::World() {}
 
 World::~World() {
 	entities.erase( remove_if( entities.begin(), entities.end(),
@@ -46,25 +35,6 @@ void World::render(){
 		e->render();
 	}
 
-	auto edges = d.getEdges();
-	auto tris = d.getTriangles();
-
-	/*glBegin( GL_LINES );
-	for( int i = 0; i < edges.size(); i++ ){
-		glVertex3f( edges[i][0].x, 10, edges[i][0].y );
-		glVertex3f( edges[i][1].x, 10, edges[i][1].y );
-	}
-	glEnd();
-
-	glBegin( GL_TRIANGLES );
-	for( int i = 0; i < tris.size(); i++ ){
-		glColor3f( (255 - i * 30) / 255.0, 255 / 255.0, i * 30 / 255.0 );
-		glVertex3f( tris[i][0].x, 9.5, tris[i][0].y );
-		glVertex3f( tris[i][1].x, 9.5, tris[i][1].y );
-		glVertex3f( tris[i][2].x, 9.5, tris[i][2].y );
-	}
-	glEnd();*/
-
 	rp.draw();
 }
 
@@ -74,12 +44,6 @@ void World::update( float dt ){
 		e->update( dt );
 	}
 	if( IO::Input::isKeyPressed( IO::Input::R )){
-		/*points.clear();
-		for( int i = 0; i < 5; i++ ){
-			points.push_back( linearRand( vec2(-1.0f,-1.0f ), vec2(1.0f,1.0f) ) * 20.0f );
-		}
-		d = Delaunay();
-		d.triangulate( points );*/
 		rp = RandomPolygon();
 	}
 }
