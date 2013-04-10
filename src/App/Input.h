@@ -13,6 +13,9 @@ namespace OGLPool {
 		class Input : public sf::Keyboard {
 		protected:
 			static Input* instance;
+			bool bState[ sf::Keyboard::KeyCount ];
+			bool bPressed[ sf::Keyboard::KeyCount ];
+			bool bReleased[ sf::Keyboard::KeyCount ];
 		private:
 			sf::Window* window;
 			sf::Vector2i mousePos, oldMousePos, mouseDisp;
@@ -24,6 +27,13 @@ namespace OGLPool {
 				mousePos = sf::Mouse::getPosition( *window );
 				mouseDisp = mousePos - oldMousePos;
 				oldMousePos = mousePos;
+
+				for( int i = 0; i < sf::Keyboard::KeyCount; i++ ){
+					bool current = isKeyPressed( (Key)i );
+					bPressed[ i ] = !bState[ i ] && current;
+					bReleased[ i ] = bState[ i ] && !current;
+					bState[ i ] = current;
+				}
 			}
 		public:
 			Input( Window* window ){
@@ -42,9 +52,12 @@ namespace OGLPool {
 			static int getMouseDX(){ return instance->mouseDisp.x; }
 			static int getMouseDY(){ return instance->mouseDisp.y; }
 			static Vector2i getMouseDisplacement(){ return instance->mouseDisp; }
+
 			static void setFocus( bool focus ){ instance->hasFocus = focus; }
 
 			static bool isKeyPressed( Key key ){ return instance->hasFocus && Keyboard::isKeyPressed(key); }
+			static bool onKeyPressed(Key key){ return instance->bPressed[ key ]; }
+			static bool onKeyReleased(Key key){ return instance->bReleased[ key ]; }
 		};
 	}
 } /* namespace OGLPool */
