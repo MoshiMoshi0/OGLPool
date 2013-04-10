@@ -93,6 +93,10 @@ void Delaunay::triangulate( const vector< vec3 >& points3, vector< Triangle3 >& 
 	}
 }
 
+int Delaunay::getTriangleCount(){
+	return nFaces;
+}
+
 vector< DEdge > Delaunay::getDEdges(){
 	return edges;
 }
