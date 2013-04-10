@@ -9,6 +9,7 @@
 #include <Misc/Delaunay.h>
 #include <glm/gtc/random.hpp>
 #include <algorithm>
+#include <iostream>
 using namespace std;
 
 namespace OGLPool {
@@ -19,38 +20,55 @@ RandomPolygon::RandomPolygon() {
 
 	Delaunay d;
 	vector < vec2 > points;
-	while( points.size() < numPoints ){ points.push_back( linearRand(vec2(-1.0f, -1.0f), vec2(1.0f, 1.0f)) * 20.0f ); }
-	d.triangulate(points);
 
-	auto edges = d.getDEdges();
-	auto boundary = getBoundary(edges);
-	do {
-		bool removed = false;
-		if (boundary.size() > numSides) removed = removeEdges( 2, boundary, edges );
-		if (boundary.size() < numSides || !removed) removed = removeEdges( 1, boundary, edges );
+	vector<DEdge> edges;
+	bool valid = false;
+	for( int i = 0; !valid; i++ ){
+		points.clear();
+		while (points.size() < numPoints) { points.push_back(linearRand(vec2(-1.0f, -1.0f), vec2(1.0f, 1.0f)) * 20.0f); }
 
-		if( removed ){
-			removed = removeEdges( 3, boundary, edges ) || removed;
-			boundary = getBoundary( edges );
-		}
+		d.triangulate(points);
+		edges = d.getDEdges();
 
-		if( numSides == boundary.size() ){
-			if( removeEdges( 3, boundary, edges ) ){
-				boundary = getBoundary( edges );
-			}else{
-				break;
-			}
-		}else if( !removed ) {
-			//break;
-			assert(0);
-		}
-	}while( true );
+		valid = generate(edges, numSides);
+		//valid &= verify( points, edges );
+		assert( i < 100 );
+	}
 
 	for (uint i = 0; i < edges.size(); i++)
 		this->addEdge( points[edges[i].s], points[edges[i].t] );
 }
 
 RandomPolygon::~RandomPolygon() {}
+
+bool RandomPolygon::generate(vector< DEdge >& edges, uint numSides) {
+	auto boundary = getBoundary(edges);
+	do {
+		bool removed = false;
+		if (boundary.size() > numSides)
+			removed = removeEdges(2, boundary, edges);
+
+		if (boundary.size() < numSides || !removed)
+			removed = removeEdges(1, boundary, edges);
+
+		if (removed) {
+			removed = removeEdges(3, boundary, edges) || removed; // unecessary ?
+			boundary = getBoundary(edges);
+		}
+
+		if (numSides == boundary.size()) {
+			if (removeEdges(3, boundary, edges)) {
+				boundary = getBoundary(edges);
+			} else {
+				break;
+			}
+		} else if (!removed) {
+			return false;
+		}
+	} while (true);
+
+	return true;
+}
 
 int RandomPolygon::getRandomTriIndex( vector<DEdge> edges ) {
 	int randomIndex = rand() % edges.size();

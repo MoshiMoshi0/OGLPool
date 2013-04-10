@@ -22,6 +22,7 @@ public:
 
 private:
 	int getRandomTriIndex(vector<DEdge> x);
+	bool generate(vector< DEdge >& edges, uint numSides);
 	int getUniverseEdgeCount( int triIndex, vector < DEdge > edges );
 	void removeUniverseEdges( int triIndex, vector < DEdge >& edges );
 	bool removeEdges( int universeCount, vector<DEdge> boundary, vector<DEdge>& edges );
