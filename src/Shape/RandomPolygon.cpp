@@ -9,7 +9,6 @@
 #include <Misc/Delaunay.h>
 #include <glm/gtc/random.hpp>
 #include <algorithm>
-#include <iostream>
 using namespace std;
 
 namespace OGLPool {
@@ -31,17 +30,19 @@ RandomPolygon::RandomPolygon() {
 		if (boundary.size() < numSides || !removed) removed = removeEdges( 1, boundary, edges );
 
 		if( removed ){
-			removed = removeEdges( 3, boundary, edges ) | removed;
+			removed = removeEdges( 3, boundary, edges ) || removed;
 			boundary = getBoundary( edges );
 		}
 
-		if( !removed ) assert(0);
 		if( numSides == boundary.size() ){
 			if( removeEdges( 3, boundary, edges ) ){
 				boundary = getBoundary( edges );
 			}else{
 				break;
 			}
+		}else if( !removed ) {
+			//break;
+			assert(0);
 		}
 	}while( true );
 

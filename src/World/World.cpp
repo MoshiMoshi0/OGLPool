@@ -43,7 +43,7 @@ void World::update( float dt ){
 		Entity* e = (*it);
 		e->update( dt );
 	}
-	if( IO::Input::isKeyPressed( IO::Input::R )){
+	if( IO::Input::onKeyPressed( IO::Input::R )){
 		rp = RandomPolygon();
 	}
 }

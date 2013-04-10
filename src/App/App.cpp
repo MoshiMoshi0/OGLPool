@@ -51,7 +51,7 @@ void App::draw() {
 	window->clear();
 	camera->applyView();
 
-	glColor3f(1,1,1);
+	/*glColor3f(1,1,1);
 	glBegin(GL_QUADS);
 		glVertex3f( -5, 0, 5 );
 		glVertex3f( 5, 0, 5 );
@@ -71,7 +71,7 @@ void App::draw() {
 		glColor3f( 0,0,1);
 		glVertex3f(0,0,0);
 		glVertex3f(0,0,10);
-	glEnd();
+	glEnd();*/
 
 	world->render();
 
