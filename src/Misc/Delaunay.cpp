@@ -49,7 +49,10 @@ vector< ivec3 > Delaunay::getTriangleIndices(){
 }
 
 void Delaunay::triangulate( const vector< vec2 >& points ){
-	if( state == DState::INVALID ) return;
+	if( state == DState::INVALID ){
+		this->points.clear();
+		this->edges.clear();
+	}
 	this->points = vector<vec2> (points);
 
 	u = s = t = bP = nFaces = 0;
