@@ -17,9 +17,15 @@ public:
 	DEdge( int s, int t, int l, int r );
 	virtual ~DEdge(){};
 
+	inline bool isNeighbor( int e );
+
 	int s,t;
 	int l,r;
 };
+
+bool DEdge::isNeighbor( int e ){
+	return l == e || r == e;
+}
 
 } /* namespace OGLPool */
 #endif /* DEDGE_H_ */
