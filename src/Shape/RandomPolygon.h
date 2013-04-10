@@ -19,9 +19,13 @@ class RandomPolygon: public OGLPool::Polygon {
 public:
 	RandomPolygon();
 	virtual ~RandomPolygon();
-	vector < DEdge >getBoundary(vector < DEdge > des);
-	int getTriangleUniverseEdgeCount( int triIndex, vector < DEdge > des );
-	void removeUniverseEdges(int triIndex, int universeEdgeCount, vector < DEdge >& des );
+
+private:
+	int getRandomTriIndex(vector<DEdge> x);
+	int getUniverseEdgeCount( int triIndex, vector < DEdge > edges );
+	void removeUniverseEdges( int triIndex, vector < DEdge >& edges );
+	bool removeEdges( int universeCount, vector<DEdge> boundary, vector<DEdge>& edges );
+	vector< DEdge > getBoundary( vector < DEdge > edges );
 };
 
 } /* namespace OGLPool */

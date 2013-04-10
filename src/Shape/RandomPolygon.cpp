@@ -14,165 +14,106 @@ using namespace std;
 
 namespace OGLPool {
 
-
 RandomPolygon::RandomPolygon() {
+	uint numSides = 16;
+	uint numPoints = 20;
 
-	vector<vec2> points;
 	Delaunay d;
-	int numSides, numPts, cntEdges, triangle;
-	cntEdges = 0;
-
-	//numPts = (int) linearRand(float(20.0f), float(60.0f));
-	//numSides = (int) linearRand(float(5.0f), float(20.0f));
-
-	numPts = 21;
-	numSides = 6;
-
-	for (int i = 0; i < numPts; i++) {
-		points.push_back(
-				linearRand(vec2(-1.0f, -1.0f), vec2(1.0f, 1.0f)) * 20.0f);
-	}
+	vector < vec2 > points;
+	while( points.size() < numPoints ){ points.push_back( linearRand(vec2(-1.0f, -1.0f), vec2(1.0f, 1.0f)) * 20.0f ); }
 	d.triangulate(points);
 
-	auto des = d.getDEdges();
-	auto boundary = getBoundary( des );
+	auto edges = d.getDEdges();
+	auto boundary = getBoundary(edges);
+	do {
+		bool removed = false;
+		if (boundary.size() > numSides) removed = removeEdges( 2, boundary, edges );
+		if (boundary.size() < numSides || !removed) removed = removeEdges( 1, boundary, edges );
 
-	do{
-		int randomIndex = rand() % boundary.size();
-		DEdge randomEdge = boundary.at( randomIndex );
+		if( removed ){
+			removed = removeEdges( 3, boundary, edges ) | removed;
+			boundary = getBoundary( edges );
+		}
 
-		int triIndex = (randomEdge.l == Delaunay::DEdgeType::UNIVERSE) ? randomEdge.r : randomEdge.l;
-		int universeEdgeCount = getTriangleUniverseEdgeCount( triIndex, boundary );
-
-		//cout<<boundary.size()<<" " << triIndex << " " << universeEdgeCount << endl;
-
-
-		bool removed = true;
-		if(boundary.size() > numSides){
-			vector< DEdge > x;
-			copy_if( boundary.begin(), boundary.end(), x.begin(),
-				[=](DEdge edge) -> bool {
-					int triIndex = (randomEdge.l == Delaunay::DEdgeType::UNIVERSE) ? edge.r : edge.l;
-					return getTriangleUniverseEdgeCount( triIndex, boundary ) == 2;
-				}
-			);
-
-			if( x.size() != 0 ){
-				int randomIndex = rand() % x.size();
-				DEdge randomEdge = x.at( randomIndex );
-				int triIndex = (randomEdge.l == Delaunay::DEdgeType::UNIVERSE) ? randomEdge.r : randomEdge.l;
-
-				removeUniverseEdges( triIndex, universeEdgeCount, des );
-				boundary = getBoundary( des );
+		if( !removed ) assert(0);
+		if( numSides == boundary.size() ){
+			if( removeEdges( 3, boundary, edges ) ){
+				boundary = getBoundary( edges );
 			}else{
-				removed = false;
+				break;
 			}
 		}
+	}while( true );
 
-
-
-		if( boundary.size() < numSides || !removed ){
-			vector< DEdge > x;
-			copy_if( boundary.begin(), boundary.end(), x.begin(),
-				[=](DEdge edge) -> bool {
-					int triIndex = (randomEdge.l == Delaunay::DEdgeType::UNIVERSE) ? edge.r : edge.l;
-					return getTriangleUniverseEdgeCount( triIndex, boundary ) == 1;
-				}
-			);
-
-			int randomIndex = rand() % x.size();
-			DEdge randomEdge = x.at( randomIndex );
-			int triIndex = (randomEdge.l == Delaunay::DEdgeType::UNIVERSE) ? randomEdge.r : randomEdge.l;
-
-			removeUniverseEdges( triIndex, universeEdgeCount, des );
-			boundary = getBoundary( des );
-		}
-	}while( numSides != boundary.size() );
-
-
-	/*for (int i = 0; i < des.size(); i++) {
-
-		if (des[i].l == d.UNIVERSE || des[i].r == d.UNIVERSE) {
-			cntEdges++;
-		}
-	}
-
-	if (cntEdges < numSides) {
-		for (int i = 0; cntEdges != numSides && i <= des.size();) {
-			if (des[i].l == d.UNIVERSE) {
-				triangle = des[i].r;
-				des.erase(des.begin() + i);
-
-				for (int j = 0; j < des.size(); j++) {
-					if (des[i].r == triangle) {
-						des[i].r = d.UNIVERSE;
-					} else if (des[i].l == triangle) {
-						des[i].l = d.UNIVERSE;
-					}
-				}
-			} else if (des[i].r == d.UNIVERSE) {
-				triangle = des[i].l;
-				des.erase(des.begin() + i);
-				for (int j = 0; j < des.size(); j++) {
-					if (des[i].r == triangle) {
-						des[i].r = d.UNIVERSE;
-					} else if (des[i].l == triangle) {
-						des[i].l = d.UNIVERSE;
-					}
-				}
-			}
-			i++;
-		}
-	} else if (cntEdges > numSides) {
-
-	}*/
-
-	for (int i = 0; i < des.size(); i++) {
-		vec2 v0 = points[des[i].s];
-		vec2 v1 = points[des[i].t];
-		this->addEdge(v0, v1);
-	}
-
+	for (uint i = 0; i < edges.size(); i++)
+		this->addEdge( points[edges[i].s], points[edges[i].t] );
 }
 
-RandomPolygon::~RandomPolygon() {
+RandomPolygon::~RandomPolygon() {}
+
+int RandomPolygon::getRandomTriIndex( vector<DEdge> edges ) {
+	int randomIndex = rand() % edges.size();
+	DEdge randomEdge = edges.at(randomIndex);
+	int triIndex = (randomEdge.l == Delaunay::DEdgeType::UNIVERSE) ? randomEdge.r : randomEdge.l;
+	return triIndex;
 }
 
-vector < DEdge > RandomPolygon::getBoundary( vector < DEdge > des ){
-	vector <DEdge > bes;
+bool RandomPolygon::removeEdges( int universeCount, vector<DEdge> boundary, vector<DEdge>& edges ){
+	vector < DEdge > validEdges;
 
-	for (int i = 0; i < des.size(); i++) {
-		if (des[i].l == Delaunay::DEdgeType::UNIVERSE || des[i].r == Delaunay::DEdgeType::UNIVERSE)
-			bes.push_back(des[i]);
+	copy_if(boundary.begin(), boundary.end(), back_inserter(validEdges),
+		[=](DEdge edge) -> bool {
+			//if( !edge.connectsTo( Delaunay::DEdgeType::UNIVERSE ) )
+			//	assert( 0 );
+
+			int triIndex = (edge.l == Delaunay::DEdgeType::UNIVERSE) ? edge.r : edge.l;
+			return getUniverseEdgeCount(triIndex, boundary) == universeCount;
+		}
+	);
+
+	if( validEdges.size() == 0 )
+		return false;
+
+	DEdge randomEdge = validEdges.at( rand() % validEdges.size() );
+	int triIndex = (randomEdge.l == Delaunay::DEdgeType::UNIVERSE) ? randomEdge.r : randomEdge.l;
+	removeUniverseEdges( triIndex, edges );
+
+	return true;
+}
+
+
+vector < DEdge > RandomPolygon::getBoundary( vector< DEdge > edges ){
+	vector <DEdge > ret;
+
+	for (uint i = 0; i < edges.size(); i++) {
+		if (edges[i].isNeighbor( Delaunay::DEdgeType::UNIVERSE ))
+			ret.push_back(edges[i]);
 	}
 
-	return bes;
+	return ret;
 }
 
-int RandomPolygon::getTriangleUniverseEdgeCount( int triIndex, vector < DEdge > boundary ){
+int RandomPolygon::getUniverseEdgeCount( int triIndex, vector< DEdge > boundary ){
 	int uCount = 0;
 
-	for(int i = 0; i < boundary.size(); i++){
-		if(boundary[i].r == triIndex || boundary[i].l == triIndex)
+	for(uint i = 0; i < boundary.size(); i++){
+		if(boundary[i].isNeighbor( triIndex ))
 			uCount++;
 	}
 
 	return uCount;
 }
 
-void RandomPolygon::removeUniverseEdges( int triIndex, int universeEdgeCount, vector < DEdge >& des ){
-	des.erase( remove_if( des.begin(), des.end(),
-			[=](DEdge edge) -> bool {
-				return (edge.l == Delaunay::DEdgeType::UNIVERSE || edge.r == Delaunay::DEdgeType::UNIVERSE) && (edge.l == triIndex || edge.r == triIndex);
-			}
-		), des.end() );
-
-	for(int i = 0; i < des.size(); i++){
-		if(des[i].l == triIndex){
-			des[i].l = Delaunay::DEdgeType::UNIVERSE;
-		}else if (des[i].r == triIndex){
-			des[i].r = Delaunay::DEdgeType::UNIVERSE;
+void RandomPolygon::removeUniverseEdges( int triIndex, vector< DEdge >& edges ){
+	edges.erase( remove_if( edges.begin(), edges.end(),
+		[=](DEdge edge) -> bool {
+			return edge.isNeighbor( Delaunay::DEdgeType::UNIVERSE ) && edge.isNeighbor( triIndex );
 		}
+	), edges.end() );
+
+	for(uint i = 0; i < edges.size(); i++){
+		if(edges[i].l == triIndex) edges[i].l = Delaunay::DEdgeType::UNIVERSE;
+		else if (edges[i].r == triIndex) edges[i].r = Delaunay::DEdgeType::UNIVERSE;
 	}
 }
 
