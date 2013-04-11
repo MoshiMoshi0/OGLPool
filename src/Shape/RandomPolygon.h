@@ -21,12 +21,13 @@ public:
 	virtual ~RandomPolygon();
 
 private:
-	int getRandomTriIndex(vector<DEdge> x);
-	bool generate(vector< DEdge >& edges, uint numSides);
-	int getUniverseEdgeCount( int triIndex, vector < DEdge > edges );
 	void removeUniverseEdges( int triIndex, vector < DEdge >& edges );
-	bool removeEdges( int universeCount, vector<DEdge> boundary, vector<DEdge>& edges );
-	vector< DEdge > getBoundary( vector < DEdge > edges );
+	bool canRemove( int triIndex, vector<DEdge> edges );
+	bool generate(vector< DEdge >& edges, uint numSides);
+	bool removeEdges( int universeCount, const vector< DEdge >& boundary, vector<DEdge>& edges );
+	int getRandomTriIndex(const vector< DEdge >& edges);
+	int getUniverseEdgeCount( int triIndex, const vector< DEdge >& edges );
+	vector< DEdge > getBoundary( const vector< DEdge >& edges );
 };
 
 } /* namespace OGLPool */
