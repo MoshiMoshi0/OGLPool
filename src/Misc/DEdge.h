@@ -17,13 +17,13 @@ public:
 	DEdge( int s, int t, int l, int r );
 	virtual ~DEdge(){};
 
-	inline bool isNeighbor( int e );
+	inline bool isNeighbor( int e ) const;
 
 	int s,t;
 	int l,r;
 };
 
-bool DEdge::isNeighbor( int e ){
+bool DEdge::isNeighbor( int e ) const{
 	return l == e || r == e;
 }
 
