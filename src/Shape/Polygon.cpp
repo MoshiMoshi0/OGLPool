@@ -23,16 +23,12 @@ void Polygon::draw(){
 	glEnd();
 }
 
-unsigned int Polygon::size(){
-	return edges.size();
+void Polygon::addPoint( vec2 point ){
+	points.push_back( point );
 }
 
-void Polygon::addEdge( vec2 v0, vec2 v1 ){
-	edges.push_back( Edge2( v0, v1 ) );
-}
-
-void Polygon::addEdge( Edge2 e ){
-	edges.push_back( e );
+void void Polygon::addEdge( Edge2 edge ){
+	edges.push_back( edge );
 }
 
 } /* namespace OGLPool */

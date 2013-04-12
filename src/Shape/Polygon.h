@@ -24,11 +24,11 @@ public:
 	void draw();
 
 	unsigned int size();
-protected:
-	void addEdge( vec2 v0, vec2 v1 );
-	void addEdge( Edge2 e );
 
-private:
+	void addPoint( vec2 point );
+	void addEdge( Edge2 edge );
+protected:
+	vector< vec2 > points;
 	vector< Edge2 > edges;
 };
 
