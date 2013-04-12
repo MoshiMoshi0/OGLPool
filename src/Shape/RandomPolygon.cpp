@@ -15,29 +15,24 @@ using namespace std;
 
 namespace OGLPool {
 
-RandomPolygon::RandomPolygon() {
-	uint numSides = 16;
-	uint numPoints = 20;
+RandomPolygon::RandomPolygon( uint numSides, uint numPoints ) {
+	Delaunay dt;
+	vector< vec2 > points;
+	vector< DEdge > edges;
 
-	Delaunay d;
-	vector < vec2 > points;
-
-	vector<DEdge> edges;
-	bool valid = false;
-	for( int i = 0; !valid; i++ ){
+	for( int i = 0, valid = 0; !valid; assert( i++ < 100 ) ){
 		points.clear();
 		while (points.size() < numPoints) { points.push_back(linearRand(vec2(-1.0f, -1.0f), vec2(1.0f, 1.0f)) * 20.0f); }
 
-		d.triangulate(points);
-		edges = d.getDEdges();
+		dt.triangulate(points);
+		edges = dt.getDEdges();
 
 		valid = generate(edges, numSides);
-		assert( i < 100 );
 	}
 
 	auto boundary = getBoundary( edges );
-	for (uint i = 0; i < boundary.size(); i++)
-		this->addEdge( points[boundary[i].s], points[boundary[i].t] );
+	for( auto& edge : boundary )
+		this->addEdge( points[edge.s], points[edge.t] );
 }
 
 RandomPolygon::~RandomPolygon() {}

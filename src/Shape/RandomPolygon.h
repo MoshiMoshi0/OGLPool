@@ -17,7 +17,7 @@ namespace OGLPool {
 
 class RandomPolygon: public OGLPool::Polygon {
 public:
-	RandomPolygon();
+	RandomPolygon( uint numSides, uint numPoints );
 	virtual ~RandomPolygon();
 
 private:
