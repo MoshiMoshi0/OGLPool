@@ -9,7 +9,6 @@
 #define RANDOMPOLYGON_H_
 
 #include "Polygon.h"
-#include <Misc/DEdge.h>
 #include <vector>
 using namespace std;
 
@@ -21,13 +20,14 @@ public:
 	virtual ~RandomPolygon();
 
 private:
-	void removeUniverseEdges( int triIndex, vector < DEdge >& edges );
+	void removeUniverseEdges( int triIndex, vector<DEdge>& edges );
+	void buildPolygon(const vector<DEdge>& boundary, const vector<vec2>& rndPoints);
 	bool canRemove( int triIndex, vector<DEdge> edges );
-	bool generate(vector< DEdge >& edges, uint numSides);
-	bool removeEdges( int universeCount, const vector< DEdge >& boundary, vector<DEdge>& edges );
-	int getRandomTriIndex(const vector< DEdge >& edges);
-	int getUniverseEdgeCount( int triIndex, const vector< DEdge >& edges );
-	vector< DEdge > getBoundary( const vector< DEdge >& edges );
+	bool generate(vector<DEdge>& edges, uint numSides);
+	bool removeEdges( int universeCount, const vector<DEdge>& boundary, vector<DEdge>& edges );
+	int getRandomTriIndex(const vector<DEdge>& edges);
+	int getUniverseEdgeCount( int triIndex, const vector<DEdge>& edges );
+	vector<DEdge> getBoundary( const vector<DEdge>& edges );
 };
 
 } /* namespace OGLPool */

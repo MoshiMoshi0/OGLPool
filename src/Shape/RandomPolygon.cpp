@@ -10,34 +10,31 @@
 #include <glm/gtc/random.hpp>
 #include <algorithm>
 #include <map>
-#include <iostream>
 using namespace std;
 
 namespace OGLPool {
 
 RandomPolygon::RandomPolygon( uint numSides, uint numPoints ) {
 	Delaunay dt;
-	vector< vec2 > points;
-	vector< DEdge > edges;
+	vector<vec2> rndPoints;
+	vector<DEdge> dtEdges;
 
 	for( int i = 0, valid = 0; !valid; assert( i++ < 100 ) ){
-		points.clear();
-		while (points.size() < numPoints) { points.push_back(linearRand(vec2(-1.0f, -1.0f), vec2(1.0f, 1.0f)) * 20.0f); }
+		rndPoints.clear();
+		while (rndPoints.size() < numPoints) { rndPoints.push_back(linearRand(vec2(-1.0f, -1.0f), vec2(1.0f, 1.0f)) * 20.0f); }
 
-		dt.triangulate(points);
-		edges = dt.getDEdges();
+		dt.triangulate(rndPoints);
+		dtEdges = dt.getDEdges();
 
-		valid = generate(edges, numSides);
+		valid = generate(dtEdges, numSides);
 	}
 
-	auto boundary = getBoundary( edges );
-	for( auto& edge : boundary )
-		this->addEdge( points[edge.s], points[edge.t] );
+	buildPolygon( getBoundary( dtEdges ), rndPoints);
 }
 
 RandomPolygon::~RandomPolygon() {}
 
-bool RandomPolygon::generate(vector< DEdge >& edges, uint numSides) {
+bool RandomPolygon::generate(vector<DEdge>& edges, uint numSides) {
 	auto boundary = getBoundary(edges);
 	do {
 		bool removed = false;
@@ -60,7 +57,34 @@ bool RandomPolygon::generate(vector< DEdge >& edges, uint numSides) {
 	return true;
 }
 
-int RandomPolygon::getRandomTriIndex( const vector< DEdge >& edges ) {
+void RandomPolygon::buildPolygon(const vector<DEdge>& boundary, const vector<vec2>& rndPoints) {
+	DEdge current = boundary[0];
+	for (uint i = 0; i < boundary.size(); i++) {
+		addPoint( rndPoints[current.s] );
+		addEdge( Edge2(rndPoints[current.s], rndPoints[current.t]) );
+
+		DEdge next;
+		for (uint j = 0; j < boundary.size(); j++) {
+			next = boundary[j];
+
+			if ((next.s == current.s && next.t == current.t) || (next.s == current.t && next.t == current.s))
+				continue;
+			if (next.s == current.t || next.t == current.t)
+				break;
+		}
+
+		if (current.t == next.s) {
+			current = next;
+		} else if (current.t == next.t) {
+			current = DEdge(next.t, next.s);
+		} else {
+			assert(0);
+		}
+	}
+}
+
+
+int RandomPolygon::getRandomTriIndex( const vector<DEdge>& edges ) {
 	int randomIndex = rand() % edges.size();
 	DEdge randomEdge = edges.at(randomIndex);
 	int triIndex = (randomEdge.l == Delaunay::DEdgeType::UNIVERSE) ? randomEdge.r : randomEdge.l;
@@ -68,7 +92,7 @@ int RandomPolygon::getRandomTriIndex( const vector< DEdge >& edges ) {
 }
 
 bool RandomPolygon::removeEdges( int universeCount, const vector<DEdge>& boundary, vector<DEdge>& edges ){
-	vector < DEdge > validEdges;
+	vector<DEdge> validEdges;
 
 	copy_if(boundary.begin(), boundary.end(), back_inserter(validEdges),
 		[=](DEdge edge) -> bool {
@@ -114,7 +138,7 @@ bool RandomPolygon::canRemove( int triIndex, vector<DEdge> edges ){
 	return true;
 }
 
-vector < DEdge > RandomPolygon::getBoundary( const vector< DEdge >& edges ){
+vector<DEdge> RandomPolygon::getBoundary( const vector<DEdge>& edges ){
 	vector <DEdge > ret;
 
 	for( auto& edge : edges ){
@@ -125,7 +149,7 @@ vector < DEdge > RandomPolygon::getBoundary( const vector< DEdge >& edges ){
 	return ret;
 }
 
-int RandomPolygon::getUniverseEdgeCount( int triIndex, const vector< DEdge >& boundary ){
+int RandomPolygon::getUniverseEdgeCount( int triIndex, const vector<DEdge>& boundary ){
 	int uCount = 0;
 
 	for( auto& edge : boundary ){
@@ -136,7 +160,7 @@ int RandomPolygon::getUniverseEdgeCount( int triIndex, const vector< DEdge >& bo
 	return uCount;
 }
 
-void RandomPolygon::removeUniverseEdges( int triIndex, vector< DEdge >& edges ){
+void RandomPolygon::removeUniverseEdges( int triIndex, vector<DEdge>& edges ){
 	edges.erase( remove_if( edges.begin(), edges.end(),
 		[=](DEdge edge) -> bool {
 			return edge.isNeighbor( Delaunay::DEdgeType::UNIVERSE ) && edge.isNeighbor( triIndex );
