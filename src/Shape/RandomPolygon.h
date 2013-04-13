@@ -10,6 +10,7 @@
 
 #include "Polygon.h"
 #include <vector>
+#include <Misc/DEdge.h>
 using namespace std;
 
 namespace OGLPool {

@@ -23,8 +23,6 @@ public:
 
 	void draw();
 
-	unsigned int size();
-
 	void addPoint( vec2 point );
 	void addEdge( Edge2 edge );
 protected:

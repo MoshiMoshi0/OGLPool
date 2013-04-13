@@ -27,7 +27,7 @@ void Polygon::addPoint( vec2 point ){
 	points.push_back( point );
 }
 
-void void Polygon::addEdge( Edge2 edge ){
+void Polygon::addEdge( Edge2 edge ){
 	edges.push_back( edge );
 }
 
