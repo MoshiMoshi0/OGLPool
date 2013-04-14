@@ -35,7 +35,7 @@ void World::render(){
 		e->render();
 	}
 
-	rp.draw();
+	sp.draw();
 }
 
 void World::update( float dt ){
