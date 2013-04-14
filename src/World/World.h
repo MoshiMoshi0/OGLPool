@@ -10,7 +10,7 @@
 
 #include <list>
 #include <Entity/Entity.h>
-#include <Shape/RandomPolygon.h>
+#include <Shape/SmoothRandomPolygon.h>
 
 using namespace std;
 namespace OGLPool {
@@ -27,7 +27,7 @@ public:
 private:
 	list< Entity* > entities;
 
-	RandomPolygon rp;
+	SmoothRandomPolygon sp;
 };
 
 } /* namespace OGLPool */
