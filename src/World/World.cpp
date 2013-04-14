@@ -18,7 +18,7 @@ using namespace std;
 
 namespace OGLPool {
 
-World::World() : sp(SmoothRandomPolygon()) {}
+World::World(){}
 
 World::~World() {
 	entities.erase( remove_if( entities.begin(), entities.end(),
