@@ -17,6 +17,11 @@ namespace OGLPool {
 App::App( int width, int height ) {
 	this->width = width;
 	this->height = height;
+
+	camera = 0;
+	window = 0;
+	world = 0;
+	initialized = false;
 }
 
 App::~App() {
