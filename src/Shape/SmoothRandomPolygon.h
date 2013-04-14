@@ -16,6 +16,10 @@ class SmoothRandomPolygon: public OGLPool::RandomPolygon {
 public:
 	SmoothRandomPolygon();
 	virtual ~SmoothRandomPolygon();
+
+	void draw();
+
+	vector<Edge2> bezierEdges;
 };
 
 } /* namespace OGLPool */
