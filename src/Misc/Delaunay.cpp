@@ -12,7 +12,10 @@ using namespace std;
 
 namespace OGLPool {
 
-Delaunay::Delaunay() { state = DState::VALID; }
+Delaunay::Delaunay() {
+	state = DState::VALID;
+	u = s = t = bP = nFaces = 0;
+}
 
 Delaunay::~Delaunay() {}
 
@@ -23,7 +26,7 @@ vector< ivec3 > Delaunay::getTriangleIndices(){
 		bool firstEdge = true;
 		int i0, i1, i2;
 
-		for( int j = 0; j < edges.size(); j++ ){
+		for( uint j = 0; j < edges.size(); j++ ){
 			DEdge e = edges[j];
 
 			if( i == e.l || i == e.r ){
