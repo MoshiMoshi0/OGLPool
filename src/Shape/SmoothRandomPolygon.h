@@ -20,6 +20,9 @@ public:
 	void draw();
 
 	vector<Edge2> bezierEdges;
+
+private:
+	void smoothEdge(int randEdge);
 };
 
 } /* namespace OGLPool */
