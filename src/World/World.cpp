@@ -18,7 +18,7 @@ using namespace std;
 
 namespace OGLPool {
 
-World::World(){}
+World::World() : sp( SmoothRandomPolygon::Type::ROUND ) {}
 
 World::~World() {
 	entities.erase( remove_if( entities.begin(), entities.end(),
@@ -44,7 +44,7 @@ void World::update( float dt ){
 		e->update( dt );
 	}
 	if( IO::Input::onKeyPressed( IO::Input::R )){
-		sp = SmoothRandomPolygon();
+		sp = SmoothRandomPolygon( SmoothRandomPolygon::Type::ROUND );
 	}
 }
 
