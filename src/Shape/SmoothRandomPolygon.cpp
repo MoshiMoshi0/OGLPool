@@ -29,10 +29,9 @@ SmoothRandomPolygon::~SmoothRandomPolygon() {}
 void SmoothRandomPolygon::createRandom(){
 	unordered_set<int> smoothEdges;
 
-	for( int i = 0; i < 5; ){
+	while( smoothEdges.size() < 5 ){
 		int randEdge = rand() % edges.size();
 		if( smoothEdges.count( randEdge ) > 0 ) continue;
-		i++;
 		smoothEdges.emplace( randEdge );
 		smoothEdge(randEdge);
 	}
@@ -58,53 +57,53 @@ void SmoothRandomPolygon::smoothEdge(int randEdge){
 	//edges.insert(edges.begin() + randEdge, bezierEdges.begin(), bezierEdges.end());
 }
 
-vector< float > SmoothRandomPolygon::tridiagonalSolve(const vector< float >& a, const vector< float >& b, const vector< float >& c, const vector< float >& rhs, uint n){
-	vector< float > u(n);
-	vector< float > gam(n);
+vector<float> SmoothRandomPolygon::tridiagonalSolve(const vector<float>& a, const vector<float>& b, const vector<float>& c, const vector<float>& rhs, uint n){
+	vector<float> u(n);
+	vector<float> gam(n);
 
 	double bet = b[0];
 	u[0] = rhs[0] / bet;
 
-	for (uint j = 1;j < n;j++){
-		gam[j] = c[j-1] / bet;
-		bet = b[j] - a[j] * gam[j];
-		u[j] = (rhs[j] - a[j] * u[j - 1]) / bet;
+	for (uint i = 1; i < n; i++){
+		gam[i] = c[i-1] / bet;
+		bet = b[i] - a[i] * gam[i];
+		u[i] = (rhs[i] - a[i] * u[i - 1]) / bet;
 	}
 
-	for (uint j = 1;j < n;j++)
-		u[n - j - 1] -= gam[n - j] * u[n - j];
+	for (uint i = 1; i < n; i++)
+		u[n - i - 1] -= gam[n - i] * u[n - i];
 
 	return u;
 }
 
-vector< float > SmoothRandomPolygon::cyclicSolve( const vector< float >& a, const vector< float >& b, const vector< float >& c, float alpha, float beta, const vector< float >& rhs, uint n ){
-	vector< float > bb(n);
-	vector< float > x(n);
-	vector< float > z(n);
+vector<float> SmoothRandomPolygon::cyclicSolve( const vector<float>& a, const vector<float>& b, const vector<float>& c, float alpha, float beta, const vector<float>& rhs, uint n ){
+	vector<float> bb(n);
+	vector<float> x(n);
+	vector<float> z(n);
 
-	double gamma = -b[0];
+	float gamma = -b[0];
 	bb[0] = b[0] - gamma;
 	bb[n-1] = b[n - 1] - alpha * beta / gamma;
-	for (uint i = 1; i < n - 1; ++i)
+	for (uint i = 1; i < n - 1; i++)
 	  bb[i] = b[i];
 
-	vector< float > solution = tridiagonalSolve(a, bb, c, rhs, n);
-	for (uint k = 0; k < n; ++k)
-	  x[k] = solution[k];
+	vector<float> solution = tridiagonalSolve(a, bb, c, rhs, n);
+	for (uint i = 0; i < n; i++)
+	  x[i] = solution[i];
 
-	vector< float > u(n);
+	vector<float> u(n);
 	u[0] = gamma;
 	u[n-1] = alpha;
-	for (uint i = 1; i < n - 1; ++i)
+	for (uint i = 1; i < n - 1; i++)
 	  u[i] = 0.0;
 
 	solution = tridiagonalSolve(a, bb, c, u, n);
-	for (uint k = 0; k < n; ++k)
-	  z[k] = solution[k];
+	for (uint i = 0; i < n; i++)
+	  z[i] = solution[i];
 
-	double fact = (x[0] + beta * x[n - 1] / gamma) / (1.0 + z[0] + beta * z[n - 1] / gamma);
+	float fact = (x[0] + beta * x[n - 1] / gamma) / (1.0 + z[0] + beta * z[n - 1] / gamma);
 
-	for (uint i = 0; i < n; ++i)
+	for (uint i = 0; i < n; i++)
 	  x[i] -= fact * z[i];
 
 	return x;
@@ -112,38 +111,31 @@ vector< float > SmoothRandomPolygon::cyclicSolve( const vector< float >& a, cons
 
 void SmoothRandomPolygon::createRound(){
 	uint n = points.size();
-	vector< float > a(n);
-	vector< float > b(n);
-	vector< float > c(n);
+	vector<float> a(n);
+	vector<float> b(n);
+	vector<float> c(n);
 
-	vector< float > rhsx(n);
-	vector< float > rhsy(n);
+	vector<float> rhsx(n);
+	vector<float> rhsy(n);
 
-	for( uint i = 0; i < n; i++ ){
+	for( uint i = 0, j = n - 1; i < n; j = i++ ){
 		a[i] = 1; b[i] = 4; c[i] = 1;
+		rhsx[j] = 4.0f * points[j].x + 2.0f * points[i].x;
+		rhsy[j] = 4.0f * points[j].y + 2.0f * points[i].y;
 	}
 
-	for (uint i = 0; i < n; ++i) {
-		uint j = (i == n - 1) ? 0 : i + 1;
-		vec2 v = 4.0f * points[i] + 2.0f * points[j];
-		rhsx[i] = v.x; rhsy[i] = v.y;
-	}
+	vector<float> resx = cyclicSolve( a, b, c, 1, 1, rhsx, n );
+	vector<float> resy = cyclicSolve( a, b, c, 1, 1, rhsy, n );
 
-	vector< float > resx = cyclicSolve( a, b, c, 1, 1, rhsx, n );
-	vector< float > resy = cyclicSolve( a, b, c, 1, 1, rhsy, n );
-
-	vector< vec2 > first, second;
+	vector<vec2> first, second;
 	for (uint i = 0; i < n; ++i){
-		vec2 v( resx[i], resy[i] );
-		first.push_back( v );
-		second.push_back( 2.0f * points[i] - v );
+		first.push_back( vec2( resx[i], resy[i] ) );
+		second.push_back( 2.0f * points[i] - vec2( resx[i], resy[i] ) );
 	}
 
-	for( uint i = 0; i < n; i++ ){
-	    int j = (i == n - 1) ? 0 : i + 1;
-
+	for( uint i = 0, j = n - 1; i < n; j = i++ ){
 		vector< vec2 > bezierPts;
-		getBezierPoints( points[i], first[i], second[j], points[j], bezierPts, 20 );
+		getBezierPoints( points[j], first[j], second[i], points[i], bezierPts, 20 );
 
 		for (uint k = 0; k < bezierPts.size() - 1; k++) {
 			bezierEdges.push_back(Edge2(bezierPts[k], bezierPts[k + 1]));
