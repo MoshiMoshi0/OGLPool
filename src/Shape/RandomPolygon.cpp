@@ -15,30 +15,34 @@ using namespace std;
 
 namespace OGLPool {
 
-RandomPolygon::RandomPolygon( uint numSides, uint numPoints ) {
-	Delaunay dt;
-	vector<vec2> rndPoints;
-	vector<DEdge> dtEdges;
-
-	for( int i = 0, valid = 0; !valid; assert( i++ < 10000 ) ){
-		rndPoints.clear();
-		while (rndPoints.size() < numPoints) { rndPoints.push_back(linearRand(vec2(-1.0f, -1.0f), vec2(1.0f, 1.0f)) * 20.0f); }
-
-		dt.triangulate(rndPoints);
-		dtEdges = dt.getDEdges();
-
-		valid = generate(dtEdges, numSides);
-		if( valid ){
-			valid &= validateBoundary( getBoundary( dtEdges ), rndPoints, 60, 4 );
-		}
-	}
-
-	buildPolygon( getBoundary( dtEdges ), rndPoints);
+RandomPolygon::RandomPolygon(uint numSides, uint numPoints) {
+	generate(numPoints, numSides);
 }
 
 RandomPolygon::~RandomPolygon() {}
 
-bool RandomPolygon::generate(vector<DEdge>& edges, uint numSides) {
+void RandomPolygon::generate(uint numPoints, uint numSides) {
+	Delaunay dt;
+	vector<vec2> rndPoints;
+	vector<DEdge> dtEdges;
+	for (int i = 0, valid = 0; !valid; assert( i++ < 10000 )) {
+		rndPoints.clear();
+		while (rndPoints.size() < numPoints) {
+			rndPoints.push_back(linearRand(vec2(-1.0f, -1.0f), vec2(1.0f, 1.0f)) * 20.0f);
+		}
+
+		dt.triangulate(rndPoints);
+		dtEdges = dt.getDEdges();
+
+		valid = fixSides(dtEdges, numSides);
+		if (valid) {
+			valid &= validateBoundary(getBoundary(dtEdges), rndPoints, 60, 4);
+		}
+	}
+	buildPolygon(getBoundary(dtEdges), rndPoints);
+}
+
+bool RandomPolygon::fixSides(vector<DEdge>& edges, uint numSides) {
 	auto boundary = getBoundary(edges);
 	do {
 		bool removed = false;
