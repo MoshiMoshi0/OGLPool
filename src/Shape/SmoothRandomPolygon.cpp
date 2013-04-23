@@ -110,6 +110,7 @@ vector<float> SmoothRandomPolygon::cyclicSolve( const vector<float>& a, const ve
 }
 
 void SmoothRandomPolygon::createRound(){
+	float k = 0.5f;
 	uint n = points.size();
 	vector<float> a(n);
 	vector<float> b(n);
@@ -128,15 +129,18 @@ void SmoothRandomPolygon::createRound(){
 	vector<float> resy = cyclicSolve( a, b, c, 1, 1, rhsy, n );
 
 	vector<vec2> first, second;
-	for (uint i = 0; i < n; ++i){
-		first.push_back( vec2( resx[i], resy[i] ) );
-		second.push_back( 2.0f * points[i] - vec2( resx[i], resy[i] ) );
+	for( uint i = 0; i < n; i++ ){
+		vec2 resv = vec2( resx[i], resy[i] );
+		first.push_back( points[i] * (1 - k) + resv * k );
+		second.push_back( points[i] * (1 + k) - resv * k );
 	}
 
 	for( uint i = 0, j = n - 1; i < n; j = i++ ){
 		vector< vec2 > bezierPts;
 		getBezierPoints( points[j], first[j], second[i], points[i], bezierPts, 20 );
 
+		bezierControlEdges.push_back( Edge2(points[j], first[j]) );
+		bezierControlEdges.push_back( Edge2(second[i], points[i]) );
 		for (uint k = 0; k < bezierPts.size() - 1; k++) {
 			bezierEdges.push_back(Edge2(bezierPts[k], bezierPts[k + 1]));
 		}
@@ -162,6 +166,14 @@ void SmoothRandomPolygon::draw(){
 	glColor3f( 1,0,0 );
 	glBegin( GL_LINES );
 	for( auto& edge : bezierEdges ){
+		glVertex3f( edge[0].x, 0, edge[0].y );
+		glVertex3f( edge[1].x, 0, edge[1].y );
+	}
+	glEnd();
+
+	glColor3f( 0,1,0 );
+	glBegin( GL_LINES );
+	for( auto& edge : bezierControlEdges ){
 		glVertex3f( edge[0].x, 0, edge[0].y );
 		glVertex3f( edge[1].x, 0, edge[1].y );
 	}

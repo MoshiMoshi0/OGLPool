@@ -24,6 +24,7 @@ public:
 	void draw();
 
 	vector<Edge2> bezierEdges;
+	vector<Edge2> bezierControlEdges;
 private:
 	void createRandom();
 	void createRound();
