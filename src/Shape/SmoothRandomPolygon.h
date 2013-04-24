@@ -18,7 +18,8 @@ public:
 		ROUND, RANDOM
 	};
 
-	SmoothRandomPolygon( Type type );
+	SmoothRandomPolygon( Type type, uint numSides, uint numPoints );
+	SmoothRandomPolygon( Type type, uint numSides, uint numPoints, float tightness );
 	virtual ~SmoothRandomPolygon();
 
 	void draw();
@@ -33,6 +34,8 @@ private:
 	vector< float > cyclicSolve( const vector< float >& a, const vector< float >& b, const vector< float >& c, float alpha, float beta, const vector< float >& rhs, uint n );
 
 	void smoothEdge(int randEdge);
+
+	float tightness;
 };
 
 } /* namespace OGLPool */

@@ -16,7 +16,10 @@ using namespace std;
 
 namespace OGLPool {
 
-SmoothRandomPolygon::SmoothRandomPolygon( Type type ) : RandomPolygon(10,15) {
+SmoothRandomPolygon::SmoothRandomPolygon( Type type, uint numSides, uint numPoints) : SmoothRandomPolygon( type, numSides, numPoints, 1.0f ) {}
+
+SmoothRandomPolygon::SmoothRandomPolygon( Type type, uint numSides, uint numPoints, float tightness ) : RandomPolygon(numSides,numPoints) {
+	this->tightness = tightness;
 	switch ( type ) {
 		case RANDOM: createRandom(); break;
 		case ROUND: createRound(); break;
@@ -110,7 +113,6 @@ vector<float> SmoothRandomPolygon::cyclicSolve( const vector<float>& a, const ve
 }
 
 void SmoothRandomPolygon::createRound(){
-	float k = 0.5f;
 	uint n = points.size();
 	vector<float> a(n);
 	vector<float> b(n);
@@ -152,7 +154,7 @@ void SmoothRandomPolygon::getBezierPoints( const vec2& p0, const vec2& p1, const
 
 	float step = 1.0f / quality;
 
-	mat2x4 pMat = transpose(mat4x2(p0, p1, p2, p3));
+	mat2x4 pMat = transpose(mat4x2(p0, p0 * (1 - tightness ) + p1 * tightness, p3 * (1 - tightness ) + p2 * tightness, p3));
 	for (uint i = 0; i <= quality; i++) {
 		float t = i * step;
 		bezierPts.push_back(vec4(1, t, t * t, t * t * t) * blend * pMat);
