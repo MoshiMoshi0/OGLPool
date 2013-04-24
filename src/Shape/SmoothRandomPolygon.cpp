@@ -6,8 +6,8 @@
  */
 
 #include "SmoothRandomPolygon.h"
-#include <iostream>
 #include <glm/glm.hpp>
+#include <glm/gtc/epsilon.hpp>
 #include <SFML/OpenGL.hpp>
 #include <unordered_set>
 
@@ -133,8 +133,27 @@ void SmoothRandomPolygon::createRound(){
 	vector<vec2> first, second;
 	for( uint i = 0; i < n; i++ ){
 		vec2 resv = vec2( resx[i], resy[i] );
-		first.push_back( points[i] * (1 - k) + resv * k );
-		second.push_back( points[i] * (1 + k) - resv * k );
+		first.push_back( resv );
+		second.push_back( 2.0f * points[i] - resv );
+	}
+
+	// replace with segmentSegmentIntersection on merge
+	for( uint i = 0, j = n - 1; i < n; j = i++ ){
+		vec2 d0 = first[j] - points[j];
+		vec2 d1 = second[i] - points[i];
+		vec2 dp = points[i] - points[j];
+
+		float denom = d0.x * d1.y - d0.y * d1.x;
+		float numer0 = dp.x * d1.y - dp.y * d1.x;
+		float numer1 = dp.x * d0.y - dp.y * d0.x;
+
+		float t = numer0 / denom;
+		float u = numer1 / denom;
+
+		if( t > 1 || t < 0 ) continue;
+		if( u > 1 || u < 0 ) continue;
+
+		tightness = glm::min( glm::min( t, u ) - 0.05f, tightness );
 	}
 
 	for( uint i = 0, j = n - 1; i < n; j = i++ ){
