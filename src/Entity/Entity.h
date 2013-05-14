@@ -20,6 +20,7 @@ private:
 public:
 	Entity();
 	Entity( vec3 pos );
+	Entity( Entity* e );
 	virtual ~Entity();
 
 	virtual void render(){};
@@ -68,7 +69,7 @@ public:
 
 	mat3 inertia;
 	mat3 inertiaInv;
-protected:
+
 	int id;
 };
 

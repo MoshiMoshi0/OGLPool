@@ -12,13 +12,19 @@
 #include <iostream>
 #include <glm/gtc/random.hpp>
 #include <App/Input.h>
+#include <Physics/ConstraintSolver/ImpulseConstraintSolver.h>
 using namespace std;
 
 namespace OGLPool {
 
 World::World() {
 	addEntity( new Plane( vec3(0,1,0), vec3() ) );
-	gravity = vec3(0,-1,0);
+	addEntity( new Plane( vec3(-1,0,0), vec3(-25,25,0) ) );
+	addEntity( new Plane( vec3(1,0,0), vec3(25,25,0) ) );
+	addEntity( new Plane( vec3(0,0,-1), vec3(0,25,25) ) );
+	addEntity( new Plane( vec3(0,0,1), vec3(0,25,-25) ) );
+
+	gravity = vec3(0,-10,0);
 }
 
 World::~World() {
@@ -45,16 +51,25 @@ void World::update( float dt ){
 		e->applyForce( gravity );
 	}
 
-	for( auto it0 = entities.begin(); it0 != entities.end(); it0++ ){
+	vector< ContactInfo* > infos;
+	for( auto it0 = entities.begin(); it0 != entities.end() - 1; it0++ ){
 		for( auto it1 = it0 + 1; it1 != entities.end(); it1++ ){
 			Entity* e0 = (*it0);
 			Entity* e1 = (*it1);
 
-			ContactInfo info( dt );
-			if( Physics::checkCollision( e0, e1, &info ) ){
-				Physics::response( &info );
+			ContactInfo* info = new ContactInfo( dt );
+			if( Physics::checkCollision( e0, e1, info ) ){
+				infos.push_back(info);
+			}else{
+				delete info;
 			}
 		}
+	}
+
+	cout << infos.size() << endl;
+	if( infos.size() != 0 ){
+		Physics::ImpulseConstraintSolver solver;
+		solver.solveGroup( entities, infos );
 	}
 
 	if( IO::Input::onKeyPressed( IO::Input::R ) ){

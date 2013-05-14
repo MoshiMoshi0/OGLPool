@@ -27,6 +27,21 @@ Entity::Entity( vec3 pos ) : Entity() {
 	this->pos = pos;
 }
 
+Entity::Entity( Entity* e ) : Entity() {
+	mass = e->mass;
+	massInv = e->massInv;
+	pos = e->pos;
+	vel = e->vel;
+	force = e->force;
+
+	rot = e->rot;
+	angVel = e->angVel;
+	torque = e->torque;
+
+	inertia = e->inertia;
+	inertiaInv = e->inertiaInv;
+}
+
 vec3 Entity::toWorldAxis( const vec3& v ) const { return rot * v; }
 vec3 Entity::toWorld( const vec3& v ) const { return rot * v + pos; }
 mat3 Entity::toWorld( const mat3& mat ) const {

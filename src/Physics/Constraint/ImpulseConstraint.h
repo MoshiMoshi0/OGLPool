@@ -9,14 +9,15 @@
 #define IMPULSECONSTRAINT_H_
 
 #include <glm/glm.hpp>
+#include "Constraint.h"
 using namespace glm;
 
 namespace OGLPool {
 namespace Physics {
 
-class ImpulseConstraint {
+class ImpulseConstraint : public Constraint {
 public:
-	ImpulseConstraint();
+	ImpulseConstraint( Entity* e0, Entity* e1 );
 	virtual ~ImpulseConstraint();
 
 	vec3 impulse;

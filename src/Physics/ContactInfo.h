@@ -42,6 +42,12 @@ public:
 	float time;
 
 	float deltaTime;
+
+
+	float m_combinedRollingFriction;
+	float m_combinedFriction;
+	float m_combinedRestitution;
+	float m_appliedImpulse;
 private:
 	int contactType;
 };

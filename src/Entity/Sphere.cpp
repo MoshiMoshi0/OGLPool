@@ -40,6 +40,8 @@ void Sphere::update( float dt ){
 		applyDamping( dt );
 		set( force, .0f,.0f,.0f );
 		set( torque, .0f,.0f,.0f );
+
+		//pos.y = radius;
 	}
 }
 

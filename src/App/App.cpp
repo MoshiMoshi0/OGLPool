@@ -36,7 +36,7 @@ int App::start() {
 
 void App::run() {
 	//@TODO variable time step
-	const float dt = 0.15f;
+	const float dt = 1/60.f;
 
 	while (window->isOpen()) {
 		poolEvents();
