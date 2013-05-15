@@ -30,6 +30,7 @@ public:
 
 	void setOverlapping( bool f );
 	void setColliding( bool f );
+	void setEntities( Entity* e0, Entity* e1 );
 
 	Entity* e0;
 	Entity* e1;

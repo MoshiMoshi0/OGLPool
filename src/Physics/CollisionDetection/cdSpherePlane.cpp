@@ -45,8 +45,8 @@ bool spherePlaneOverlap( Sphere* s, Plane* p, ContactInfo* info ){
 
 	float penetration = s->radius - fabs( dist );
 	info->time = 0;
-	info->point0 = s->pos - p->normal * s->radius;
-	info->point1 = s->pos - p->normal * (s->radius - penetration);
+	info->point1 = s->pos - p->normal * s->radius;
+	info->point0 = s->pos - p->normal * (s->radius - penetration);
 	info->depth = penetration;
 	info->normal = p->normal;
 	info->setOverlapping( true );
@@ -54,7 +54,7 @@ bool spherePlaneOverlap( Sphere* s, Plane* p, ContactInfo* info ){
 }
 
 bool spherePlaneTest( Sphere* s, Plane* p, ContactInfo* info ){
-	info->e0 = s; info->e1 = p;
+	info->setEntities( p, s );
 	if( spherePlaneOverlap( s, p, info ) ) return true;
 	return spherePlaneSwept( s, p, info );
 }

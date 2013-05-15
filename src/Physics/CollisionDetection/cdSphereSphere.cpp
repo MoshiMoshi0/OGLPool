@@ -36,7 +36,7 @@ bool sphereSphereSwept( Sphere* s0, Sphere* s1, ContactInfo* info ){
 }
 
 bool sphereSphereTest( Sphere* s0, Sphere* s1, ContactInfo* info ){
-	info->e0 = (Entity*) s0; info->e1 = (Entity*) s1;
+	info->setEntities( s0, s1 );
 	if( sphereSphereOverlap( s0, s1, info ) ) return true;
 	return sphereSphereSwept( s0, s1, info );
 }

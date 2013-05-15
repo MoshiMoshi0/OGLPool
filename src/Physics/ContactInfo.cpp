@@ -22,5 +22,11 @@ bool ContactInfo::isValid(){ return contactType != INVALID; }
 
 void ContactInfo::setOverlapping( bool f ){ contactType = f ? OVERLAPPING : INVALID; }
 void ContactInfo::setColliding( bool f ){ contactType = f ? COLLIDING : INVALID; }
+void ContactInfo::setEntities( Entity* e0, Entity* e1 ){
+	this->e0 = e0; this->e1 = e1;
+	m_combinedRestitution = 0.5f;
+	m_combinedRollingFriction = 0.5f;
+	m_combinedFriction = 0.5f;//e0->friction * e1->friction
+}
 
 } /* namespace OGLPool */

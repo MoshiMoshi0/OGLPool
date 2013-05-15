@@ -40,9 +40,9 @@ public:
 
 	ContactSolverInfo infoGlobal;
 
-	void addContactConstraint( SolverBody* sb0, SolverBody* sb1, vec3 r0, vec3 r1, vec3 n, float e, ContactInfo* info, float& relaxation, vec3& vel, float& rel_vel );
-	void addFrictionConstraint( SolverBody* sb0, SolverBody* sb1, vec3 r0, vec3 r1, vec3 n, float e, ContactInfo* info, float& relaxation );
-	void addRollingFrictionConstraint( SolverBody* sb0, SolverBody* sb1, vec3 r0, vec3 r1, vec3 n, float e, ContactInfo* info, float& relaxation );
+	void addContactConstraint( SolverBody* sb0, SolverBody* sb1, vec3 r0, vec3 r1, vec3 n, ContactInfo* info, float& relaxation, vec3& vel, float& rel_vel );
+	void addFrictionConstraint( SolverBody* sb0, SolverBody* sb1, vec3 r0, vec3 r1, vec3 n, ContactInfo* info, float& relaxation );
+	void addRollingFrictionConstraint( SolverBody* sb0, SolverBody* sb1, vec3 r0, vec3 r1, vec3 n, ContactInfo* info, float& relaxation );
 
 	SolverBody* getSolverBody( Entity* e );
 	void convertContact( ContactInfo* info );

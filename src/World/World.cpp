@@ -66,14 +66,13 @@ void World::update( float dt ){
 		}
 	}
 
-	cout << infos.size() << endl;
 	if( infos.size() != 0 ){
 		Physics::ImpulseConstraintSolver solver;
 		solver.solveGroup( entities, infos );
 	}
 
 	if( IO::Input::onKeyPressed( IO::Input::R ) ){
-		Sphere* s = new Sphere( 5, vec3( 0, 100, 0 ) );
+		Sphere* s = new Sphere( 5, vec3( 0, 10, 0 ) );
 		//s->setVel( vec3(0.1, 0.1, 1) );
 		s->setAngVel( vec3(-2.8, 1, 0) );
 		addEntity( s );

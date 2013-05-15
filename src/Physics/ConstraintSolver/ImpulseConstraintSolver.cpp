@@ -7,6 +7,8 @@
 
 #include "ImpulseConstraintSolver.h"
 #include <algorithm>
+#include <iostream>
+using namespace std;
 
 namespace OGLPool {
 namespace Physics {
@@ -31,7 +33,7 @@ void planeSpace( const vec3& n, vec3& t0, vec3& t1 ){
 	}
 }
 
-void ImpulseConstraintSolver::addContactConstraint( SolverBody* sb0, SolverBody* sb1, vec3 r0, vec3 r1, vec3 n, float e, ContactInfo* info, float& relaxation, vec3& vel, float& rel_vel ){
+void ImpulseConstraintSolver::addContactConstraint( SolverBody* sb0, SolverBody* sb1, vec3 r0, vec3 r1, vec3 n, ContactInfo* info, float& relaxation, vec3& vel, float& rel_vel ){
 	SolverConstraint constraint(sb0, sb1);
 
 	/*vec3 a0 = cross( sb0->angVel, r0 );
@@ -101,7 +103,6 @@ void ImpulseConstraintSolver::addContactConstraint( SolverBody* sb0, SolverBody*
 
 			constraint.m_friction = info->m_combinedFriction;
 
-
 			restitution = info->m_combinedRestitution * -rel_vel;
 			if (restitution <= float(0.)){
 				restitution = 0.f;
@@ -162,7 +163,7 @@ void ImpulseConstraintSolver::addContactConstraint( SolverBody* sb0, SolverBody*
 	contactConstraintPool.push_back( constraint );
 }
 
-void ImpulseConstraintSolver::addFrictionConstraint( SolverBody* sb0, SolverBody* sb1, vec3 r0, vec3 r1, vec3 n, float e, ContactInfo* info, float& relaxation ){
+void ImpulseConstraintSolver::addFrictionConstraint( SolverBody* sb0, SolverBody* sb1, vec3 r0, vec3 r1, vec3 n, ContactInfo* info, float& relaxation ){
 	SolverConstraint constraint(sb0, sb1);
 
 	/*vec3 a0 = cross( sb0->angVel, r0 );
@@ -232,7 +233,7 @@ void ImpulseConstraintSolver::addFrictionConstraint( SolverBody* sb0, SolverBody
 	frictionConstraintPool.push_back( constraint );
 }
 
-void ImpulseConstraintSolver::addRollingFrictionConstraint( SolverBody* sb0, SolverBody* sb1, vec3 r0, vec3 r1, vec3 n, float e, ContactInfo* info, float& relaxation ){
+void ImpulseConstraintSolver::addRollingFrictionConstraint( SolverBody* sb0, SolverBody* sb1, vec3 r0, vec3 r1, vec3 n, ContactInfo* info, float& relaxation ){
 	SolverConstraint constraint(sb0, sb1);
 
 	/*vec3 a0 = cross( sb0->angVel, r0 );
@@ -307,41 +308,36 @@ void ImpulseConstraintSolver::convertContact( ContactInfo* info ){
 	vec3 r0 = info->point0 - sb0->pos;
 	vec3 r1 = info->point1 - sb1->pos;
 
-	float e = 0.25;
-	float df = 0.45;
-	float sf = 0.45;
-	float rf = 0.01;
-
 	float relaxation;
 	float rel_vel;
 	vec3 vel;
-	addContactConstraint( sb0, sb1, r0, r1, n, e, info, relaxation, vel, rel_vel );
+	addContactConstraint( sb0, sb1, r0, r1, n, info, relaxation, vel, rel_vel );
 
 	vec3 da = sb1->angVel - sb0->angVel;
 	if( length( da ) > 1e30f ){
 		da = normalize( da );
-		if ( length(da) > 0.001f ) addRollingFrictionConstraint( sb0, sb1, r0, r1, da, rf, info, relaxation );
+		if ( length(da) > 0.001f ) addRollingFrictionConstraint( sb0, sb1, r0, r1, da, info, relaxation );
 	}else{
 		vec3 t0,t1;
 		planeSpace( n, t0, t1 );
 
-		addRollingFrictionConstraint( sb0, sb1, r0, r1, n, rf, info, relaxation );
-		if ( length( t0 ) > 0.001f ) addRollingFrictionConstraint( sb0, sb1, r0, r1, t0, rf, info, relaxation );
-		if ( length( t1 ) > 0.001f ) addRollingFrictionConstraint( sb0, sb1, r0, r1, t1, rf, info, relaxation );
+		addRollingFrictionConstraint( sb0, sb1, r0, r1, n, info, relaxation );
+		if ( length( t0 ) > 0.001f ) addRollingFrictionConstraint( sb0, sb1, r0, r1, t0, info, relaxation );
+		if ( length( t1 ) > 0.001f ) addRollingFrictionConstraint( sb0, sb1, r0, r1, t1, info, relaxation );
 	}
 
 	vec3 t = vel - rel_vel * n;
 	if( dot( t,t ) > epsilon<float>() ){
 		vec3 t0 = normalize( t );
 		vec3 t1 = cross( n, t0 );
-		addFrictionConstraint( sb0, sb1, r0, r1, t0, df, info, relaxation );
-		addFrictionConstraint( sb0, sb1, r0, r1, t1, df, info, relaxation );
+		addFrictionConstraint( sb0, sb1, r0, r1, t0, info, relaxation );
+		addFrictionConstraint( sb0, sb1, r0, r1, t1, info, relaxation );
 	} else {
 		vec3 t0,t1;
 		planeSpace( n, t0, t1 );
 
-		addFrictionConstraint( sb0, sb1, r0, r1, t0, sf, info, relaxation );
-		addFrictionConstraint( sb0, sb1, r0, r1, t1, sf, info, relaxation );
+		addFrictionConstraint( sb0, sb1, r0, r1, t0, info, relaxation );
+		addFrictionConstraint( sb0, sb1, r0, r1, t1, info, relaxation );
 	}
 }
 
@@ -398,6 +394,11 @@ void ImpulseConstraintSolver::solveSingleIteration( int iteration, const vector<
 		resolveSingleConstraintRowLowerLimit(solveManifold);
 	}
 
+	int numFrictionPoolConstraints = frictionConstraintPool.size();
+	for( int i = 0; i < numFrictionPoolConstraints; i++ ){
+		SolverConstraint& solveManifold = frictionConstraintPool[i];
+	}
+
 	/*int numFrictionPoolConstraints = m_tmpSolverContactFrictionConstraintPool.size();
 	for (int j=0;j<numFrictionPoolConstraints;j++){
 		SolverConstraint& solveManifold = m_tmpSolverContactFrictionConstraintPool[m_orderFrictionConstraintPool[j]];
@@ -434,13 +435,13 @@ void ImpulseConstraintSolver::resolveSingleConstraintRowLowerLimit(SolverConstra
 	SolverBody* body1 = c.sb0;
 	SolverBody* body2 = c.sb1;
 
-	float deltaImpulse = c.m_rhs-float(c.m_appliedImpulse)*c.m_cfm;
-	const float deltaVel1Dotn	=	dot(c.m_contactNormal,body1->m_deltaLinearVelocity) 	+ dot(c.m_relpos1CrossNormal,body1->m_deltaAngularVelocity);
-	const float deltaVel2Dotn	=	-dot(c.m_contactNormal,body2->m_deltaLinearVelocity) + dot(c.m_relpos2CrossNormal,body2->m_deltaAngularVelocity);
+	float deltaImpulse = c.m_rhs-c.m_appliedImpulse*c.m_cfm;
+	const float deltaVel1Dotn =	 dot(c.m_contactNormal,body1->m_deltaLinearVelocity) + dot(c.m_relpos1CrossNormal,body1->m_deltaAngularVelocity);
+	const float deltaVel2Dotn = -dot(c.m_contactNormal,body2->m_deltaLinearVelocity) + dot(c.m_relpos2CrossNormal,body2->m_deltaAngularVelocity);
 
-	deltaImpulse	-=	deltaVel1Dotn*c.m_jacDiagABInv;
-	deltaImpulse	-=	deltaVel2Dotn*c.m_jacDiagABInv;
-	const float sum = float(c.m_appliedImpulse) + deltaImpulse;
+	deltaImpulse -= deltaVel1Dotn*c.m_jacDiagABInv;
+	deltaImpulse -= deltaVel2Dotn*c.m_jacDiagABInv;
+	const float sum = c.m_appliedImpulse + deltaImpulse;
 	if (sum < c.m_lowerLimit){
 		deltaImpulse = c.m_lowerLimit-c.m_appliedImpulse;
 		c.m_appliedImpulse = c.m_lowerLimit;
