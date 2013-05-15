@@ -12,17 +12,16 @@
 #include <iostream>
 #include <glm/gtc/random.hpp>
 #include <App/Input.h>
-#include <Physics/ConstraintSolver/ImpulseConstraintSolver.h>
 using namespace std;
 
 namespace OGLPool {
 
 World::World() {
 	addEntity( new Plane( vec3(0,1,0), vec3() ) );
-	addEntity( new Plane( vec3(-1,0,0), vec3(-25,25,0) ) );
+	/*addEntity( new Plane( vec3(-1,0,0), vec3(-25,25,0) ) );
 	addEntity( new Plane( vec3(1,0,0), vec3(25,25,0) ) );
 	addEntity( new Plane( vec3(0,0,-1), vec3(0,25,25) ) );
-	addEntity( new Plane( vec3(0,0,1), vec3(0,25,-25) ) );
+	addEntity( new Plane( vec3(0,0,1), vec3(0,25,-25) ) );*/
 
 	gravity = vec3(0,-10,0);
 }
@@ -67,13 +66,19 @@ void World::update( float dt ){
 	}
 
 	if( infos.size() != 0 ){
-		Physics::ImpulseConstraintSolver solver;
 		solver.solveGroup( entities, infos );
+
+		infos.erase( remove_if( infos.begin(), infos.end(),
+			[](ContactInfo* element) -> bool {
+				delete element;
+				return true;
+			}
+		), infos.end() );
 	}
 
 	if( IO::Input::onKeyPressed( IO::Input::R ) ){
-		Sphere* s = new Sphere( 5, vec3( 0, 10, 0 ) );
-		//s->setVel( vec3(0.1, 0.1, 1) );
+		Sphere* s = new Sphere( 5, vec3( 0, 30, 0 ) );
+		s->setVel( vec3(0.1, 0.1, 1) );
 		s->setAngVel( vec3(-2.8, 1, 0) );
 		addEntity( s );
 	}

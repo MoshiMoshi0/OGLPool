@@ -11,7 +11,7 @@
 #include <vector>
 #include <Entity/Entity.h>
 #include <Entity/Plane.h>
-
+#include <Physics/ConstraintSolver/ImpulseConstraintSolver.h>
 using namespace std;
 namespace OGLPool {
 
@@ -25,6 +25,7 @@ public:
 
 	void addEntity( Entity* e );
 private:
+	Physics::ImpulseConstraintSolver solver;
 	vector< Entity* > entities;
 	vec3 gravity;
 };

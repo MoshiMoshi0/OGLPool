@@ -49,6 +49,12 @@ public:
 	float m_combinedFriction;
 	float m_combinedRestitution;
 	float m_appliedImpulse;
+
+	float m_appliedImpulseLateral1;
+	float m_appliedImpulseLateral2;
+	bool m_lateralFrictionInitialized;
+	vec3 m_lateralFrictionDir1;
+	vec3 m_lateralFrictionDir2;
 private:
 	int contactType;
 };

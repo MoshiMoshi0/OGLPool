@@ -16,13 +16,13 @@ bool sphereSphereIntersection( Sphere* s0, Sphere* s1 ){
 }
 
 bool sphereSphereOverlap( Sphere* s0, Sphere* s1, ContactInfo* info ){
-	vec3 dp = s1->pos - s0->pos;
+	vec3 dp = s0->pos - s1->pos;
 	float r = s0->radius + s1->radius;
-	if( dot( dp, dp) <= r*r ){
+	if( fabs( dot( dp, dp ) ) <= r*r ){
 		vec3 n = normalize( dp );
 		info->point0 = s0->pos + n * s0->radius;
 		info->point1 = s1->pos - n * s1->radius;
-		info->depth = r - length( dp );
+		info->depth = -(r - length( dp ));
 		info->normal = n;
 		info->setOverlapping( true );
 		return true;

@@ -9,6 +9,7 @@
 #define SOLVERCONSTRAINT_H_
 
 #include "SolverBody.h"
+#include <Physics/ContactInfo.h>
 
 namespace OGLPool {
 namespace Physics {
@@ -38,6 +39,10 @@ struct SolverConstraint {
 	float m_lowerLimit;
 	float m_upperLimit;
 	float m_rhsPenetration;
+
+	uint m_frictionIndex;
+
+	ContactInfo* m_originalContactPoint;
 };
 
 }

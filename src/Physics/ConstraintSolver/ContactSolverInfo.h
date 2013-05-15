@@ -67,7 +67,7 @@ struct ContactSolverInfo : public ContactSolverInfoData {
 		m_splitImpulseTurnErp = 0.1f;
 		m_linearSlop = float(0.0);
 		m_warmstartingFactor=float(0.85);
-		m_solverMode = SOLVER_USE_WARMSTARTING | SOLVER_SIMD;
+		m_solverMode = SOLVER_USE_WARMSTARTING | SOLVER_ENABLE_FRICTION_DIRECTION_CACHING;
 		//m_maxGyroscopicForce = 100.f; ///only used to clamp forces for bodies that have their BT_ENABLE_GYROPSCOPIC_FORCE flag set (using btRigidBody::setFlag)
 		m_singleAxisRollingFrictionThreshold = 1e30f;///if the velocity is above this threshold, it will use a single constraint row (axis), otherwise 3 rows.
 	}

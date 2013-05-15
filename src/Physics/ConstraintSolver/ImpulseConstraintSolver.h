@@ -28,10 +28,13 @@ public:
 	void solveGroup( const vector< Entity* >& bodies, const vector< ContactInfo* >& infos  );
 	void solveGroupSetup( const vector< Entity* >& bodies, const vector< ContactInfo* >& infos );
 	void solveGroupIterate( const vector< Entity* >& bodies, const vector< ContactInfo* >& infos );
-	void solveGroupFinish( const vector< Entity* >& bodies, const vector< ContactInfo* >& infos );
+	void solveGroupFinish( const vector< Entity* >& bodies );
 
 	void solveSingleIteration( int iteration, const vector< Entity* >& bodies, const vector< ContactInfo* >& infos );
 	void resolveSingleConstraintRowLowerLimit(SolverConstraint& c);
+	void resolveSingleConstraintRowGeneric(SolverConstraint& c);
+	void resolveSplitPenetrationImpulseCacheFriendly( SolverConstraint& c );
+	void setFrictionConstraintImpulse( SolverConstraint& constraint, SolverBody* sb0, SolverBody* sb1, ContactInfo* info );
 	vector< SolverBody* > solverBodyPool;
 
 	vector< SolverConstraint > frictionConstraintPool;
@@ -40,9 +43,9 @@ public:
 
 	ContactSolverInfo infoGlobal;
 
-	void addContactConstraint( SolverBody* sb0, SolverBody* sb1, vec3 r0, vec3 r1, vec3 n, ContactInfo* info, float& relaxation, vec3& vel, float& rel_vel );
-	void addFrictionConstraint( SolverBody* sb0, SolverBody* sb1, vec3 r0, vec3 r1, vec3 n, ContactInfo* info, float& relaxation );
-	void addRollingFrictionConstraint( SolverBody* sb0, SolverBody* sb1, vec3 r0, vec3 r1, vec3 n, ContactInfo* info, float& relaxation );
+	void setupContactConstraint( SolverConstraint& constraint, SolverBody* sb0, SolverBody* sb1, vec3 r0, vec3 r1, vec3 n, ContactInfo* info, float& relaxation, vec3& vel, float& rel_vel );
+	void addFrictionConstraint( SolverBody* sb0, SolverBody* sb1, vec3 r0, vec3 r1, vec3 n, ContactInfo* info, uint frictionIndex, float& relaxation );
+	void addRollingFrictionConstraint( SolverBody* sb0, SolverBody* sb1, vec3 r0, vec3 r1, vec3 n, ContactInfo* info, uint frictionIndex, float& relaxation );
 
 	SolverBody* getSolverBody( Entity* e );
 	void convertContact( ContactInfo* info );
