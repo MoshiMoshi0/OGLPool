@@ -18,12 +18,10 @@ namespace Physics {
 PhysicsHandler::PhysicsHandler(){}
 
 PhysicsHandler::~PhysicsHandler(){
-	/*broadphaseInfos.erase( remove_if( broadphaseInfos.begin(), broadphaseInfos.end(),
-		[](ManifoldPoint* element) -> bool {
-			delete element;
-			return true;
-		}
-	), broadphaseInfos.end() );*/
+	for( auto& pair : broadphaseInfos ){
+		delete pair.second;
+	}
+	broadphaseInfos.clear();
 }
 
 void PhysicsHandler::processBodies( const vector< RigidBody* > bodies ){
