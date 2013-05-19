@@ -24,7 +24,8 @@ PhysicsHandler::~PhysicsHandler(){
 	broadphaseInfos.clear();
 }
 
-void PhysicsHandler::processBodies( const vector< RigidBody* > bodies ){
+void PhysicsHandler::processBodies( const vector< RigidBody* > bodies, float dt ){
+	infoGlobal.m_timeStep = dt;
 	for( auto it0 = bodies.begin(); it0 != bodies.end() - 1; it0++ ){
 		for( auto it1 = it0 + 1; it1 != bodies.end(); it1++ ){
 			RigidBody* e0 = (*it0);
@@ -35,7 +36,7 @@ void PhysicsHandler::processBodies( const vector< RigidBody* > bodies ){
 
 				bool newInfo = (info == 0);
 				if( newInfo ){
-					info = new ManifoldPoint( 1/60.f );
+					info = new ManifoldPoint( dt );
 				}else{
 					info->reset();
 				}
@@ -93,7 +94,7 @@ void PhysicsHandler::solveCollisions( const vector< RigidBody* > bodies ){
 		}
 	);*/
 
-	solver.solveGroup( bodies, narrowphaseInfos );
+	solver.solveGroup( bodies, narrowphaseInfos, &infoGlobal );
 	narrowphaseInfos.clear();
 }
 

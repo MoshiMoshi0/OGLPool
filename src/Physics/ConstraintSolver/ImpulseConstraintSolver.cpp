@@ -56,7 +56,7 @@ void ImpulseConstraintSolver::setupContactConstraint( SolverConstraint& constrai
 	constraint.m_relpos2CrossNormal = -torqueAxis1;
 
 	float restitution = 0.f;
-	float penetration = info->depth + infoGlobal.m_linearSlop;
+	float penetration = info->depth + infoGlobal->m_linearSlop;
 
 	vec3 vel1,vel2;
 
@@ -73,8 +73,8 @@ void ImpulseConstraintSolver::setupContactConstraint( SolverConstraint& constrai
 		restitution = 0.f;
 	}
 
-	if (infoGlobal.m_solverMode & SOLVER_USE_WARMSTARTING){
-		constraint.m_appliedImpulse = info->m_appliedImpulse * infoGlobal.m_warmstartingFactor;
+	if (infoGlobal->m_solverMode & SOLVER_USE_WARMSTARTING){
+		constraint.m_appliedImpulse = info->m_appliedImpulse * infoGlobal->m_warmstartingFactor;
 
 		sb0->internalApplyImpulse( constraint.m_contactNormal*sb0->massInv, constraint.m_angularComponentA, constraint.m_appliedImpulse);
 		sb1->internalApplyImpulse( constraint.m_contactNormal*sb1->massInv, -constraint.m_angularComponentB, -constraint.m_appliedImpulse);
@@ -92,23 +92,23 @@ void ImpulseConstraintSolver::setupContactConstraint( SolverConstraint& constrai
 		float positionalError = 0.f;
 		float velocityError = restitution - rel_vel;// * damping;
 
-		float erp = infoGlobal.m_erp2;
-		if (!infoGlobal.m_splitImpulse || (penetration > infoGlobal.m_splitImpulsePenetrationThreshold)){
-			erp = infoGlobal.m_erp;
+		float erp = infoGlobal->m_erp2;
+		if (!infoGlobal->m_splitImpulse || (penetration > infoGlobal->m_splitImpulsePenetrationThreshold)){
+			erp = infoGlobal->m_erp;
 		}
 
 		if (penetration>0){
 			positionalError = 0;
 
-			velocityError -= penetration / infoGlobal.m_timeStep;
+			velocityError -= penetration / infoGlobal->m_timeStep;
 		} else {
-			positionalError = -penetration * erp/infoGlobal.m_timeStep;
+			positionalError = -penetration * erp/infoGlobal->m_timeStep;
 		}
 
 		float  penetrationImpulse = positionalError*constraint.m_jacDiagABInv;
 		float velocityImpulse = velocityError *constraint.m_jacDiagABInv;
 
-		if (!infoGlobal.m_splitImpulse || (penetration > infoGlobal.m_splitImpulsePenetrationThreshold)){
+		if (!infoGlobal->m_splitImpulse || (penetration > infoGlobal->m_splitImpulsePenetrationThreshold)){
 			constraint.m_rhs = penetrationImpulse+velocityImpulse;
 			constraint.m_rhsPenetration = 0.f;
 
@@ -263,8 +263,8 @@ SolverBody* ImpulseConstraintSolver::initSolverBody( RigidBody* e ){
 
 void ImpulseConstraintSolver::setFrictionConstraintImpulse( SolverConstraint& constraint, SolverBody* sb0, SolverBody* sb1, ManifoldPoint* info ){
 	SolverConstraint& frictionConstraint1 = frictionConstraintPool[constraint.m_frictionIndex];
-	if (infoGlobal.m_solverMode & SOLVER_USE_WARMSTARTING) {
-		frictionConstraint1.m_appliedImpulse = info->m_appliedImpulseLateral1 * infoGlobal.m_warmstartingFactor;
+	if (infoGlobal->m_solverMode & SOLVER_USE_WARMSTARTING) {
+		frictionConstraint1.m_appliedImpulse = info->m_appliedImpulseLateral1 * infoGlobal->m_warmstartingFactor;
 		if (sb0) sb0->internalApplyImpulse(frictionConstraint1.m_contactNormal*sb0->massInv,frictionConstraint1.m_angularComponentA,frictionConstraint1.m_appliedImpulse);
 		if (sb1) sb1->internalApplyImpulse(frictionConstraint1.m_contactNormal*sb1->massInv,-frictionConstraint1.m_angularComponentB,-frictionConstraint1.m_appliedImpulse);
 	} else {
@@ -272,10 +272,10 @@ void ImpulseConstraintSolver::setFrictionConstraintImpulse( SolverConstraint& co
 	}
 
 
-	if ((infoGlobal.m_solverMode & SOLVER_USE_2_FRICTION_DIRECTIONS)){
+	if ((infoGlobal->m_solverMode & SOLVER_USE_2_FRICTION_DIRECTIONS)){
 		SolverConstraint& frictionConstraint2 = frictionConstraintPool[constraint.m_frictionIndex+1];
-		if (infoGlobal.m_solverMode & SOLVER_USE_WARMSTARTING) {
-			frictionConstraint2.m_appliedImpulse = info->m_appliedImpulseLateral2  * infoGlobal.m_warmstartingFactor;
+		if (infoGlobal->m_solverMode & SOLVER_USE_WARMSTARTING) {
+			frictionConstraint2.m_appliedImpulse = info->m_appliedImpulseLateral2  * infoGlobal->m_warmstartingFactor;
 			if (sb0) sb0->internalApplyImpulse(frictionConstraint2.m_contactNormal*sb0->massInv,frictionConstraint2.m_angularComponentA,frictionConstraint2.m_appliedImpulse);
 			if (sb1) sb1->internalApplyImpulse(frictionConstraint2.m_contactNormal*sb1->massInv,-frictionConstraint2.m_angularComponentB,-frictionConstraint2.m_appliedImpulse);
 		} else {
@@ -308,7 +308,7 @@ void ImpulseConstraintSolver::convertContact( ManifoldPoint* info ){
 
 	vec3 da = sb1->angVel - sb0->angVel;
 	if( info->m_combinedRollingFriction > 0.f){
-		if( length( da ) > infoGlobal.m_singleAxisRollingFrictionThreshold ){
+		if( length( da ) > infoGlobal->m_singleAxisRollingFrictionThreshold ){
 			da = normalize( da );
 			if ( length(da) > 0.001f ) addRollingFrictionConstraint( sb0, sb1, r0, r1, da, info, frictionIndex, relaxation );
 		}else{
@@ -321,12 +321,12 @@ void ImpulseConstraintSolver::convertContact( ManifoldPoint* info ){
 		}
 	}
 
-	if (!(infoGlobal.m_solverMode & SOLVER_ENABLE_FRICTION_DIRECTION_CACHING) || !info->m_lateralFrictionInitialized ){
+	if (!(infoGlobal->m_solverMode & SOLVER_ENABLE_FRICTION_DIRECTION_CACHING) || !info->m_lateralFrictionInitialized ){
 		info->m_lateralFrictionDir1 = vel - n * rel_vel;
 		float lat_rel_vel = dot( info->m_lateralFrictionDir1, info->m_lateralFrictionDir1 );
-		if( !(infoGlobal.m_solverMode & SOLVER_DISABLE_VELOCITY_DEPENDENT_FRICTION_DIRECTION) && lat_rel_vel > epsilon<float>() ){
+		if( !(infoGlobal->m_solverMode & SOLVER_DISABLE_VELOCITY_DEPENDENT_FRICTION_DIRECTION) && lat_rel_vel > epsilon<float>() ){
 			info->m_lateralFrictionDir1 *= 1.f/sqrt(lat_rel_vel);
-			if((infoGlobal.m_solverMode & SOLVER_USE_2_FRICTION_DIRECTIONS)) {
+			if((infoGlobal->m_solverMode & SOLVER_USE_2_FRICTION_DIRECTIONS)) {
 				info->m_lateralFrictionDir2 = normalize( cross( info->m_lateralFrictionDir1, n ) );
 				addFrictionConstraint( sb0, sb1, r0, r1, info->m_lateralFrictionDir2, info, frictionIndex, relaxation );
 			}
@@ -334,18 +334,18 @@ void ImpulseConstraintSolver::convertContact( ManifoldPoint* info ){
 		}else{
 			planeSpace(n,info->m_lateralFrictionDir1,info->m_lateralFrictionDir2);
 
-			if ((infoGlobal.m_solverMode & SOLVER_USE_2_FRICTION_DIRECTIONS)){
+			if ((infoGlobal->m_solverMode & SOLVER_USE_2_FRICTION_DIRECTIONS)){
 				addFrictionConstraint( sb0, sb1, r0, r1, info->m_lateralFrictionDir2, info, frictionIndex, relaxation );
 			}
 
 			addFrictionConstraint( sb0, sb1, r0, r1, info->m_lateralFrictionDir1, info, frictionIndex, relaxation );
-			if ((infoGlobal.m_solverMode & SOLVER_USE_2_FRICTION_DIRECTIONS) && (infoGlobal.m_solverMode & SOLVER_DISABLE_VELOCITY_DEPENDENT_FRICTION_DIRECTION)) {
+			if ((infoGlobal->m_solverMode & SOLVER_USE_2_FRICTION_DIRECTIONS) && (infoGlobal->m_solverMode & SOLVER_DISABLE_VELOCITY_DEPENDENT_FRICTION_DIRECTION)) {
 				info->m_lateralFrictionInitialized = true;
 			}
 		}
 	} else {
 		addFrictionConstraint( sb0, sb1, r0, r1, info->m_lateralFrictionDir1, info, frictionIndex, relaxation );
-		if ((infoGlobal.m_solverMode & SOLVER_USE_2_FRICTION_DIRECTIONS))
+		if ((infoGlobal->m_solverMode & SOLVER_USE_2_FRICTION_DIRECTIONS))
 			addFrictionConstraint( sb0, sb1, r0, r1, info->m_lateralFrictionDir2, info, frictionIndex, relaxation );
 
 		setFrictionConstraintImpulse( constraint, sb0, sb1, info );
@@ -377,9 +377,9 @@ void ImpulseConstraintSolver::resolveSplitPenetrationImpulseCacheFriendly( Solve
 }
 
 void ImpulseConstraintSolver::solveSingleIteration( int iteration, const vector< RigidBody* >& bodies, const vector< ManifoldPoint* >& infos ){
-	if (iteration >= infoGlobal.m_numIterations) assert(0);
+	if (iteration >= infoGlobal->m_numIterations) assert(0);
 
-	if (infoGlobal.m_solverMode & SOLVER_RANDMIZE_ORDER){
+	if (infoGlobal->m_solverMode & SOLVER_RANDMIZE_ORDER){
 		random_shuffle( contactConstraintPool.begin(), contactConstraintPool.end() );
 		random_shuffle( frictionConstraintPool.begin(), frictionConstraintPool.end() );
 	}
@@ -471,13 +471,14 @@ void ImpulseConstraintSolver::resolveSingleConstraintRowGeneric(SolverConstraint
 	body2->internalApplyImpulse(-c.m_contactNormal*body2->massInv,c.m_angularComponentB,deltaImpulse);
 }
 
-void ImpulseConstraintSolver::solveGroup( const vector< RigidBody* >& bodies, const vector< ManifoldPoint* >& infos  ){
-	solveGroupSetup( bodies, infos );
+void ImpulseConstraintSolver::solveGroup( const vector< RigidBody* >& bodies, const vector< ManifoldPoint* >& infos, SolverInfo* infoGlobal ){
+	solveGroupSetup( bodies, infos, infoGlobal );
 	solveGroupIterate( bodies, infos );
 	solveGroupFinish( bodies );
 }
 
-void ImpulseConstraintSolver::solveGroupSetup( const vector< RigidBody* >& bodies, const vector< ManifoldPoint* >& infos ){
+void ImpulseConstraintSolver::solveGroupSetup( const vector< RigidBody* >& bodies, const vector< ManifoldPoint* >& infos, SolverInfo* infoGlobal ){
+	this->infoGlobal = infoGlobal;
 	solverBodyPool.erase( remove_if( solverBodyPool.begin(), solverBodyPool.end(),
 		[](SolverBody* element) -> bool {
 			delete element;
@@ -496,8 +497,8 @@ void ImpulseConstraintSolver::solveGroupSetup( const vector< RigidBody* >& bodie
 			solverBodyPool.push_back( solverBody );
 		}
 
-		solverBody->linVel += body->force * body->massInv * infoGlobal.m_timeStep;
-		solverBody->angVel += body->torque*body->getWorldInertiaInv()*infoGlobal.m_timeStep;
+		solverBody->linVel += body->force * body->massInv * infoGlobal->m_timeStep;
+		solverBody->angVel += body->torque*body->getWorldInertiaInv()*infoGlobal->m_timeStep;
 	}
 
 	for( uint i = 0; i < infos.size(); i++ ){
@@ -506,8 +507,8 @@ void ImpulseConstraintSolver::solveGroupSetup( const vector< RigidBody* >& bodie
 }
 
 void ImpulseConstraintSolver::solveGroupIterate( const vector< RigidBody* >& bodies, const vector< ManifoldPoint* >& infos ){
-	if (infoGlobal.m_splitImpulse){
-		for ( int iteration = 0; iteration < infoGlobal.m_numIterations; iteration++) {
+	if (infoGlobal->m_splitImpulse){
+		for ( int iteration = 0; iteration < infoGlobal->m_numIterations; iteration++) {
 			uint numPoolConstraints = contactConstraintPool.size();
 			for (uint j = 0 ; j < numPoolConstraints; j++) {
 				resolveSplitPenetrationImpulseCacheFriendly( contactConstraintPool[j] );
@@ -515,13 +516,13 @@ void ImpulseConstraintSolver::solveGroupIterate( const vector< RigidBody* >& bod
 		}
 	}
 
-	for ( int iteration = 0; iteration < infoGlobal.m_numIterations; iteration++){
+	for ( int iteration = 0; iteration < infoGlobal->m_numIterations; iteration++){
 		solveSingleIteration(iteration, bodies, infos);
 	}
 }
 
 void ImpulseConstraintSolver::solveGroupFinish( const vector< RigidBody* >& bodies ){
-	if (infoGlobal.m_solverMode & SOLVER_USE_WARMSTARTING){
+	if (infoGlobal->m_solverMode & SOLVER_USE_WARMSTARTING){
 		uint numPoolConstraints = contactConstraintPool.size();
 		for (uint i = 0; i < numPoolConstraints; i++){
 			const SolverConstraint& solveManifold = contactConstraintPool[i];
@@ -529,7 +530,7 @@ void ImpulseConstraintSolver::solveGroupFinish( const vector< RigidBody* >& bodi
 			info->m_appliedImpulse = solveManifold.m_appliedImpulse;
 
 			info->m_appliedImpulseLateral1 = frictionConstraintPool[solveManifold.m_frictionIndex].m_appliedImpulse;
-			if ((infoGlobal.m_solverMode & SOLVER_USE_2_FRICTION_DIRECTIONS)){
+			if ((infoGlobal->m_solverMode & SOLVER_USE_2_FRICTION_DIRECTIONS)){
 				info->m_appliedImpulseLateral2 = frictionConstraintPool[solveManifold.m_frictionIndex+1].m_appliedImpulse;
 			}
 		}
@@ -539,13 +540,13 @@ void ImpulseConstraintSolver::solveGroupFinish( const vector< RigidBody* >& bodi
 		SolverBody* sb = solverBodyPool[i];
 		RigidBody* rb = sb->originalBody;
 		if ( rb ){
-			if (infoGlobal.m_splitImpulse) sb->writebackVelocityAndTransform(infoGlobal.m_timeStep, infoGlobal.m_splitImpulseTurnErp);
+			if (infoGlobal->m_splitImpulse) sb->writebackVelocityAndTransform(infoGlobal->m_timeStep, infoGlobal->m_splitImpulseTurnErp);
 			else sb->writebackVelocity();
 
 			rb->linVel = sb->linVel;
 			rb->angVel = sb->angVel;
 
-			if (infoGlobal.m_splitImpulse){
+			if (infoGlobal->m_splitImpulse){
 				rb->pos = sb->pos;
 				rb->rot = sb->rot;
 			}

@@ -50,7 +50,7 @@ void World::update( float dt ){
 		e->applyForce( gravity * e->mass );
 	}
 
-	physics.processBodies( bodies );
+	physics.processBodies( bodies, dt );
 
 	if( IO::Input::isKeyPressed( IO::Input::R ) ){
 		Sphere* s = new Sphere( 2, vec3( 0, 30, 0 ) );

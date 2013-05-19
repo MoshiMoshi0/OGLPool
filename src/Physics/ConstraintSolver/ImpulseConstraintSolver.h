@@ -25,8 +25,8 @@ public:
 	ImpulseConstraintSolver();
 	virtual ~ImpulseConstraintSolver();
 
-	void solveGroup( const vector< RigidBody* >& bodies, const vector< ManifoldPoint* >& infos  );
-	void solveGroupSetup( const vector< RigidBody* >& bodies, const vector< ManifoldPoint* >& infos );
+	void solveGroup( const vector< RigidBody* >& bodies, const vector< ManifoldPoint* >& infos, SolverInfo* infoGlobal  );
+	void solveGroupSetup( const vector< RigidBody* >& bodies, const vector< ManifoldPoint* >& infos, SolverInfo* infoGlobal );
 	void solveGroupIterate( const vector< RigidBody* >& bodies, const vector< ManifoldPoint* >& infos );
 	void solveGroupFinish( const vector< RigidBody* >& bodies );
 
@@ -50,7 +50,7 @@ public:
 	vector< SolverConstraint > contactConstraintPool;
 	vector< SolverConstraint > rollingFrictionConstraintPool;
 
-	SolverInfo infoGlobal;
+	SolverInfo* infoGlobal;
 };
 
 }

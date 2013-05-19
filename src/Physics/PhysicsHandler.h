@@ -23,7 +23,7 @@ public:
 	PhysicsHandler();
 	virtual ~PhysicsHandler();
 
-	void processBodies( const vector< RigidBody* > bodies );
+	void processBodies( const vector< RigidBody* > bodies, float dt );
 	void solveCollisions( const vector< RigidBody* > bodies );
 
 	bool removeManifold( const RigidBody* e0, const RigidBody* e1 );
@@ -38,6 +38,7 @@ private:
 	map< int, ManifoldPoint* > broadphaseInfos;
 	vector< ManifoldPoint* > narrowphaseInfos;
 	ImpulseConstraintSolver solver;
+	SolverInfo infoGlobal;
 };
 
 }
