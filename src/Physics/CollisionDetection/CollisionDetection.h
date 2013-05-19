@@ -9,7 +9,6 @@
 #define COLLISIONRESPONSE_H_
 
 #include "cdSpherePlane.h"
-#include "cdSphereRay.h"
 #include "cdSphereSphere.h"
 
 #endif /* COLLISIONRESPONSE_H_ */

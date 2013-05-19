@@ -17,7 +17,7 @@ namespace Physics {
 
 class ImpulseConstraint : public Constraint {
 public:
-	ImpulseConstraint( Entity* e0, Entity* e1 );
+	ImpulseConstraint( RigidBody* e0, RigidBody* e1 );
 	virtual ~ImpulseConstraint();
 
 	vec3 impulse;

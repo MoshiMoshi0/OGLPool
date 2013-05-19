@@ -8,12 +8,12 @@
 #ifndef SPHERE_H_
 #define SPHERE_H_
 
-#include <Entity/Entity.h>
+#include <RigidBody/RigidBody.h>
 #include <SFML/OpenGL.hpp>
 
 namespace OGLPool {
 
-class Sphere : public Entity {
+class Sphere : public RigidBody {
 public:
 	Sphere( float radius );
 	Sphere( float radius, vec3 pos );

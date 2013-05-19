@@ -16,8 +16,8 @@ bool spherePlaneIntersection(){
 	return false;
 }
 
-bool spherePlaneSwept( Sphere* s, Plane* p, ContactInfo* info ){
-	vec3 vel = s->vel * info->deltaTime;
+bool spherePlaneSwept( Sphere* s, Plane* p, ManifoldPoint* info ){
+	vec3 vel = s->linVel * info->deltaTime;
 	float dist = dot( p->normal, s->pos ) - dot( p->normal, p->pos );
 	float denom = dot( p->normal, vel );
 	if( denom * dist >= 0.0f ){
@@ -26,7 +26,7 @@ bool spherePlaneSwept( Sphere* s, Plane* p, ContactInfo* info ){
 
 	float r = dist > 0.0f ? s->radius : -s->radius;
 	float t = ( r - dist ) / denom;
-	if( t > 1 || t < 0 ) return false;
+	if( t < 0 || t > 1 ) return false;
 
 	vec3 point = s->pos + t * vel - r * p->normal;
 
@@ -34,14 +34,12 @@ bool spherePlaneSwept( Sphere* s, Plane* p, ContactInfo* info ){
 	info->point0 = point;
 	info->point1 = point;
 	info->normal = p->normal;
-	info->setColliding( true );
-
 	return true;
 }
 
-bool spherePlaneOverlap( Sphere* s, Plane* p, ContactInfo* info ){
+bool spherePlaneOverlap( Sphere* s, Plane* p, ManifoldPoint* info ){
 	float dist = dot( p->normal, s->pos ) - dot( p->normal, p->pos );
-	if( fabs( dist ) > s->radius ) return false;
+	if( dist > s->radius ) return false;
 
 	float penetration = s->radius - fabs( dist );
 	info->time = 0;
@@ -49,11 +47,10 @@ bool spherePlaneOverlap( Sphere* s, Plane* p, ContactInfo* info ){
 	info->point1 = s->pos - p->normal * (s->radius - penetration);
 	info->depth = -penetration;
 	info->normal = p->normal;
-	info->setOverlapping( true );
 	return true;
 }
 
-bool spherePlaneTest( Sphere* s, Plane* p, ContactInfo* info ){
+bool spherePlaneTest( Sphere* s, Plane* p, ManifoldPoint* info ){
 	info->setEntities( s, p );
 	if( spherePlaneOverlap( s, p, info ) ) return true;
 	return spherePlaneSwept( s, p, info );

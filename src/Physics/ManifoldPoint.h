@@ -8,32 +8,23 @@
 #ifndef CONTACTINFO_H_
 #define CONTACTINFO_H_
 
-#include <Entity/Entity.h>
+#include <RigidBody/RigidBody.h>
 #include <glm/glm.hpp>
 
 using namespace glm;
 
 namespace OGLPool {
 
-class ContactInfo {
+class ManifoldPoint {
 public:
-	enum {
-		INVALID = -1, OVERLAPPING = 1, COLLIDING
-	};
+	ManifoldPoint( float deltaTime );
+	virtual ~ManifoldPoint();
 
-	ContactInfo( float deltaTime );
-	virtual ~ContactInfo();
+	void setEntities( RigidBody* e0, RigidBody* e1 );
+	void reset();
 
-	bool isOverlapping();
-	bool isColliding();
-	bool isValid();
-
-	void setOverlapping( bool f );
-	void setColliding( bool f );
-	void setEntities( Entity* e0, Entity* e1 );
-
-	Entity* e0;
-	Entity* e1;
+	RigidBody* e0;
+	RigidBody* e1;
 
 	vec3 normal;
 	vec3 point0;
@@ -43,7 +34,6 @@ public:
 	float time;
 
 	float deltaTime;
-
 
 	float m_combinedRollingFriction;
 	float m_combinedFriction;
@@ -55,8 +45,6 @@ public:
 	bool m_lateralFrictionInitialized;
 	vec3 m_lateralFrictionDir1;
 	vec3 m_lateralFrictionDir2;
-private:
-	int contactType;
 };
 
 } /* namespace OGLPool */

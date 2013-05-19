@@ -8,20 +8,20 @@
 #ifndef CONSTRAINT_H_
 #define CONSTRAINT_H_
 
-#include <Entity/Entity.h>
+#include <RigidBody/RigidBody.h>
 
 namespace OGLPool {
 namespace Physics {
 
 class Constraint {
 public:
-	Constraint( Entity* e0, Entity* e1 );
+	Constraint( RigidBody* e0, RigidBody* e1 );
 	virtual ~Constraint();
 
 	float appliedImpulse;
 
-	Entity* e0;
-	Entity* e1;
+	RigidBody* e0;
+	RigidBody* e1;
 };
 
 } /* namespace Physics */

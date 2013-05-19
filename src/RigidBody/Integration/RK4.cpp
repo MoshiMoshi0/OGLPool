@@ -9,20 +9,20 @@
 
 namespace OGLPool {
 
-vec3 RK4::linAcc( Entity* e ){
+vec3 RK4::linAcc( RigidBody* e ){
 	return e->force * e->massInv;
 }
 
-vec3 RK4::angAcc( Entity* e ){
+vec3 RK4::angAcc( RigidBody* e ){
 	return e->inertiaInv * e->torque;
 }
 
-Derivative RK4::eval(Entity* e, float dt ){
-	return Derivative( e->vel, linAcc( e ), e->rot, angAcc( e ) );
+Derivative RK4::eval(RigidBody* e, float dt ){
+	return Derivative( e->linVel, linAcc( e ), e->rot, angAcc( e ) );
 }
 
-Derivative RK4::eval(Entity* e, float dt, Derivative derivative ){
-	vec3 v = e->vel + derivative.acc * dt;
+Derivative RK4::eval(RigidBody* e, float dt, Derivative derivative ){
+	vec3 v = e->linVel + derivative.acc * dt;
 
 	quat rot = e->rot + derivative.spin * dt;
 	vec3 av = e->angVel + derivative.angAcc * dt;
@@ -31,7 +31,7 @@ Derivative RK4::eval(Entity* e, float dt, Derivative derivative ){
 	return Derivative( v, linAcc( e ), spin, angAcc( e ) );
 }
 
-void RK4::integrate( Entity* e, float dt ){
+void RK4::integrate( RigidBody* e, float dt ){
 	Derivative a = eval(e, 0.0f);
 	Derivative b = eval(e, dt*0.5f, a);
 	Derivative c = eval(e, dt*0.5f, b);
@@ -43,7 +43,7 @@ void RK4::integrate( Entity* e, float dt ){
 	vec3 angAcc = 1/6.f * ( a.angAcc + 2.0f  * (b.angAcc + c.angAcc ) + d.angAcc );
 
 	e->pos = e->pos + vel * dt;
-	e->vel = e->vel + acc * dt;
+	e->linVel = e->linVel + acc * dt;
 	e->angVel = e->angVel + angAcc * dt;
 	e->rot = normalize( e->rot + spin * dt );
 }

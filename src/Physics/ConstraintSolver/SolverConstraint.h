@@ -9,7 +9,7 @@
 #define SOLVERCONSTRAINT_H_
 
 #include "SolverBody.h"
-#include <Physics/ContactInfo.h>
+#include <Physics/ManifoldPoint.h>
 
 namespace OGLPool {
 namespace Physics {
@@ -42,7 +42,7 @@ struct SolverConstraint {
 
 	uint m_frictionIndex;
 
-	ContactInfo* m_originalContactPoint;
+	ManifoldPoint* m_originalContactPoint;
 };
 
 }

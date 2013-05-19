@@ -10,7 +10,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
-#include <Entity/Entity.h>
+#include <RigidBody/RigidBody.h>
 
 using namespace glm;
 
@@ -30,12 +30,12 @@ public:
 
 class RK4 {
 public:
-	static void integrate( Entity* e, float dt );
+	static void integrate( RigidBody* e, float dt );
 private:
-	static Derivative eval(Entity* e, float dt );
-	static Derivative eval( Entity* e, float dt, Derivative derivative );
-	static vec3 linAcc( Entity* e );
-	static vec3 angAcc( Entity* e );
+	static Derivative eval(RigidBody* e, float dt );
+	static Derivative eval( RigidBody* e, float dt, Derivative derivative );
+	static vec3 linAcc( RigidBody* e );
+	static vec3 angAcc( RigidBody* e );
 };
 
 } /* namespace OGLPool */

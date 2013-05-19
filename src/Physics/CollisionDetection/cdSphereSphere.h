@@ -8,8 +8,8 @@
 #ifndef CDSPHERESPHERE_H_
 #define CDSPHERESPHERE_H_
 
-#include <Physics/ContactInfo.h>
-#include <Entity/Sphere.h>
+#include <Physics/ManifoldPoint.h>
+#include <RigidBody/Sphere.h>
 #include <glm/glm.hpp>
 using namespace glm;
 
@@ -17,9 +17,9 @@ namespace OGLPool {
 namespace Physics {
 
 bool sphereSphereIntersection( Sphere* s0, Sphere* s1 );
-bool sphereSphereSwept( Sphere* s0, Sphere* s1, ContactInfo* info );
-bool sphereSphereOverlap( Sphere* s0, Sphere* s1, ContactInfo* info );
-bool sphereSphereTest( Sphere* s0, Sphere* s1, ContactInfo* info );
+bool sphereSphereSwept( Sphere* s0, Sphere* s1, ManifoldPoint* info );
+bool sphereSphereOverlap( Sphere* s0, Sphere* s1, ManifoldPoint* info );
+bool sphereSphereTest( Sphere* s0, Sphere* s1, ManifoldPoint* info );
 
 } /* namespace Physics */
 } /* namespace OGLPool */

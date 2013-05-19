@@ -10,7 +10,7 @@
 namespace OGLPool {
 namespace Physics {
 
-ImpulseConstraint::ImpulseConstraint( Entity* e0, Entity* e1 ) : Constraint(e0, e1) {
+ImpulseConstraint::ImpulseConstraint( RigidBody* e0, RigidBody* e1 ) : Constraint(e0, e1) {
 }
 
 ImpulseConstraint::~ImpulseConstraint() {

@@ -8,11 +8,11 @@
 #ifndef PLANE_H_
 #define PLANE_H_
 
-#include <Entity/Entity.h>
+#include <RigidBody/RigidBody.h>
 
 namespace OGLPool {
 
-class Plane : public Entity {
+class Plane : public RigidBody {
 public:
 	Plane( vec3 normal, vec3 point );
 	virtual ~Plane();

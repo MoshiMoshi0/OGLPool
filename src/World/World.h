@@ -9,10 +9,11 @@
 #define WORLD_H_
 
 #include <vector>
-#include <Entity/Entity.h>
-#include <Entity/Plane.h>
-#include <Physics/ConstraintSolver/ImpulseConstraintSolver.h>
+#include <RigidBody/RigidBody.h>
+#include <Physics/PhysicsHandler.h>
 using namespace std;
+using namespace OGLPool::Physics;
+
 namespace OGLPool {
 
 class World {
@@ -23,11 +24,12 @@ public:
 	void render();
 	void update( float dt );
 
-	void addEntity( Entity* e );
+	void addEntity( RigidBody* e );
 private:
-	Physics::ImpulseConstraintSolver solver;
-	vector< Entity* > entities;
+	vector< RigidBody* > bodies;
 	vec3 gravity;
+
+	PhysicsHandler physics;
 };
 
 } /* namespace OGLPool */
