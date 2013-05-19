@@ -6,28 +6,43 @@
  */
 
 #include <SFML/Window.hpp>
+#include <SFML/OpenGL.hpp>
+#include <glm/glm.hpp>
+using namespace glm;
+using namespace sf;
 
 using namespace sf;
 namespace OGLPool {
 	namespace IO {
-		class Input : public sf::Keyboard {
+		class Input : public Keyboard, public Mouse {
 		protected:
 			static Input* instance;
-			bool bState[ sf::Keyboard::KeyCount ];
-			bool bPressed[ sf::Keyboard::KeyCount ];
-			bool bReleased[ sf::Keyboard::KeyCount ];
+			bool kState[ Keyboard::KeyCount ];
+			bool kPressed[ Keyboard::KeyCount ];
+			bool kReleased[ Keyboard::KeyCount ];
+
+			bool bState[ Mouse::ButtonCount ];
+			bool bPressed[ Mouse::ButtonCount ];
+			bool bReleased[ Mouse::ButtonCount ];
 		private:
-			sf::Window* window;
-			sf::Vector2i mousePos, oldMousePos, mouseDisp;
+			Window* window;
+			ivec2 mousePos, oldMousePos, mouseDisp;
 
 			Input(){}
 			void updateImpl(){
-				mousePos = sf::Mouse::getPosition( *window );
+				mousePos = getPosition( *window );
 				mouseDisp = mousePos - oldMousePos;
 				oldMousePos = mousePos;
 
-				for( int i = 0; i < sf::Keyboard::KeyCount; i++ ){
+				for( int i = 0; i < Keyboard::KeyCount; i++ ){
 					bool current = isKeyPressed( (Key)i );
+					kPressed[ i ] = !kState[ i ] && current;
+					kReleased[ i ] = kState[ i ] && !current;
+					kState[ i ] = current;
+				}
+
+				for( int i = 0; i < Mouse::ButtonCount; i++ ){
+					bool current = isButtonPressed( (Button)i );
 					bPressed[ i ] = !bState[ i ] && current;
 					bReleased[ i ] = bState[ i ] && !current;
 					bState[ i ] = current;
@@ -36,23 +51,50 @@ namespace OGLPool {
 		public:
 			Input( Window* window ){
 				this->window = window;
-				mousePos = oldMousePos = sf::Mouse::getPosition( *window );
+				mousePos = oldMousePos = getPosition( *window );
 			}
-			static void init( Window* window ){
-				instance = new Input( window );
-			}
+			static void init( Window* window ){ instance = new Input( window ); }
 
 			static void update(){ instance->updateImpl(); }
+
+			static bool onKeyPressed(Key key){ return instance->kPressed[ key ]; }
+			static bool onKeyReleased(Key key){ return instance->kReleased[ key ]; }
+
+			static bool onButtonPressed(Button button){ return instance->bPressed[ button ]; }
+			static bool onButtonReleased(Button button){ return instance->bReleased[ button ]; }
+
 			static int getMouseX(){ return instance->mousePos.x; }
 			static int getMouseY(){ return instance->mousePos.y; }
-			static Vector2i getMousePosition(){ return instance->mousePos; }
-
+			static ivec2 getMousePosition(){ return ivec2(instance->mousePos.x, instance->mousePos.y); }
+			static ivec2 getPosition(const Window& relativeTo){ Vector2i pos = Mouse::getPosition( relativeTo ); return ivec2( pos.x, pos.y ); }
 			static int getMouseDX(){ return instance->mouseDisp.x; }
 			static int getMouseDY(){ return instance->mouseDisp.y; }
-			static Vector2i getMouseDisplacement(){ return instance->mouseDisp; }
+			static ivec2 getMouseDisplacement(){ return ivec2(instance->mouseDisp.x, instance->mouseDisp.y); }
 
-			static bool onKeyPressed(Key key){ return instance->bPressed[ key ]; }
-			static bool onKeyReleased(Key key){ return instance->bReleased[ key ]; }
+			static vec3 getMouseRayDir(){
+				int x = IO::Input::getMouseX();
+				int y = IO::Input::getMouseY();
+
+			    int viewport[4];
+			    double modelview[16];
+			    double projection[16];
+			    double wx, wy, wz;
+			    double x0, y0, z0;
+			    double x1, y1, z1;
+
+			    glGetDoublev( GL_MODELVIEW_MATRIX, modelview );
+			    glGetDoublev( GL_PROJECTION_MATRIX, projection );
+			    glGetIntegerv( GL_VIEWPORT, viewport );
+
+			    wx = x;
+			    wy = viewport[3] - y;
+			    glReadPixels( x, int(wy), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &wz );
+
+			    gluUnProject( wx, wy, 0, modelview, projection, viewport, &x0, &y0, &z0);
+			    gluUnProject( wx, wy, wz, modelview, projection, viewport, &x1, &y1, &z1);
+
+			    return vec3( x1 - x0, y1 - y0, z1 - z0 );
+			}
 		};
 	}
 } /* namespace OGLPool */
