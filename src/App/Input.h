@@ -78,7 +78,6 @@ namespace OGLPool {
 			    int viewport[4];
 			    double modelview[16];
 			    double projection[16];
-			    double wx, wy, wz;
 			    double x0, y0, z0;
 			    double x1, y1, z1;
 
@@ -86,14 +85,10 @@ namespace OGLPool {
 			    glGetDoublev( GL_PROJECTION_MATRIX, projection );
 			    glGetIntegerv( GL_VIEWPORT, viewport );
 
-			    wx = x;
-			    wy = viewport[3] - y;
-			    glReadPixels( x, int(wy), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &wz );
+			    gluUnProject( x, viewport[3] - y, 0, modelview, projection, viewport, &x0, &y0, &z0);
+			    gluUnProject( x, viewport[3] - y, 1, modelview, projection, viewport, &x1, &y1, &z1);
 
-			    gluUnProject( wx, wy, 0, modelview, projection, viewport, &x0, &y0, &z0);
-			    gluUnProject( wx, wy, wz, modelview, projection, viewport, &x1, &y1, &z1);
-
-			    return vec3( x1 - x0, y1 - y0, z1 - z0 );
+			    return normalize( vec3( x1 - x0, y1 - y0, z1 - z0 ) );
 			}
 		};
 	}
