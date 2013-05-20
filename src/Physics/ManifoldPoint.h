@@ -17,7 +17,7 @@ namespace OGLPool {
 
 class ManifoldPoint {
 public:
-	ManifoldPoint( float deltaTime );
+	ManifoldPoint( float deltaTime = 0.0f );
 	virtual ~ManifoldPoint();
 
 	void setEntities( RigidBody* e0, RigidBody* e1 );
