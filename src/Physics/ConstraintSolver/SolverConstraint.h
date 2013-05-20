@@ -20,29 +20,29 @@ struct SolverConstraint {
 	SolverBody* sb0;
 	SolverBody* sb1;
 
-	vec3 m_relpos1CrossNormal;
-	vec3 m_contactNormal;
+	vec3 r0CrossN;
+	vec3 r1CrossN;
 
-	vec3 m_relpos2CrossNormal;
+	vec3 contactNormal;
 
-	vec3 m_angularComponentA;
-	vec3 m_angularComponentB;
+	vec3 angularComponent0;
+	vec3 angularComponent1;
 
-	float m_appliedPushImpulse;
-	float m_appliedImpulse;
+	float appliedPushImpulse;
+	float appliedImpulse;
 
-	float m_friction;
+	float friction;
 	float m_jacDiagABInv;
-	float m_rhs;
-	float m_cfm;
+	float rhs;
+	float cfm;
 
-	float m_lowerLimit;
-	float m_upperLimit;
-	float m_rhsPenetration;
+	float lowerLimit;
+	float upperLimit;
+	float rhsPenetration;
 
-	uint m_frictionIndex;
+	uint frictionIndex;
 
-	ManifoldPoint* m_originalContactPoint;
+	ManifoldPoint* originalPoint;
 };
 
 }

@@ -71,7 +71,7 @@ bool sphereSphereSwept( Sphere* s0, Sphere* s1, ManifoldPoint* info ){
 }
 
 bool sphereSphereTest( Sphere* s0, Sphere* s1, ManifoldPoint* info ){
-	info->setEntities( s0, s1 );
+	info->setBodies( s0, s1 );
 	if( sphereSphereOverlap( s0, s1, info ) ) return true;
 	return sphereSphereSwept( s0, s1, info );
 }

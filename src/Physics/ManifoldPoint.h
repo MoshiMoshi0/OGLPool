@@ -20,7 +20,7 @@ public:
 	ManifoldPoint( float deltaTime = 0.0f );
 	virtual ~ManifoldPoint();
 
-	void setEntities( RigidBody* e0, RigidBody* e1 );
+	void setBodies( RigidBody* e0, RigidBody* e1 );
 	void reset();
 
 	RigidBody* e0;
@@ -35,16 +35,16 @@ public:
 
 	float deltaTime;
 
-	float m_combinedRollingFriction;
-	float m_combinedFriction;
-	float m_combinedRestitution;
-	float m_appliedImpulse;
+	float combinedRollingFriction;
+	float combinedFriction;
+	float combinedRestitution;
+	float appliedImpulse;
 
-	float m_appliedImpulseLateral1;
-	float m_appliedImpulseLateral2;
-	bool m_lateralFrictionInitialized;
-	vec3 m_lateralFrictionDir1;
-	vec3 m_lateralFrictionDir2;
+	float appliedImpulseLateral1;
+	float appliedImpulseLateral2;
+	bool lateralFrictionInitialized;
+	vec3 lateralFrictionDir1;
+	vec3 lateralFrictionDir2;
 };
 
 } /* namespace OGLPool */

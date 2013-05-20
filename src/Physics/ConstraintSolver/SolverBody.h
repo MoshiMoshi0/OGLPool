@@ -32,12 +32,12 @@ struct SolverBody {
 		massInv = e->massInv;
 	}
 
-	RigidBody*	originalBody;
+	RigidBody* originalBody;
 
-	vec3 m_deltaLinearVelocity;
-	vec3 m_deltaAngularVelocity;
-	vec3 m_pushVelocity;
-	vec3 m_turnVelocity;
+	vec3 deltaLinearVelocity;
+	vec3 deltaAngularVelocity;
+	vec3 pushVelocity;
+	vec3 turnVelocity;
 
 	vec3 linVel;
 	vec3 angVel;
@@ -46,26 +46,26 @@ struct SolverBody {
 
 	float massInv;
 
-	void internalApplyImpulse(const vec3& linearComponent, const vec3& angularComponent,float impulseMagnitude){
-		m_deltaLinearVelocity += linearComponent*impulseMagnitude;
-		m_deltaAngularVelocity += angularComponent*impulseMagnitude;
+	void internalApplyImpulse(const vec3& linearComponent, const vec3& angularComponent, float impulse){
+		deltaLinearVelocity += linearComponent * impulse;
+		deltaAngularVelocity += angularComponent * impulse;
 	}
 
-	void internalApplyPushImpulse(const vec3& linearComponent, const vec3& angularComponent,float impulseMagnitude) {
-		m_pushVelocity += linearComponent*impulseMagnitude;
-		m_turnVelocity += angularComponent*impulseMagnitude;
+	void internalApplyPushImpulse(const vec3& linearComponent, const vec3& angularComponent, float impulse) {
+		pushVelocity += linearComponent * impulse;
+		turnVelocity += angularComponent* impulse;
 	}
 
 	void writebackVelocity() {
-		linVel += m_deltaLinearVelocity;
-		angVel += m_deltaAngularVelocity;
+		linVel += deltaLinearVelocity;
+		angVel += deltaAngularVelocity;
 	}
 
 	void writebackVelocityAndTransform(float timeStep, float splitImpulseTurnErp){
 		writebackVelocity();
 
 		//if( dot( m_pushVelocity, m_pushVelocity ) != 0 || dot( m_turnVelocity, m_turnVelocity ) != 0 ){
-			Euler::integrate( m_pushVelocity, m_turnVelocity*splitImpulseTurnErp, pos, rot, timeStep );
+			Euler::integrate( pushVelocity, turnVelocity*splitImpulseTurnErp, pos, rot, timeStep );
 		//}
 	}
 };

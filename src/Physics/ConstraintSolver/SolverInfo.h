@@ -20,45 +20,33 @@ enum SolverMode {
 };
 
 struct SolverInfo {
-	//float m_tau;
-	//float m_damping;
-	//float m_friction;
-	float m_timeStep;
-	//float m_restitution;
-	int m_numIterations;
-	//float m_maxErrorReduction;
-	//float m_sor;
-	float m_erp;
-	float m_erp2;
-	//float m_globalCfm;
-	int m_splitImpulse;
-	float m_splitImpulsePenetrationThreshold;
-	float m_splitImpulseTurnErp;
-	float m_linearSlop;
-	float m_warmstartingFactor;
+	float timeStep;
+	int iterations;
+	float erp;
+	float erp2;
 
-	int	m_solverMode;
-	float m_singleAxisRollingFrictionThreshold;
+	bool splitImpulse;
+	float splitImpulsePenetrationThreshold;
+	float splitImpulseTurnErp;
+
+	float linearSlop;
+	float warmstartingFactor;
+
+	int	solverMode;
+	float singleAxisRollingFrictionThreshold;
 
 	SolverInfo(){
-		//m_tau = 0.6f;
-		//m_damping = 1.0f;
-		//m_friction = 0.3f;
-		m_timeStep = 1.f/60.f;
-		//m_restitution = 0.0f;
-		//m_maxErrorReduction = 20.0f;
-		m_numIterations = 10;
-		m_erp = 0.2f;
-		m_erp2 = 0.8f;
-		//m_globalCfm = 0.0f;
-		//m_sor = 1.0f;
-		m_splitImpulse = true;
-		m_splitImpulsePenetrationThreshold = -0.04f;
-		m_splitImpulseTurnErp = 0.1f;
-		m_linearSlop = 0.0f;
-		m_warmstartingFactor = 0.85f;
-		m_solverMode = SOLVER_RANDMIZE_ORDER | SOLVER_USE_WARMSTARTING | SOLVER_USE_2_FRICTION_DIRECTIONS | SOLVER_ENABLE_FRICTION_DIRECTION_CACHING;
-		m_singleAxisRollingFrictionThreshold = 1e30f;
+		timeStep = 1.f/60.f;
+		iterations = 10;
+		erp = 0.2f;
+		erp2 = 0.8f;
+		splitImpulse = true;
+		splitImpulsePenetrationThreshold = -0.04f;
+		splitImpulseTurnErp = 0.1f;
+		linearSlop = 0.0f;
+		warmstartingFactor = 0.85f;
+		solverMode = SOLVER_RANDMIZE_ORDER | SOLVER_USE_WARMSTARTING | SOLVER_USE_2_FRICTION_DIRECTIONS | SOLVER_ENABLE_FRICTION_DIRECTION_CACHING;
+		singleAxisRollingFrictionThreshold = 1e30f;
 	}
 };
 

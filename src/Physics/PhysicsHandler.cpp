@@ -25,7 +25,7 @@ PhysicsHandler::~PhysicsHandler(){
 }
 
 void PhysicsHandler::processBodies( const vector< RigidBody* > bodies, float dt ){
-	infoGlobal.m_timeStep = dt;
+	infoGlobal.timeStep = dt;
 	for( auto it0 = bodies.begin(); it0 != bodies.end() - 1; it0++ ){
 		for( auto it1 = it0 + 1; it1 != bodies.end(); it1++ ){
 			RigidBody* e0 = (*it0);

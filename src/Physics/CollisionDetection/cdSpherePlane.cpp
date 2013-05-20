@@ -51,7 +51,7 @@ bool spherePlaneOverlap( Sphere* s, Plane* p, ManifoldPoint* info ){
 }
 
 bool spherePlaneTest( Sphere* s, Plane* p, ManifoldPoint* info ){
-	info->setEntities( s, p );
+	info->setBodies( s, p );
 	if( spherePlaneOverlap( s, p, info ) ) return true;
 	return spherePlaneSwept( s, p, info );
 }

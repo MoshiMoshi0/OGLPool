@@ -31,9 +31,9 @@ public:
 	void solveGroupFinish( const vector< RigidBody* >& bodies );
 
 	void solveSingleIteration( int iteration, const vector< RigidBody* >& bodies, const vector< ManifoldPoint* >& infos );
-	void resolveSingleConstraintRowLowerLimit(SolverConstraint& c);
-	void resolveSingleConstraintRowGeneric(SolverConstraint& c);
-	void resolveSplitPenetrationImpulseCacheFriendly( SolverConstraint& c );
+	void resolveSingleConstraintRowLowerLimit( SolverConstraint& constraint );
+	void resolveSingleConstraintRowGeneric( SolverConstraint& constraint );
+	void resolveSplitPenetrationImpulseCacheFriendly( SolverConstraint& constraint );
 	void setFrictionConstraintImpulse( SolverConstraint& constraint, SolverBody* sb0, SolverBody* sb1, ManifoldPoint* info );
 
 	void setupContactConstraint( SolverConstraint& constraint, SolverBody* sb0, SolverBody* sb1, const vec3& r0, const vec3& r1, const vec3& n, ManifoldPoint* info, float& relaxation, vec3& vel, float& rel_vel );
