@@ -28,6 +28,7 @@ public:
 	T& operator[](int i);
 private:
 	T vertices[ 3 ];
+	Edge<T> edges[ 3 ];
 };
 
 typedef Triangle< vec2 > Triangle2;

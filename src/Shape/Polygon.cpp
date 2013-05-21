@@ -16,25 +16,19 @@ Polygon::~Polygon() {}
 
 void Polygon::draw(){
 	glBegin( GL_LINES );
-		for( unsigned int i = 0; i < edges.size(); i++ ){
-			glVertex3f( edges[i][0].x, 0, edges[i][0].y );
-			glVertex3f( edges[i][1].x, 0, edges[i][1].y );
+		for( auto& edge : edges ){
+			glVertex3f( edge[0].x, 0, edge[0].y );
+			glVertex3f( edge[1].x, 0, edge[1].y );
 		}
 	glEnd();
 }
 
-unsigned int Polygon::size(){
-	return edges.size();
+void Polygon::addPoint( vec2 point ){
+	points.push_back( point );
 }
 
-void Polygon::addEdge( vec2 v0, vec2 v1 ){
-	edges.push_back( Edge2( v0, v1 ) );
-	points.push_back( v0 );
-}
-
-void Polygon::addEdge( Edge2 e ){
-	edges.push_back( e );
-	points.push_back( e[0] );
+void Polygon::addEdge( Edge2 edge ){
+	edges.push_back( edge );
 }
 
 } /* namespace OGLPool */

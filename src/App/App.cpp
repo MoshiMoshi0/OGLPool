@@ -17,6 +17,11 @@ namespace OGLPool {
 App::App( int width, int height ) {
 	this->width = width;
 	this->height = height;
+
+	camera = 0;
+	window = 0;
+	world = 0;
+	initialized = false;
 }
 
 App::~App() {
@@ -103,7 +108,8 @@ bool App::init() {
 	glEnable(GL_LIGHT0);
 	glEnable(GL_DEPTH_TEST);
 
-	Debug::init();	initialized = true;
+	Debug::init();
+	initialized = true;
 	return true;
 }
 

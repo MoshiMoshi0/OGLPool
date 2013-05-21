@@ -27,12 +27,12 @@ public:
 	void triangulate( const vector< vec2 >& points );
 	void triangulate( const vector< vec2 >& points, vector< Triangle2 >& tris );
 	void triangulate( const vector< vec3 >& points, vector< Triangle3 >& tris );
+	int getTriangleCount();
 	vector< DEdge > getDEdges();
 	vector< Edge2 > getEdges();
 	vector< vec2 > getPoints();
 	vector< Triangle2 > getTriangles();
 	vector< ivec3 > getTriangleIndices();
-	bool isValid();
 
 	enum DEdgeType {
 		UNDEFINED = -2,

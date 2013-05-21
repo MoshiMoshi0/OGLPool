@@ -12,13 +12,12 @@ using namespace std;
 
 namespace OGLPool {
 
-Delaunay::Delaunay() { state = DState::VALID; }
+Delaunay::Delaunay() {
+	state = DState::VALID;
+	u = s = t = bP = nFaces = 0;
+}
 
 Delaunay::~Delaunay() {}
-
-bool Delaunay::isValid(){
-	return state == DState::VALID;
-}
 
 vector< ivec3 > Delaunay::getTriangleIndices(){
 	vector< ivec3 > ret;
@@ -27,7 +26,7 @@ vector< ivec3 > Delaunay::getTriangleIndices(){
 		bool firstEdge = true;
 		int i0, i1, i2;
 
-		for( int j = 0; j < edges.size(); j++ ){
+		for( uint j = 0; j < edges.size(); j++ ){
 			DEdge e = edges[j];
 
 			if( i == e.l || i == e.r ){
@@ -49,7 +48,10 @@ vector< ivec3 > Delaunay::getTriangleIndices(){
 }
 
 void Delaunay::triangulate( const vector< vec2 >& points ){
-	if( state == DState::INVALID ) return;
+	if( state == DState::INVALID ){
+		this->points.clear();
+		this->edges.clear();
+	}
 	this->points = vector<vec2> (points);
 
 	u = s = t = bP = nFaces = 0;
@@ -91,6 +93,10 @@ void Delaunay::triangulate( const vector< vec3 >& points3, vector< Triangle3 >& 
 	for( unsigned int i = 0; i < idx.size(); i++ ){
 		tris.push_back( Triangle3( points3[ idx[i].x ], points3[ idx[i].y ], points3[ idx[i].z ] ) );
 	}
+}
+
+int Delaunay::getTriangleCount(){
+	return nFaces;
 }
 
 vector< DEdge > Delaunay::getDEdges(){

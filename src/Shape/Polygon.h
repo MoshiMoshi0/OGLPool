@@ -23,14 +23,11 @@ public:
 
 	void draw();
 
-	unsigned int size();
+	void addPoint( vec2 point );
+	void addEdge( Edge2 edge );
 protected:
-	void addEdge( vec2 v0, vec2 v1 );
-	void addEdge( Edge2 e );
-
-private:
-	vector< Edge2 > edges;
 	vector< vec2 > points;
+	vector< Edge2 > edges;
 };
 
 } /* namespace OGLPool */
