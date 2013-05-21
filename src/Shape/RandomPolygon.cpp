@@ -6,7 +6,7 @@
  */
 
 #include "RandomPolygon.h"
-#include <Misc/Delaunay.h>
+#include <Util/Triangulation/Delaunay.h>
 #include <glm/gtc/random.hpp>
 #include <glm/gtx/vector_angle.hpp>
 #include <algorithm>
