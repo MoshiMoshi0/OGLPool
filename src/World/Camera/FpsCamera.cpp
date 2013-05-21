@@ -23,9 +23,11 @@ void FpsCamera::update( float dt ){
 	int fd = Input::isKeyPressed( IO::Input::W ) - Input::isKeyPressed( IO::Input::S );
 	int sd = Input::isKeyPressed( IO::Input::D ) - Input::isKeyPressed( IO::Input::A );
 	int ud = Input::isKeyPressed( IO::Input::Space ) - Input::isKeyPressed( IO::Input::LControl );
-	moveForward( fd * 0.1f );
-	moveRight( sd * 0.1f );
-	moveUp( ud * 0.2f );
+	float boost = Input::isKeyPressed( IO::Input::LShift ) * 4;
+
+	moveForward( fd * 0.1f * ( 1 + boost ) );
+	moveRight( sd * 0.1f * ( 1 + boost ) );
+	moveUp( ud * 0.2f * ( 1 + boost ) );
 }
 
 void FpsCamera::setLookAt( vec3 lookAt ){
@@ -35,6 +37,10 @@ void FpsCamera::setLookAt( vec3 lookAt ){
 
 void FpsCamera::rotateY( float angle ){
 	rotate( vec3(0,1,0), angle );
+}
+
+void FpsCamera::moveUp( float speed ){
+	move( vec3(0,1,0), speed );
 }
 
 } /* namespace OGLPool */

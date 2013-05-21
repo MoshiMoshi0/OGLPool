@@ -8,10 +8,12 @@
 #ifndef WORLD_H_
 #define WORLD_H_
 
-#include <list>
-#include <Entity/Entity.h>
-
+#include <vector>
+#include <RigidBody/RigidBody.h>
+#include <Physics/PhysicsHandler.h>
 using namespace std;
+using namespace OGLPool::Physics;
+
 namespace OGLPool {
 
 class World {
@@ -22,9 +24,12 @@ public:
 	void render();
 	void update( float dt );
 
-	void addEntity( Entity* e );
+	void addEntity( RigidBody* e );
 private:
-	list< Entity* > entities;
+	vector< RigidBody* > bodies;
+	vec3 gravity;
+
+	PhysicsHandler physics;
 };
 
 } /* namespace OGLPool */

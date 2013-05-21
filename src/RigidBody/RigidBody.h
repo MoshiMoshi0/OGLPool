@@ -10,17 +10,19 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
+#include "BoundingBox.h"
 using namespace glm;
 
 namespace OGLPool {
 
-class Entity {
+class RigidBody {
 private:
 	static int s_id;
 public:
-	Entity();
-	Entity( vec3 pos );
-	virtual ~Entity();
+	RigidBody();
+	RigidBody( vec3 pos );
+	RigidBody( RigidBody* e );
+	virtual ~RigidBody();
 
 	virtual void render(){};
 	virtual void update( float dt ){};
@@ -28,6 +30,8 @@ public:
 	virtual void applyForce( const vec3& f );
 	virtual void applyOffsetForce( const vec3& f, const vec3& p );
 	virtual void applyTorque( const vec3& f, const vec3& p );
+	virtual void applyImpulse( const vec3& r, const vec3& i );
+	virtual void applyDamping( float dt );
 
 	virtual vec3 toWorldAxis( const vec3& v ) const;
 	virtual vec3 toWorld( const vec3& v ) const;
@@ -51,22 +55,33 @@ public:
 	virtual void setRot(quat rot);
 	virtual vec3 getTorque() const;
 	virtual void setTorque(vec3 torque);
-	virtual vec3 getVel() const;
-	virtual void setVel(vec3 vel);
+	virtual vec3 getLinVel() const;
+	virtual void setLinVel(vec3 vel);
+	virtual const BoundingBox& getBoundingBox();
 
 	float mass;
 	float massInv;
-	vec3 pos;
-	vec3 vel;
-	vec3 force;
 
+	vec3 pos;
 	quat rot;
+
+	vec3 linVel;
 	vec3 angVel;
+
+	vec3 force;
 	vec3 torque;
 
 	mat3 inertia;
 	mat3 inertiaInv;
-protected:
+
+	float restitutionCoef;
+	float frictionCoef;
+	float rollingFrictionCoef;
+	float linearDamping;
+	float angularDamping;
+
+	BoundingBox boundingBox;
+
 	int id;
 };
 

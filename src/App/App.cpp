@@ -10,7 +10,7 @@
 #include <iostream>
 #include <time.h>
 #include <App/Input.h>
-#include <Entity/Sphere.h>
+#include <Util/Debug/Debug.h>
 using namespace std;
 
 namespace OGLPool {
@@ -36,8 +36,7 @@ int App::start() {
 
 void App::run() {
 	//@TODO variable time step
-	const float dt = 0.15f;
-
+	const float dt = 1/60.f;
 	while (window->isOpen()) {
 		poolEvents();
 		update( dt );
@@ -51,30 +50,8 @@ void App::draw() {
 	window->clear();
 	camera->applyView();
 
-	glColor3f(1,1,1);
-	glBegin(GL_QUADS);
-		glVertex3f( -5, 0, 5 );
-		glVertex3f( 5, 0, 5 );
-		glVertex3f( 5, 0, -5 );
-		glVertex3f( -5, 0, -5 );
-	glEnd();
-
-	glBegin(GL_LINES);
-		glColor3f( 1,0,0);
-		glVertex3f(0,0,0);
-		glVertex3f(10,0,0);
-
-		glColor3f( 0,1,0);
-		glVertex3f(0,0,0);
-		glVertex3f(0,10,0);
-
-		glColor3f( 0,0,1);
-		glVertex3f(0,0,0);
-		glVertex3f(0,0,10);
-	glEnd();
-
 	world->render();
-
+	Debug::render();
 	window->display();
 }
 
@@ -92,9 +69,8 @@ bool App::init() {
 	IO::Input::init( window );
 
 	world = new World();
-	world->addEntity( new Sphere( 5, vec3( 0, 10, 0 ) ) );
 
-	camera = new FpsCamera( vec3(5, 5, 5) );
+	camera = new FpsCamera( vec3(15, 15, 15) );
 	camera->setLookAt( vec3() );
 
 	glEnable(GL_DEPTH_TEST);
@@ -110,7 +86,24 @@ bool App::init() {
 	glLoadIdentity();
 
 	IO::Input::setFocus( true );
-	initialized = true;
+
+	GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+	GLfloat mat_shininess[] = { 50.0 };
+	GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.0 };
+	glClearColor (0.0, 0.0, 0.0, 0.0);
+	glShadeModel (GL_SMOOTH);
+
+	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+	glEnable(GL_COLOR_MATERIAL);
+
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	glEnable(GL_DEPTH_TEST);
+
+	Debug::init();	initialized = true;
 	return true;
 }
 
@@ -118,6 +111,8 @@ void App::deinit() {
 	if( window ) delete window;
 	if( world ) delete world;
 	if( camera ) delete camera;
+
+	Debug::deinit();
 	initialized = false;
 }
 

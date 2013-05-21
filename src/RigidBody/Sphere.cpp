@@ -6,24 +6,33 @@
  */
 
 #include "Sphere.h"
-#include <Entity/Integration/RK4.h>
+#include <RigidBody/Integration/Euler.h>
 #include <glm/gtx/vector_access.hpp>
 
 using namespace glm;
 namespace OGLPool {
 
-Sphere::Sphere( float radius ) : Entity() {
+Sphere::Sphere( float radius ) : RigidBody() {
+	setMass( (4.0f/3.0f)*pi<float>()*powf(radius,3) * 5 );
 	this->radius = radius;
 	this->gluSlices = 36;
 	this->gluStacks = 18;
 
 	float x = 2.0f / 5.0f * mass * radius * radius;
 	setInertia( mat3(x,0,0,0,x,0,0,0,x) );
-	setMass( 1 );
+
+	restitutionCoef = 0.6f;
+	frictionCoef = 0.6f;
+	rollingFrictionCoef = 0.6f;
 
 	quadric = gluNewQuadric();
-	gluQuadricDrawStyle(quadric, GLU_LINE );
+	gluQuadricDrawStyle( quadric, GLU_SMOOTH );
 	gluQuadricNormals( quadric, GLU_FLAT );
+
+	float skin = 0.1f;
+	boundingBox.skin = skin;
+	boundingBox.min = vec3(1,1,1) * -(radius + skin);
+	boundingBox.max = vec3(1,1,1) *  (radius + skin);
 }
 
 Sphere::Sphere( float radius, vec3 pos ) : Sphere( radius ) {
@@ -36,7 +45,8 @@ Sphere::~Sphere() {
 
 void Sphere::update( float dt ){
 	if( massInv > 0 ){
-		RK4::integrate( this, dt );
+		Euler::integrate( this, dt );
+		applyDamping( dt );
 		set( force, .0f,.0f,.0f );
 		set( torque, .0f,.0f,.0f );
 	}
@@ -49,4 +59,5 @@ void Sphere::render(){
 		gluSphere( quadric , radius , gluSlices , gluStacks );
 	glPopMatrix();
 }
+
 } /* namespace OGLPool */
