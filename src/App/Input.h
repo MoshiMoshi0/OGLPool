@@ -17,12 +17,16 @@ namespace OGLPool {
 		class Input : public Keyboard, public Mouse {
 		protected:
 			static Input* instance;
+
 			bool kState[ Keyboard::KeyCount ];
 			bool kPressed[ Keyboard::KeyCount ];
 			bool kReleased[ Keyboard::KeyCount ];
+
 			bool bState[ Mouse::ButtonCount ];
 			bool bPressed[ Mouse::ButtonCount ];
-			bool bReleased[ Mouse::ButtonCount ];		private:
+			bool bReleased[ Mouse::ButtonCount ];
+
+		private:
 			Window* window;
 			ivec2 mousePos, oldMousePos, mouseDisp;
 			bool hasFocus;
@@ -30,9 +34,11 @@ namespace OGLPool {
 			Input(){}
 			void updateImpl(){
 				if( !hasFocus ) return;
+
 				mousePos = getPosition( *window );
 				mouseDisp = mousePos - oldMousePos;
 				oldMousePos = mousePos;
+
 				for( int i = 0; i < Keyboard::KeyCount; i++ ){
 					bool current = isKeyPressed( (Key)i );
 					kPressed[ i ] = !kState[ i ] && current;
@@ -52,10 +58,11 @@ namespace OGLPool {
 				this->window = window;
 				mousePos = oldMousePos = getPosition( *window );
 			}
-			static void init( Window* window ){ instance = new Input( window ); }
 
+			static void init( Window* window ){ instance = new Input( window ); }
 			static void update(){ instance->updateImpl(); }
 
+			static bool isKeyPressed( Key key ){ return instance->hasFocus && Keyboard::isKeyPressed(key); }
 			static bool onKeyPressed(Key key){ return instance->kPressed[ key ]; }
 			static bool onKeyReleased(Key key){ return instance->kReleased[ key ]; }
 
@@ -70,6 +77,7 @@ namespace OGLPool {
 			static int getMouseDY(){ return instance->mouseDisp.y; }
 			static ivec2 getMouseDisplacement(){ return ivec2(instance->mouseDisp.x, instance->mouseDisp.y); }
 
+			static void setFocus( bool focus ){ instance->hasFocus = focus; }
 			static vec3 getMouseRayDir(){
 				int x = IO::Input::getMouseX();
 				int y = IO::Input::getMouseY();
@@ -89,10 +97,6 @@ namespace OGLPool {
 
 			    return normalize( vec3( x1 - x0, y1 - y0, z1 - z0 ) );
 			}
-
-			static void setFocus( bool focus ){ instance->hasFocus = focus; }
-
-			static bool isKeyPressed( Key key ){ return instance->hasFocus && Keyboard::isKeyPressed(key); }
 		};
 	}
 } /* namespace OGLPool */

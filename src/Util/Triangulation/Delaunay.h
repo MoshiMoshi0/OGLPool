@@ -10,7 +10,7 @@
 
 #include <vector>
 #include <glm/glm.hpp>
-#include <Misc/DEdge.h>
+#include <Util/Triangulation/DEdge.h>
 #include <Shape/Edge.h>
 #include <Shape/Triangle.h>
 
