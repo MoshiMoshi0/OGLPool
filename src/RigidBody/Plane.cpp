@@ -8,7 +8,7 @@
 #include "Plane.h"
 #include <SFML/OpenGL.hpp>
 #include <cfloat>
-#include <Util/Debug/Debug.h>
+#include <Util/UDebug/Debug.h>
 #include <Util/MathUtil.h>
 
 namespace OGLPool {
