@@ -1,14 +1,16 @@
 /*
- * CollisionResponse.h
+ * CollisionDetection.h
  *
- *  Created on: 22-03-2013
+ *  Created on: 22-05-2013
  *      Author: _CORE7
  */
 
-#ifndef COLLISIONRESPONSE_H_
-#define COLLISIONRESPONSE_H_
+#ifndef COLLISIONDETECTION_H_
+#define COLLISIONDETECTION_H_
 
-#include "cdSpherePlane.h"
-#include "cdSphereSphere.h"
+#include "CollisionTester.h"
+#include "SpherePlaneTester.h"
+#include "SphereSphereTester.h"
+#include "SphereMeshTester.h"
 
-#endif /* COLLISIONRESPONSE_H_ */
+#endif /* COLLISIONDETECTION_H_ */

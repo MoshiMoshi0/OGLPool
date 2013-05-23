@@ -1,24 +1,20 @@
 /*
- * cdSphereSphere.cpp
+ * SphereSphereTester.cpp
  *
- *  Created on: 22-03-2013
+ *  Created on: 22-05-2013
  *      Author: _CORE7
  */
 
-#include "cdSphereSphere.h"
-#include <iostream>
-#include <glm/gtx/string_cast.hpp>
-using namespace std;
-using namespace glm;
+#include "SphereSphereTester.h"
 
 namespace OGLPool {
-namespace Physics {
 
-bool sphereSphereIntersection( Sphere* s0, Sphere* s1 ){
-	return length(s0->pos + s1->pos) <= s0->radius + s1->radius;
-}
+SphereSphereTester::SphereSphereTester(){}
+SphereSphereTester::SphereSphereTester( Sphere* s0, Sphere* s1 ){ setBodies( s0, s1 ); }
 
-bool sphereSphereOverlap( Sphere* s0, Sphere* s1, ManifoldPoint* info ){
+SphereSphereTester::~SphereSphereTester(){}
+
+bool SphereSphereTester::overlapTest( ManifoldPoint* info ){
 	vec3 dp = s0->pos - s1->pos;
 	float r = s0->radius + s1->radius;
 	if( dot( dp, dp ) <= r*r ){
@@ -34,7 +30,7 @@ bool sphereSphereOverlap( Sphere* s0, Sphere* s1, ManifoldPoint* info ){
 	return false;
 }
 
-bool sphereSphereSwept( Sphere* s0, Sphere* s1, ManifoldPoint* info ){
+bool SphereSphereTester::sweepTest( ManifoldPoint* info ){
 	vec3 relVelocity = (s1->linVel - s0->linVel) * info->deltaTime;
 	float a = dot( relVelocity, relVelocity );
 	vec3 CDiff = s1->pos - s0->pos;
@@ -70,11 +66,6 @@ bool sphereSphereSwept( Sphere* s0, Sphere* s1, ManifoldPoint* info ){
 	return false;
 }
 
-bool sphereSphereTest( Sphere* s0, Sphere* s1, ManifoldPoint* info ){
-	info->setBodies( s0, s1 );
-	if( sphereSphereOverlap( s0, s1, info ) ) return true;
-	return sphereSphereSwept( s0, s1, info );
-}
+void SphereSphereTester::setBodies( Sphere* s0, Sphere* s1 ){ this->s0 = s0; this->s1 = s1; CollisionTester::setBodies( s0, s1 ); }
 
-} /* namespace Physics */
 } /* namespace OGLPool */
