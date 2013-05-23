@@ -6,13 +6,11 @@
 // Description :
 //============================================================================
 
-#pragma GCC diagnostic ignored "-Wuninitialized"
-
 #include <App/App.h>
 
 using namespace OGLPool;
 
 int main() {
-	App app( 1280, 720 );
+	App app( 800, 600 );
 	return app.start();
 }
