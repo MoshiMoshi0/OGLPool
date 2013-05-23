@@ -9,11 +9,12 @@
 #define CIRCLE_H_
 
 #include <glm/glm.hpp>
+#include <Shape/Shape.h>
 using namespace glm;
 
 namespace OGLPool {
 
-class Circle {
+class Circle : public Shape {
 public:
 	Circle();
 	Circle( vec2 p, float r );

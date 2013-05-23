@@ -9,12 +9,13 @@
 #define EDGE_H_
 
 #include <glm/glm.hpp>
+#include <Shape/Shape.h>
 using namespace glm;
 
 namespace OGLPool {
 
 template< class T >
-class Edge {
+class Edge : public Shape {
 public:
 	Edge();
 	Edge( T v0, T v1 );

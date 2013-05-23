@@ -15,7 +15,7 @@ using namespace glm;
 namespace OGLPool {
 
 template< class T >
-class Triangle {
+class Triangle : public Shape {
 public:
 	Triangle();
 	Triangle( T v0, T v1, T v2 );
