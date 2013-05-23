@@ -29,9 +29,17 @@ ManifoldPoint::~ManifoldPoint() {}
 
 void ManifoldPoint::setBodies( RigidBody* e0, RigidBody* e1 ){
 	this->e0 = e0; this->e1 = e1;
-	combinedRestitution = e0->restitutionCoef * e1->restitutionCoef;
-	combinedRollingFriction = e0->frictionCoef * e1->frictionCoef;
-	combinedFriction = e0->rollingFrictionCoef * e1->rollingFrictionCoef;
+
+	float restitution0 = e0 ? e0->restitutionCoef : 1;
+	float restitution1 = e1 ? e1->restitutionCoef : 1;
+	float friction0 = e0 ? e0->frictionCoef : 1;
+	float friction1 = e1 ? e1->frictionCoef : 1;
+	float rolling0 = e0 ? e0->rollingFrictionCoef : 1;
+	float rolling1 = e1 ? e1->rollingFrictionCoef : 1;
+
+	combinedRestitution = restitution0 * restitution1;
+	combinedRollingFriction = friction0 * friction1;
+	combinedFriction = rolling0 * rolling1;
 }
 
 void ManifoldPoint::reset(){
