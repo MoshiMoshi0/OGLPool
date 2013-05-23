@@ -16,7 +16,7 @@ using namespace std;
 
 namespace OGLPool {
 
-class Polygon {
+class Polygon : public Shape {
 public:
 	Polygon();
 	virtual ~Polygon();

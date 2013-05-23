@@ -12,7 +12,7 @@
 
 namespace OGLPool {
 
-class SmoothRandomPolygon: public OGLPool::RandomPolygon {
+class SmoothRandomPolygon: public RandomPolygon {
 public:
 	enum Type {
 		ROUND, RANDOM
