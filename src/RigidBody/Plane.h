@@ -14,6 +14,8 @@ namespace OGLPool {
 
 class Plane : public RigidBody {
 public:
+	SetBodyType( PLANE );
+
 	Plane( vec3 normal, vec3 point );
 	virtual ~Plane();
 	void render();

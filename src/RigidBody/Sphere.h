@@ -15,6 +15,8 @@ namespace OGLPool {
 
 class Sphere : public RigidBody {
 public:
+	SetBodyType( SPHERE );
+
 	Sphere( float radius );
 	Sphere( float radius, vec3 pos );
 	virtual ~Sphere();

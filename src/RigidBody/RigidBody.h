@@ -8,9 +8,14 @@
 #ifndef ENTITY_H_
 #define ENTITY_H_
 
+#define SetBodyType( type ) \
+virtual int getType(){ \
+	return RigidBody::type; \
+}
+
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
-#include "BoundingBox.h"
+#include <Shape/BoundingBox.h>
 using namespace glm;
 
 namespace OGLPool {
@@ -19,6 +24,11 @@ class RigidBody {
 private:
 	static int s_id;
 public:
+	enum {
+		SPHERE, PLANE, MESH, UNKNOWN
+	};
+
+	SetBodyType( UNKNOWN );
 	RigidBody();
 	RigidBody( vec3 pos );
 	RigidBody( RigidBody* e );
@@ -26,6 +36,7 @@ public:
 
 	virtual void render(){};
 	virtual void update( float dt ){};
+
 	virtual void applyTransform();
 	virtual void applyForce( const vec3& f );
 	virtual void applyOffsetForce( const vec3& f, const vec3& p );
