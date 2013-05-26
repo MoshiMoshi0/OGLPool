@@ -16,7 +16,7 @@ DebugDraw::DebugDraw(){ setColor( 1,1,1 ); };
 DebugDraw::~DebugDraw(){};
 
 DebugDraw* DebugDraw::drawLine( vec3 p0, vec3 p1 ){
-	lines.push( make_tuple(p0, p1, color) );
+	lines.push( std::tuple< vec3,vec3,vec3 >(p0, p1, color) );
 	return this;
 }
 DebugDraw* DebugDraw::drawVector( vec3 p, vec3 v ){ return drawLine( p, p + v ); }
