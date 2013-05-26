@@ -17,6 +17,8 @@ namespace OGLPool {
 
 class App{
 public:
+	static float DELTA_TIME;
+
 	App( int width, int height );
 	virtual ~App();
 	int start();
