@@ -11,7 +11,6 @@
 #include <vector>
 #include <RigidBody/RigidBody.h>
 #include <Physics/PhysicsHandler.h>
-#include <RigidBody/Mesh.h>
 using namespace std;
 using namespace OGLPool::Physics;
 
@@ -31,7 +30,6 @@ private:
 	vec3 gravity;
 
 	PhysicsHandler physics;
-	Mesh mesh;
 };
 
 } /* namespace OGLPool */
