@@ -10,11 +10,32 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <limits>
+#include <Util/UDebug/Debug.h>
 
 namespace OGLPool {
 
 BoundingBox::BoundingBox() : min(vec3()), max(vec3()), minDyn(vec3()), maxDyn(vec3()), pos(vec3()), skin(0) {}
 BoundingBox::~BoundingBox(){}
+
+void BoundingBox::render() const{
+	vec3 c = pos;
+	vec3 e = (max - min) / 2.0f;
+	float ex = e.x;
+	float ey = e.y;
+	float ez = e.z;
+
+	auto debugDraw = Debug::getDebugDraw();
+	debugDraw->setColor( 1,0,0 );
+	debugDraw->drawLine( c + vec3(ex,ey,ez), c + vec3(-ex,ey,ez) );
+	debugDraw->drawLine( c + vec3(-ex,ey,ez), c + vec3(-ex,-ey,ez) );
+	debugDraw->drawLine( c + vec3(-ex,-ey,ez), c + vec3(ex,-ey,ez) );
+	debugDraw->drawLine( c + vec3(ex,-ey,ez), c + vec3(ex,ey,ez) );
+
+	debugDraw->drawLine( c + vec3(ex,ey,-ez), c + vec3(-ex,ey,-ez) );
+	debugDraw->drawLine( c + vec3(-ex,ey,-ez), c + vec3(-ex,-ey,-ez) );
+	debugDraw->drawLine( c + vec3(-ex,-ey,-ez), c + vec3(ex,-ey,-ez) );
+	debugDraw->drawLine( c + vec3(ex,-ey,-ez), c + vec3(ex,ey,-ez) );
+}
 
 bool BoundingBox::intersects( const BoundingBox& b0, const BoundingBox& b1 ){
 	for( uint i = 0; i < 3; i++ ) {
@@ -43,9 +64,13 @@ BoundingBox BoundingBox::get( vector< vec3 > points, float skin, bool addSkin ){
 		}
 	}
 
-	if( addSkin && skin != 0 ){
-		bb.min += bb.min * skin / length( bb.min );
-		bb.max += bb.min * skin / length( bb.max );
+	bb.pos = ( bb.max + bb.min ) / 2.0f;
+	bb.min -= bb.pos;
+	bb.max -= bb.pos;
+
+	if( addSkin ){
+		bb.min -= vec3(1,1,1) * skin;
+		bb.max += vec3(1,1,1) * skin;
 	}
 
 	bb.skin = skin;
@@ -58,9 +83,9 @@ BoundingBox BoundingBox::get( vec3 min, vec3 max, float skin, bool addSkin ){
 	bb.min = min;
 	bb.max = max;
 
-	if( addSkin && skin != 0 ){
-		bb.min += bb.min * skin / length( min );
-		bb.max += bb.min * skin / length( max );
+	if( addSkin ){
+		bb.min -= vec3(1,1,1) * skin;
+		bb.max += vec3(1,1,1) * skin;
 	}
 
 	bb.skin = skin;

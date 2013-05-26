@@ -24,6 +24,8 @@ public:
 	BoundingBox();
 	virtual ~BoundingBox();
 
+	void render() const;
+
 	vec3 min;
 	vec3 max;
 	vec3 minDyn;
