@@ -47,26 +47,34 @@ struct SolverBody {
 	float massInv;
 
 	void internalApplyImpulse(const vec3& linearComponent, const vec3& angularComponent, float impulse){
-		deltaLinearVelocity += linearComponent * impulse;
-		deltaAngularVelocity += angularComponent * impulse;
+		if( originalBody ){
+			deltaLinearVelocity += linearComponent * impulse;
+			deltaAngularVelocity += angularComponent * impulse;
+		}
 	}
 
 	void internalApplyPushImpulse(const vec3& linearComponent, const vec3& angularComponent, float impulse) {
-		pushVelocity += linearComponent * impulse;
-		turnVelocity += angularComponent* impulse;
+		if( originalBody ){
+			pushVelocity += linearComponent * impulse;
+			turnVelocity += angularComponent* impulse;
+		}
 	}
 
 	void writebackVelocity() {
-		linVel += deltaLinearVelocity;
-		angVel += deltaAngularVelocity;
+		if( originalBody ){
+			linVel += deltaLinearVelocity;
+			angVel += deltaAngularVelocity;
+		}
 	}
 
 	void writebackVelocityAndTransform(float timeStep, float splitImpulseTurnErp){
-		writebackVelocity();
+		if( originalBody ){
+			writebackVelocity();
 
-		//if( dot( m_pushVelocity, m_pushVelocity ) != 0 || dot( m_turnVelocity, m_turnVelocity ) != 0 ){
-			Euler::integrate( pushVelocity, turnVelocity*splitImpulseTurnErp, pos, rot, timeStep );
-		//}
+			//if( dot( m_pushVelocity, m_pushVelocity ) != 0 || dot( m_turnVelocity, m_turnVelocity ) != 0 ){
+				Euler::integrate( pushVelocity, turnVelocity*splitImpulseTurnErp, pos, rot, timeStep );
+			//}
+		}
 	}
 };
 
