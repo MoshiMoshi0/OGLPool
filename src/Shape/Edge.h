@@ -21,9 +21,16 @@ public:
 	Edge( T v0, T v1 );
 	virtual ~Edge();
 
+	T closestPoint( T point );
 	T& operator[](int i);
+	T getCenter();
+	T getDirection();
+	float getExtent();
 private:
 	T vertices[ 2 ];
+	T center;
+	float extent;
+	T direction;
 };
 
 typedef Edge< vec2 > Edge2;
