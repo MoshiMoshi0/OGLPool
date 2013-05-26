@@ -17,6 +17,7 @@ public:
 	SetBodyType( PLANE );
 
 	Plane( vec3 normal, vec3 point );
+	Plane( vec3 p0, vec3 p1, vec3 p2 );
 	virtual ~Plane();
 	void render();
 

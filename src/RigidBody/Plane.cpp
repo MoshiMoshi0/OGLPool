@@ -30,6 +30,8 @@ Plane::Plane( vec3 normal, vec3 point ) : RigidBody( point ) {
 	boundingBox.max =  abs(t0 + t1) * 50.f + normal * skin;
 }
 
+Plane::Plane( vec3 p0, vec3 p1, vec3 p2 ) : Plane( cross( p1 - p0, p2 - p0 ), p0 ) {}
+
 Plane::~Plane() {}
 
 void Plane::render(){
