@@ -24,8 +24,13 @@ public:
 
 	//@TODO getPlane();
 	Edge<T> getEdge( int i );
+	T getVertex( int i );
+	T* getVertices();
 	vec3 getNormal();
 	T& operator[](int i);
+
+	T closestPoint( T source );
+	bool inside( T point );
 private:
 	T vertices[ 3 ];
 	Edge<T> edges[ 3 ];
