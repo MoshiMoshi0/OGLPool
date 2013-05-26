@@ -26,7 +26,6 @@ public:
 
 	void render();
 	void build();
-	vector< Triangle3 >* getTriangles();
 
 	void beginTriangle();
 	void endTriangle();
