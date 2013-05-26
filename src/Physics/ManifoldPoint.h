@@ -17,14 +17,11 @@ namespace OGLPool {
 
 class ManifoldPoint {
 public:
-	ManifoldPoint( float deltaTime = 0.0f );
+	ManifoldPoint();
 	virtual ~ManifoldPoint();
 
 	void setBodies( RigidBody* e0, RigidBody* e1 );
 	void reset();
-
-	RigidBody* e0;
-	RigidBody* e1;
 
 	vec3 normal;
 	vec3 point0;
@@ -33,13 +30,11 @@ public:
 	float depth;
 	float time;
 
-	float deltaTime;
-
 	float combinedRollingFriction;
 	float combinedFriction;
 	float combinedRestitution;
-	float appliedImpulse;
 
+	float appliedImpulse;
 	float appliedImpulseLateral1;
 	float appliedImpulseLateral2;
 	bool lateralFrictionInitialized;

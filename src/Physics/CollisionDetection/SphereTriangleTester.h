@@ -20,8 +20,12 @@ public:
 	SphereTriangleTester( Sphere* s, Triangle3* t );
 	virtual ~SphereTriangleTester();
 
-	bool overlapTest( ManifoldPoint* info );
-	bool sweepTest( ManifoldPoint* info );
+	bool overlapTest( ContactManifold* info );
+	bool sweptTest( ContactManifold* info );
+
+	bool broadphase();
+
+	float SegmentSqrDistance(const vec3& from, const vec3& to,const vec3 &p, vec3 &nearest);
 
 	void setBodies( Sphere* s, Triangle3* t );
 

@@ -7,6 +7,9 @@
 
 #include "SphereMeshTester.h"
 #include "SphereTriangleTester.h"
+#include <algorithm>
+#include <iostream>
+using namespace std;
 
 namespace OGLPool {
 
@@ -21,10 +24,10 @@ bool SphereMeshTester::broadphase(){
 
 	if( !BoundingBox::intersects( sb, mb ) ) return false;
 
-	vector< Triangle3 >* triangles = m->getTriangles();
-	for( auto& triangle : *triangles ){
-		BoundingBox tb = BoundingBox::get( {triangle[0],triangle[1],triangle[2]}, 0.1f );
-		if( BoundingBox::intersects( sb, tb ) ){
+	triangleCachePool.clear();
+	for( auto& triangle : m->triangles ){
+		SphereTriangleTester tester( s, &triangle );
+		if( tester.broadphase() ){
 			triangleCachePool.push_back( triangle );
 		}
 	}
@@ -32,14 +35,15 @@ bool SphereMeshTester::broadphase(){
 	return triangleCachePool.size() > 0;
 }
 
-bool SphereMeshTester::narrowphase( ManifoldPoint* info ){
-	SphereTriangleTester tester;
-	for( uint i = 0; i < triangleCachePool.size(); i++ ){
-		Triangle3 t = triangleCachePool[i];
+bool SphereMeshTester::narrowphase( ContactManifold* info ){
+	bool collided = false;
+	for( auto& triangle : triangleCachePool ){
+		SphereTriangleTester tester( s, &triangle );
 
-		tester.setBodies( s, &t );
+		if( tester.narrowphase( info ))
+			collided = true;
 	}
-	return false;
+	return collided;
 }
 
 void SphereMeshTester::setBodies( Sphere* s, Mesh* m ){ this->s = s; this->m = m; CollisionTester::setBodies( s, m ); }

@@ -11,6 +11,7 @@
 #include "CollisionTester.h"
 #include <RigidBody/Sphere.h>
 #include <RigidBody/Mesh.h>
+#include "SphereTriangleTester.h"
 
 namespace OGLPool {
 
@@ -21,7 +22,7 @@ public:
 	virtual ~SphereMeshTester();
 
 	bool broadphase();
-	bool narrowphase( ManifoldPoint* info );
+	bool narrowphase( ContactManifold* info );
 
 	void setBodies( Sphere* s, Mesh* m );
 

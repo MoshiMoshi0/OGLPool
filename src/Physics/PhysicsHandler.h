@@ -11,7 +11,7 @@
 #include <map>
 #include <vector>
 #include <RigidBody/RigidBody.h>
-#include <Physics/ManifoldPoint.h>
+#include <Physics/ContactManifold.h>
 #include <Physics/CollisionDetection/CollisionDetection.h>
 #include <Physics/ConstraintSolver/ImpulseConstraintSolver.h>
 using namespace std;
@@ -28,17 +28,15 @@ public:
 	void solveCollisions( const vector< RigidBody* > bodies, float dt );
 
 	bool removeManifold( const RigidBody* e0, const RigidBody* e1 );
-	ManifoldPoint* getManifold( const RigidBody* e0, const RigidBody* e1 );
-	void addManifold( const RigidBody* e0, const RigidBody* e1, ManifoldPoint* info );
-	void addManifold( ManifoldPoint* info );
-
+	ContactManifold* getManifold( const RigidBody* e0, const RigidBody* e1 );
+	void addManifold( const RigidBody* e0, const RigidBody* e1, ContactManifold* info );
 	bool processBodyPair( RigidBody* e0, RigidBody* e1 );
 
 	CollisionTester* getCollisionTester( RigidBody* e0, RigidBody* e1 );
 
 private:
-	map< int, ManifoldPoint* > persistentManifolds;
-	vector< ManifoldPoint* > solverManifolds;
+	map< int, ContactManifold* > persistentManifolds;
+	vector< ContactManifold* > solverManifolds;
 	ImpulseConstraintSolver solver;
 	SolverInfo infoGlobal;
 };

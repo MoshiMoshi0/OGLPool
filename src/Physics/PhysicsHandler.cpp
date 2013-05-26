@@ -36,22 +36,22 @@ void PhysicsHandler::processBodies( const vector< RigidBody* > bodies, float dt 
 			CollisionTester* tester = getCollisionTester( e0, e1 );
 			if( !tester ) continue;
 			if( tester->broadphase() ){
-				ManifoldPoint* info = getManifold( e0, e1 );
+				ContactManifold* manifold = getManifold( e0, e1 );
 
-				bool newInfo = (info == 0);
+				bool newInfo = (manifold == 0);
 				if( newInfo ){
-					info = new ManifoldPoint( dt );
+					manifold = new ContactManifold();
 				}else{
-					info->reset();
+					//manifold->reset();
 				}
 
-				if( tester->narrowphase( info ) ){
+				if( tester->narrowphase( manifold ) ){
 					if( newInfo ){
-						addManifold( e0, e1, info );
+						addManifold( e0, e1, manifold );
 					}
-					solverManifolds.push_back( info );
+					solverManifolds.push_back( manifold );
 				} else if( newInfo ) {
-					delete info;
+					delete manifold;
 				}
 			}else{
 				removeManifold( e0, e1 );
@@ -73,16 +73,12 @@ bool PhysicsHandler::removeManifold( const RigidBody* e0, const RigidBody* e1 ){
 	return true;
 }
 
-void PhysicsHandler::addManifold( const RigidBody* e0, const RigidBody* e1, ManifoldPoint* info ){
+void PhysicsHandler::addManifold( const RigidBody* e0, const RigidBody* e1, ContactManifold* info ){
 	int hash = getHash( e0->id, e1->id );
-	persistentManifolds.insert( pair<int,ManifoldPoint*>( hash, info ) );
+	persistentManifolds.insert( pair<int,ContactManifold*>( hash, info ) );
 }
 
-void PhysicsHandler::addManifold( ManifoldPoint* info ){
-	solverManifolds.push_back( info );
-}
-
-ManifoldPoint* PhysicsHandler::getManifold( const RigidBody* e0, const RigidBody* e1 ){
+ContactManifold* PhysicsHandler::getManifold( const RigidBody* e0, const RigidBody* e1 ){
 	int hash = getHash( e0->id, e1->id );
 	auto it = persistentManifolds.find( hash );
 	if( it == persistentManifolds.end() ) return 0;
@@ -117,7 +113,7 @@ CollisionTester* PhysicsHandler::getCollisionTester( RigidBody* e0, RigidBody* e
 	}else if (e0Plane) {
 		if (e1Sphere) return new SpherePlaneTester((Sphere*) e1, (Plane*) e0);
 	}else if( e0Mesh ) {
-		if( e1Sphere ) return new SphereMeshTester((Sphere*) e0, (Mesh*) e1);
+		if( e1Sphere ) return new SphereMeshTester((Sphere*) e1, (Mesh*) e0);
 	}
 
 	return 0;

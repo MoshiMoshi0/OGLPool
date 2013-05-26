@@ -9,7 +9,7 @@
 #define COLLISIONTESTER_H_
 
 #include <RigidBody/RigidBody.h>
-#include <Physics/ManifoldPoint.h>
+#include <Physics/ContactManifold.h>
 
 namespace OGLPool {
 
@@ -19,11 +19,11 @@ public:
 	CollisionTester( RigidBody* e0, RigidBody* e1 );
 	virtual ~CollisionTester();
 
-	virtual bool overlapTest( ManifoldPoint* info );
-	virtual bool sweepTest( ManifoldPoint* info );
+	virtual bool overlapTest( ContactManifold* manifold );
+	virtual bool sweptTest( ContactManifold* manifold );
 
 	virtual bool broadphase();
-	virtual bool narrowphase( ManifoldPoint* info );
+	virtual bool narrowphase( ContactManifold* manifold );
 
 	virtual void setBodies( RigidBody* e0, RigidBody* e1 );
 

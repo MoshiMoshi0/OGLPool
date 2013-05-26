@@ -11,6 +11,7 @@
 #include <vector>
 #include <glm/glm.hpp>
 #include "SolverConstraint.h"
+#include <Physics/ContactManifold.h>
 #include <Physics/ManifoldPoint.h>
 #include <RigidBody/RigidBody.h>
 #include "SolverInfo.h"
@@ -25,12 +26,13 @@ public:
 	ImpulseConstraintSolver();
 	virtual ~ImpulseConstraintSolver();
 
-	void solveGroup( const vector< RigidBody* >& bodies, const vector< ManifoldPoint* >& infos, float dt );
-	void solveGroupSetup( const vector< RigidBody* >& bodies, const vector< ManifoldPoint* >& infos );
-	void solveGroupIterate( const vector< RigidBody* >& bodies, const vector< ManifoldPoint* >& infos );
+	void solveGroup( const vector< RigidBody* >& bodies, const vector< ContactManifold* >& infos, float dt );
+	void solveGroupSetup( const vector< RigidBody* >& bodies, const vector< ContactManifold* >& infos );
+	void solveGroupIterate( const vector< RigidBody* >& bodies, const vector< ContactManifold* >& infos );
 	void solveGroupFinish( const vector< RigidBody* >& bodies );
 
-	void solveSingleIteration( int iteration, const vector< RigidBody* >& bodies, const vector< ManifoldPoint* >& infos );
+	void convertContact( ContactManifold* info );
+	void solveSingleIteration( int iteration, const vector< RigidBody* >& bodies, const vector< ContactManifold* >& infos );
 	void resolveSingleConstraintRowLowerLimit( SolverConstraint& constraint );
 	void resolveSingleConstraintRowGeneric( SolverConstraint& constraint );
 	void resolveSplitPenetrationImpulseCacheFriendly( SolverConstraint& constraint );
@@ -42,7 +44,6 @@ public:
 
 	SolverBody* getSolverBody( RigidBody* e );
 	SolverBody* initSolverBody( RigidBody* e );
-	void convertContact( ManifoldPoint* info );
 
 	vector< SolverBody* > solverBodyPool;
 

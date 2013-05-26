@@ -19,8 +19,8 @@ public:
 	SphereSphereTester( Sphere* e0, Sphere* e1 );
 	virtual ~SphereSphereTester();
 
-	bool overlapTest( ManifoldPoint* info );
-	bool sweepTest( ManifoldPoint* info );
+	bool overlapTest( ContactManifold* info );
+	bool sweptTest( ContactManifold* info );
 
 	void setBodies( Sphere* s0, Sphere* s1 );
 
