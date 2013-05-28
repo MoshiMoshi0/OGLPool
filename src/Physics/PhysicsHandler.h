@@ -29,7 +29,7 @@ public:
 
 	bool removeManifold( const RigidBody* e0, const RigidBody* e1 );
 	ContactManifold* getManifold( const RigidBody* e0, const RigidBody* e1 );
-	void addManifold( const RigidBody* e0, const RigidBody* e1, ContactManifold* info );
+	void addManifold( const RigidBody* e0, const RigidBody* e1, ContactManifold* manifold );
 	bool processBodyPair( RigidBody* e0, RigidBody* e1 );
 
 	CollisionTester* getCollisionTester( RigidBody* e0, RigidBody* e1 );

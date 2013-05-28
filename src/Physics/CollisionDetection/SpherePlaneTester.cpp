@@ -6,7 +6,7 @@
  */
 
 #include "SpherePlaneTester.h"
-#include <App/App.h>
+#include <App/Time.h>
 
 namespace OGLPool {
 
@@ -27,7 +27,7 @@ bool SpherePlaneTester::overlapTest( ContactManifold* info ){
 }
 
 bool SpherePlaneTester::sweptTest( ContactManifold* info ){
-	vec3 vel = s->linVel * App::DELTA_TIME;
+	vec3 vel = s->linVel * Time::DELTA_TIME;
 	float dist = dot( p->normal, s->pos ) - dot( p->normal, p->pos );
 	float denom = dot( p->normal, vel );
 	if( denom * dist >= 0.0f ){

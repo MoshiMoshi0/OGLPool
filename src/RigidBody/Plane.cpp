@@ -40,4 +40,6 @@ void Plane::render(){
 	debugDraw->setColor(0,0,1)->drawVector( pos, normal * 10.0f );
 }
 
+float Plane::getBoundingSphereRadius() const { return glm::max( length( boundingBox.min ), length( boundingBox.max ) ); }
+
 } /* namespace OGLPool */

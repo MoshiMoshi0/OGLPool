@@ -42,8 +42,8 @@ void ImpulseConstraintSolver::setupContactConstraint( SolverConstraint& constrai
 		constraint.r1CrossN = -torqueAxis;
 	}
 
-	float denom0 = 0.f;
-	float denom1 = 0.f;
+	float denom0 = 0.0f;
+	float denom1 = 0.0f;
 	if (rb0){
 		vec3 vec = cross(constraint.angularComponent0, r0);
 		denom0 = rb0->massInv + dot(n, vec);
@@ -54,11 +54,11 @@ void ImpulseConstraintSolver::setupContactConstraint( SolverConstraint& constrai
 	}
 
 	float denom = relaxation/(denom0+denom1);
-	constraint.m_jacDiagABInv = denom;
+	constraint.effectiveMass = denom;
 	constraint.contactNormal = n;
 	constraint.appliedPushImpulse = 0.f;
 
-	float restitution = 0.f;
+	float restitution = 0.0f;
 	float penetration = info->depth + infoGlobal.linearSlop;
 
 	vec3 vel1,vel2;
@@ -73,7 +73,7 @@ void ImpulseConstraintSolver::setupContactConstraint( SolverConstraint& constrai
 
 	restitution = info->combinedRestitution * -rel_vel;
 	if (restitution <= 0.0f){
-		restitution = 0.f;
+		restitution = 0.0f;
 	}
 
 	if (infoGlobal.solverMode & SOLVER_USE_WARMSTARTING){
@@ -82,18 +82,18 @@ void ImpulseConstraintSolver::setupContactConstraint( SolverConstraint& constrai
 		if( rb0 ) sb0->internalApplyImpulse(constraint.contactNormal * sb0->massInv, constraint.angularComponent0, constraint.appliedImpulse);
 		if( rb1 ) sb1->internalApplyImpulse(constraint.contactNormal * sb1->massInv, -constraint.angularComponent1, -constraint.appliedImpulse);
 	} else {
-		constraint.appliedImpulse = 0.f;
+		constraint.appliedImpulse = 0.0f;
 	}
 
 	{
-		float vel1Dotn;
-		float vel2Dotn;
+		float vel1Dotn = 0.0f;
+		float vel2Dotn = 0.0f;
 		if( rb0 ) vel1Dotn = dot(constraint.contactNormal, sb0->linVel) + dot(constraint.r0CrossN, sb0->angVel);
 		if( rb1 ) vel2Dotn = -dot(constraint.contactNormal, sb1->linVel) + dot(constraint.r1CrossN, sb1->angVel);
 
 		float rel_vel = vel1Dotn + vel2Dotn;
 
-		float positionalError = 0.f;
+		float positionalError = 0.0f;
 		float velocityError = restitution - rel_vel;// * damping;
 
 		float erp = infoGlobal.erp2;
@@ -109,19 +109,19 @@ void ImpulseConstraintSolver::setupContactConstraint( SolverConstraint& constrai
 			positionalError = -penetration * erp / infoGlobal.timeStep;
 		}
 
-		float penetrationImpulse = positionalError * constraint.m_jacDiagABInv;
-		float velocityImpulse = velocityError * constraint.m_jacDiagABInv;
+		float penetrationImpulse = positionalError * constraint.effectiveMass;
+		float velocityImpulse = velocityError * constraint.effectiveMass;
 
 		if (!infoGlobal.splitImpulse || (penetration > infoGlobal.splitImpulsePenetrationThreshold)){
 			constraint.rhs = penetrationImpulse+velocityImpulse;
-			constraint.rhsPenetration = 0.f;
+			constraint.rhsPenetration = 0.0f;
 		} else{
 			constraint.rhs = velocityImpulse;
 			constraint.rhsPenetration = penetrationImpulse;
 		}
 
 		constraint.cfm = 0.0f;
-		constraint.lowerLimit = 0;
+		constraint.lowerLimit = 0.0f;
 		constraint.upperLimit = 1e10f;
 	}
 
@@ -138,8 +138,8 @@ void ImpulseConstraintSolver::addFrictionConstraint( SolverBody* sb0, SolverBody
 	constraint.frictionIndex = frictionIndex;
 	constraint.originalPoint = 0;
 
-	constraint.appliedImpulse = 0.f;
-	constraint.appliedPushImpulse = 0.f;
+	constraint.appliedImpulse = 0.0f;
+	constraint.appliedPushImpulse = 0.0f;
 	constraint.contactNormal = n;
 
 	{
@@ -153,8 +153,8 @@ void ImpulseConstraintSolver::addFrictionConstraint( SolverBody* sb0, SolverBody
 		constraint.r1CrossN = torqueAxis;
 	}
 
-	float denom0 = 0.f;
-	float denom1 = 0.f;
+	float denom0 = 0.0f;
+	float denom1 = 0.0f;
 	if (rb0) {
 		vec3 vec = cross(constraint.angularComponent0, r0);
 		denom0 = rb0->massInv + dot(n, vec);
@@ -164,18 +164,17 @@ void ImpulseConstraintSolver::addFrictionConstraint( SolverBody* sb0, SolverBody
 		denom1 = rb1->massInv + dot(n, vec);
 	}
 	float denom = relaxation/(denom0 + denom1);
-	constraint.m_jacDiagABInv = denom;
+	constraint.effectiveMass = denom;
 
-	float rel_vel;
-	float vel1Dotn;
-	float vel2Dotn;
+	float vel1Dotn = 0.0f;
+	float vel2Dotn = 0.0f;
 	if( rb0 ) vel1Dotn = dot(constraint.contactNormal, sb0->linVel)+ dot(constraint.r0CrossN, sb0->angVel);
 	if( rb1 ) vel2Dotn = -dot(constraint.contactNormal, sb1->linVel)+ dot(constraint.r1CrossN, sb1->angVel);
 
-	rel_vel = vel1Dotn + vel2Dotn;
+	float rel_vel = vel1Dotn + vel2Dotn;
 
-	float velocityError =  0.0f - rel_vel;
-	float velocityImpulse = velocityError * constraint.m_jacDiagABInv;
+	float velocityError = 0.0f - rel_vel;
+	float velocityImpulse = velocityError * constraint.effectiveMass;
 	constraint.rhs = velocityImpulse;
 	constraint.cfm = 0.0f;
 	constraint.lowerLimit = 0;
@@ -194,8 +193,8 @@ void ImpulseConstraintSolver::addRollingFrictionConstraint( SolverBody* sb0, Sol
 	constraint.originalPoint = 0;
 	constraint.frictionIndex = frictionIndex;
 
-	constraint.appliedImpulse = 0.f;
-	constraint.appliedPushImpulse = 0.f;
+	constraint.appliedImpulse = 0.0f;
+	constraint.appliedPushImpulse = 0.0f;
 	constraint.contactNormal = vec3();
 
 	{
@@ -216,17 +215,17 @@ void ImpulseConstraintSolver::addRollingFrictionConstraint( SolverBody* sb0, Sol
 	float sum = 0;
 	sum += dot(iMJaA, constraint.r0CrossN);
 	sum += dot(iMJaB, constraint.r1CrossN);
-	constraint.m_jacDiagABInv = 1.0f/sum;
+	constraint.effectiveMass = 1.0f/sum;
 
-	float vel1Dotn;
-	float vel2Dotn;
+	float vel1Dotn = 0.0f;
+	float vel2Dotn = 0.0f;
 	if( rb0 ) vel1Dotn = dot(constraint.contactNormal, sb0->linVel) + dot(constraint.r0CrossN, sb0->angVel);
 	if( rb1 ) vel2Dotn = -dot(constraint.contactNormal, sb1->linVel)+ dot(constraint.r1CrossN, sb1->angVel);
 
 	float rel_vel = vel1Dotn+vel2Dotn;
 
 	float velocityError = 0.0f - rel_vel;
-	float velocityImpulse = velocityError * constraint.m_jacDiagABInv;
+	float velocityImpulse = velocityError * constraint.effectiveMass;
 	constraint.rhs = velocityImpulse;
 	constraint.cfm = 0.0f;
 	constraint.lowerLimit = 0;
@@ -301,8 +300,6 @@ void ImpulseConstraintSolver::convertContact( ContactManifold* manifold ){
 	SolverBody* sb1 = getSolverBody( e1 );
 
 	assert( sb0 != sb1 );
-
-	//cout << manifold->pointsAdded << endl;
 	int rollingFrictionCount = 1;
 	for( int i = 0; i < manifold->pointsAdded; i++ ){
 		ManifoldPoint* info = manifold->points[ i ];
@@ -311,8 +308,8 @@ void ImpulseConstraintSolver::convertContact( ContactManifold* manifold ){
 		vec3 r0 = info->point0 - sb0->pos;
 		vec3 r1 = info->point1 - sb1->pos;
 
-		float relaxation;
-		float rel_vel;
+		float relaxation = 0.0f;
+		float rel_vel = 0.0f;
 		vec3 vel;
 
 		uint frictionIndex = contactConstraintPool.size();
@@ -421,11 +418,11 @@ void ImpulseConstraintSolver::resolveSingleConstraintRowLowerLimit( SolverConstr
 	SolverBody* rb1 = constraint.sb1;
 
 	float deltaImpulse = constraint.rhs - constraint.appliedImpulse * constraint.cfm;
-	const float deltaVel1Dotn =	 dot(constraint.contactNormal, rb0->deltaLinearVelocity) + dot(constraint.r0CrossN, rb0->deltaAngularVelocity);
-	const float deltaVel2Dotn = -dot(constraint.contactNormal, rb1->deltaLinearVelocity) + dot(constraint.r1CrossN, rb1->deltaAngularVelocity);
+	float deltaVel1Dotn = dot(constraint.contactNormal, rb0->deltaLinearVelocity) + dot(constraint.r0CrossN, rb0->deltaAngularVelocity);
+	float deltaVel2Dotn = -dot(constraint.contactNormal, rb1->deltaLinearVelocity) + dot(constraint.r1CrossN, rb1->deltaAngularVelocity);
 
-	deltaImpulse -= deltaVel1Dotn * constraint.m_jacDiagABInv;
-	deltaImpulse -= deltaVel2Dotn * constraint.m_jacDiagABInv;
+	deltaImpulse -= deltaVel1Dotn * constraint.effectiveMass;
+	deltaImpulse -= deltaVel2Dotn * constraint.effectiveMass;
 	const float sum = constraint.appliedImpulse + deltaImpulse;
 	if (sum < constraint.lowerLimit){
 		deltaImpulse = constraint.lowerLimit - constraint.appliedImpulse;
@@ -446,8 +443,8 @@ void ImpulseConstraintSolver::resolveSingleConstraintRowGeneric( SolverConstrain
 	float deltaVel1Dotn =  dot(constraint.contactNormal, rb0->deltaLinearVelocity) + dot(constraint.r0CrossN, rb0->deltaAngularVelocity);
 	float deltaVel2Dotn = -dot(constraint.contactNormal, rb1->deltaLinearVelocity) + dot(constraint.r1CrossN, rb1->deltaAngularVelocity);
 
-	deltaImpulse -= deltaVel1Dotn * constraint.m_jacDiagABInv;
-	deltaImpulse -= deltaVel2Dotn * constraint.m_jacDiagABInv;
+	deltaImpulse -= deltaVel1Dotn * constraint.effectiveMass;
+	deltaImpulse -= deltaVel2Dotn * constraint.effectiveMass;
 
 	float sum = constraint.appliedImpulse + deltaImpulse;
 	if (sum < constraint.lowerLimit) {
@@ -471,10 +468,10 @@ void ImpulseConstraintSolver::resolveSplitPenetrationImpulseCacheFriendly( Solve
 	if (constraint.rhsPenetration) {
 		float deltaImpulse = constraint.rhsPenetration - constraint.appliedPushImpulse * constraint.cfm;
 		float deltaVel1Dotn =  dot(constraint.contactNormal, rb0->pushVelocity) + dot( constraint.r0CrossN, rb0->turnVelocity );
-		float deltaVel2Dotn = -dot(constraint.contactNormal, rb1->pushVelocity) + dot( constraint.r0CrossN, rb1->turnVelocity );
+		float deltaVel2Dotn = -dot(constraint.contactNormal, rb1->pushVelocity) + dot( constraint.r1CrossN, rb1->turnVelocity );
 
-		deltaImpulse -= deltaVel1Dotn * constraint.m_jacDiagABInv;
-		deltaImpulse -= deltaVel2Dotn * constraint.m_jacDiagABInv;
+		deltaImpulse -= deltaVel1Dotn * constraint.effectiveMass;
+		deltaImpulse -= deltaVel2Dotn * constraint.effectiveMass;
 		float sum = constraint.appliedPushImpulse + deltaImpulse;
 		if (sum < constraint.lowerLimit) {
 			deltaImpulse = constraint.lowerLimit - constraint.appliedPushImpulse;

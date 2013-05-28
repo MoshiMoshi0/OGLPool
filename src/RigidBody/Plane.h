@@ -21,6 +21,8 @@ public:
 	virtual ~Plane();
 	void render();
 
+	float getBoundingSphereRadius() const;
+
 	vec3 normal;
 };
 

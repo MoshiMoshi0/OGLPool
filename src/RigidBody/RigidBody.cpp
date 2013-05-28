@@ -51,6 +51,9 @@ mat3 RigidBody::toWorld( const mat3& mat ) const {
 	return mRot * mat * inverse( mRot );
 }
 
+vec3 RigidBody::toLocal( const vec3& v ) const { return toLocalAxis( v - pos ); }
+vec3 RigidBody::toLocalAxis( const vec3& v ) const { return transpose( toMat3( rot ) ) * v; }
+
 void RigidBody::applyTransform(){
 	glMultMatrixf( value_ptr( translate( mat4(1.0f), pos) * toMat4( rot ) ) );
 }

@@ -23,13 +23,14 @@ public:
 
 	int areaSort( ManifoldPoint* pt );
 	int addManifoldPoint( ManifoldPoint* pt );
+	void reset();
 
 	void addContact( const vec3& point, const vec3& normal, float depth );
 	void addContact( const vec3& point0, const vec3& point1, const vec3& normal, float depth );
 	void addContact( const vec3& point, const vec3& normal, float depth, float time );
 	void addContact( const vec3& point0, const vec3& point1, const vec3& normal, float depth, float time );
 
-	void setBodies( RigidBody* e0, RigidBody* e1 );
+	void setBodies( RigidBody* e0, RigidBody* e1, bool lock = true );
 
 	void replaceManifoldPoint( ManifoldPoint* pt, int index );
 	int getCacheEntry( ManifoldPoint* pt );
@@ -43,6 +44,8 @@ public:
 	float combinedRestitution;
 	float combinedRollingFriction;
 	float combinedFriction;
+	float contactBreakingTreshold;
+	bool bodiesLocked;
 };
 
 } /* namespace OGLPool */

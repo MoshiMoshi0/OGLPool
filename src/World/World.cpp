@@ -16,7 +16,7 @@ using namespace std;
 namespace OGLPool {
 
 World::World() {
-	//addEntity( new Plane( vec3(0,1,0), vec3() ) );
+	addEntity( new Plane( vec3(0,1,0), vec3() ) );
 	addEntity( new Plane( vec3(-1,0,0), vec3(50,50,0) ) );
 	addEntity( new Plane( vec3(1,0,0), vec3(-50,50,0) ) );
 	addEntity( new Plane( vec3(0,0,-1), vec3(0,50,50) ) );
@@ -24,7 +24,7 @@ World::World() {
 
 	gravity = vec3(0,-10,0);
 
-	Mesh* mesh = new Mesh();
+	/*Mesh* mesh = new Mesh();
 
 	for( int i = -5; i < 5; i++ ){
 		for( int j = -5; j < 5; j++ ){
@@ -62,7 +62,7 @@ World::World() {
 	}
 
 	mesh->build();
-	addEntity( mesh );
+	addEntity( mesh );*/
 }
 
 World::~World() {
@@ -94,7 +94,7 @@ void World::update( float dt ){
 	physics.processBodies( bodies, dt );
 
 	if( IO::Input::onKeyPressed( IO::Input::R ) ){
-		Sphere* s = new Sphere( 2, vec3( 0, 30, 0 ) );
+		Sphere* s = new Sphere( 5, vec3( 0, 30, 0 ) );
 		s->setLinVel( vec3(0.1, 0.1, 15) );
 		s->setAngVel( vec3(20.8, 1, 0) );
 		addEntity( s );

@@ -6,6 +6,7 @@
  */
 
 #include "App.h"
+#include "Time.h"
 #include <SFML/OpenGL.hpp>
 #include <iostream>
 #include <time.h>
@@ -15,7 +16,6 @@ using namespace std;
 
 namespace OGLPool {
 
-float App::DELTA_TIME = 1.0f/60.0f;
 App::App( int width, int height ) {
 	this->width = width;
 	this->height = height;
@@ -44,7 +44,7 @@ int App::start() {
 void App::run() {
 	while (window->isOpen()) {
 		poolEvents();
-		update( DELTA_TIME );
+		update( Time::DELTA_TIME );
 		draw();
 	}
 }

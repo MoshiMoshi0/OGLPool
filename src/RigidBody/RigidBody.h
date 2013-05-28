@@ -47,6 +47,8 @@ public:
 	virtual vec3 toWorldAxis( const vec3& v ) const;
 	virtual vec3 toWorld( const vec3& v ) const;
 	virtual mat3 toWorld( const mat3& mat ) const;
+	virtual vec3 toLocal( const vec3& v ) const;
+	virtual vec3 toLocalAxis( const vec3& v ) const;
 
 	virtual vec3 getAngVel() const;
 	virtual void setAngVel(vec3 angVel);
@@ -69,6 +71,7 @@ public:
 	virtual vec3 getLinVel() const;
 	virtual void setLinVel(vec3 vel);
 	virtual const BoundingBox& getBoundingBox();
+	virtual float getBoundingSphereRadius() const = 0;
 
 	float mass;
 	float massInv;

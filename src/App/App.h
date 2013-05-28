@@ -15,10 +15,8 @@
 using namespace sf;
 namespace OGLPool {
 
-class App{
+class App {
 public:
-	static float DELTA_TIME;
-
 	App( int width, int height );
 	virtual ~App();
 	int start();

@@ -35,6 +35,7 @@ public:
 	void vertex( vec3 v );
 	void normal( vec3 n );
 	void color( vec3 c );
+	float getBoundingSphereRadius() const;
 
 	vector< vec3 > vertices;
 	vector< vec3 > normals;

@@ -24,6 +24,8 @@ public:
 	void update( float dt );
 	void render();
 
+	float getBoundingSphereRadius() const;
+
 	float radius;
 private:
 	GLUquadric* quadric;

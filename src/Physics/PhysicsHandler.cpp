@@ -38,24 +38,25 @@ void PhysicsHandler::processBodies( const vector< RigidBody* > bodies, float dt 
 			if( tester->broadphase() ){
 				ContactManifold* manifold = getManifold( e0, e1 );
 
-				bool newInfo = (manifold == 0);
-				if( newInfo ){
+				bool newManifold = (manifold == 0);
+				if( newManifold ){
 					manifold = new ContactManifold();
 				}else{
-					//manifold->reset();
+					manifold->reset();
 				}
 
 				if( tester->narrowphase( manifold ) ){
-					if( newInfo ){
+					if( newManifold ){
 						addManifold( e0, e1, manifold );
 					}
 					solverManifolds.push_back( manifold );
-				} else if( newInfo ) {
+				} else if( newManifold ) {
 					delete manifold;
 				}
 			}else{
 				removeManifold( e0, e1 );
 			}
+
 			delete tester;
 		}
 	}
@@ -73,9 +74,9 @@ bool PhysicsHandler::removeManifold( const RigidBody* e0, const RigidBody* e1 ){
 	return true;
 }
 
-void PhysicsHandler::addManifold( const RigidBody* e0, const RigidBody* e1, ContactManifold* info ){
+void PhysicsHandler::addManifold( const RigidBody* e0, const RigidBody* e1, ContactManifold* manifold ){
 	int hash = getHash( e0->id, e1->id );
-	persistentManifolds.insert( pair<int,ContactManifold*>( hash, info ) );
+	persistentManifolds.insert( pair<int,ContactManifold*>( hash, manifold ) );
 }
 
 ContactManifold* PhysicsHandler::getManifold( const RigidBody* e0, const RigidBody* e1 ){
@@ -94,17 +95,32 @@ void PhysicsHandler::solveCollisions( const vector< RigidBody* > bodies, float d
 		}
 	);*/
 
+	cout << "------------------------------------" << endl;
+	for( auto& m : solverManifolds ){
+		for( auto& p : m->points ){
+			if( !p ) continue;
+			cout << p->appliedImpulse << " " << p->appliedImpulseLateral1 << " " << p->appliedImpulseLateral2 << endl;
+		}
+	}
+	cout << endl;
 	solver.solveGroup( bodies, solverManifolds, dt );
+	for( auto& m : solverManifolds ){
+		for( auto& p : m->points ){
+			if( !p ) continue;
+			cout << p->appliedImpulse << " " << p->appliedImpulseLateral1 << " " << p->appliedImpulseLateral2 << endl;
+		}
+	}
+	cout << "------------------------------------" << endl;
 	solverManifolds.clear();
 }
 
 CollisionTester* PhysicsHandler::getCollisionTester( RigidBody* e0, RigidBody* e1 ){
-	bool e0Sphere = e0->getType() == RigidBody::SPHERE;
-	bool e0Plane = e0->getType() == RigidBody::PLANE;
-	bool e0Mesh = e0->getType() == RigidBody::MESH;
-	bool e1Sphere = e1->getType() == RigidBody::SPHERE;
-	bool e1Plane = e1->getType() == RigidBody::PLANE;
-	bool e1Mesh = e1->getType() == RigidBody::MESH;
+	const bool e0Sphere = e0->getType() == RigidBody::SPHERE;
+	const bool e0Plane = e0->getType() == RigidBody::PLANE;
+	const bool e0Mesh = e0->getType() == RigidBody::MESH;
+	const bool e1Sphere = e1->getType() == RigidBody::SPHERE;
+	const bool e1Plane = e1->getType() == RigidBody::PLANE;
+	const bool e1Mesh = e1->getType() == RigidBody::MESH;
 
 	if( e0Sphere ) {
 		if(e1Sphere) return new SphereSphereTester((Sphere*) e0, (Sphere*) e1);

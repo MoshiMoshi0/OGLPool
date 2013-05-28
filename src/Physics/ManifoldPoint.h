@@ -26,6 +26,8 @@ public:
 	vec3 normal;
 	vec3 point0;
 	vec3 point1;
+	vec3 local0;
+	vec3 local1;
 
 	float depth;
 	float time;

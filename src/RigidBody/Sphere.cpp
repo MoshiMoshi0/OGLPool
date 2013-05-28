@@ -57,4 +57,6 @@ void Sphere::render(){
 	glPopMatrix();
 }
 
+float Sphere::getBoundingSphereRadius() const { return radius; }
+
 } /* namespace OGLPool */

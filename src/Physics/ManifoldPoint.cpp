@@ -30,6 +30,8 @@ ManifoldPoint::~ManifoldPoint() {}
 void ManifoldPoint::reset(){
 	point0 = vec3();
 	point1 = vec3();
+	local0 = vec3();
+	local1 = vec3();
 	normal = vec3();
 
 	time = 0;

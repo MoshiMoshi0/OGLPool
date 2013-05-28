@@ -113,4 +113,6 @@ void Mesh::vertex( vec3 v ){ vertices.push_back( v ); }
 void Mesh::normal( vec3 n ){ normals.push_back( n ); }
 void Mesh::color( vec3 c ){ colors.push_back( c ); }
 
+float Mesh::getBoundingSphereRadius() const { return glm::max( length( boundingBox.min ), length( boundingBox.max ) ); }
+
 } /* namespace OGLPool */

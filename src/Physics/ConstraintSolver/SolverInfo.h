@@ -8,6 +8,8 @@
 #ifndef CONTACTSOLVERINFO_H_
 #define CONTACTSOLVERINFO_H_
 
+#include <App/Time.h>
+
 namespace OGLPool {
 namespace Physics {
 
@@ -36,7 +38,7 @@ struct SolverInfo {
 	float singleAxisRollingFrictionThreshold;
 
 	SolverInfo(){
-		timeStep = 1.f/60.f;
+		timeStep = Time::DELTA_TIME;
 		iterations = 10;
 		erp = 0.2f;
 		erp2 = 0.8f;

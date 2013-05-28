@@ -32,7 +32,7 @@ struct SolverConstraint {
 	float appliedImpulse;
 
 	float friction;
-	float m_jacDiagABInv;
+	float effectiveMass;
 	float rhs;
 	float cfm;
 

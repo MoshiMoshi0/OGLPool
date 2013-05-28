@@ -6,7 +6,7 @@
  */
 
 #include "SphereSphereTester.h"
-#include <App/App.h>
+#include <App/Time.h>
 
 namespace OGLPool {
 
@@ -27,7 +27,7 @@ bool SphereSphereTester::overlapTest( ContactManifold* info ){
 }
 
 bool SphereSphereTester::sweptTest( ContactManifold* info ){
-	vec3 dv = (s1->linVel - s0->linVel) * App::DELTA_TIME;
+	vec3 dv = (s1->linVel - s0->linVel) * Time::DELTA_TIME;
 	vec3 dp = s1->pos - s0->pos;
 
 	float a = dot( dv, dv );
