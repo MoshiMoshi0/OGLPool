@@ -12,6 +12,7 @@
 #include <time.h>
 #include <App/Input.h>
 #include <Util/UDebug/Debug.h>
+#include <windows.h>
 using namespace std;
 
 namespace OGLPool {
@@ -62,8 +63,10 @@ void App::draw() {
 
 void App::update( float dt ) {
 	IO::Input::update();
-	camera->update( dt );
-	world->update( dt );
+	if( IO::Input::getFocus() ){
+		camera->update( dt );
+		world->update( dt );
+	}
 }
 
 bool App::init() {
@@ -72,6 +75,7 @@ bool App::init() {
 	window = new RenderWindow(VideoMode( width, height, 24), "OpenGL Pool" );
 	window->setVerticalSyncEnabled( true );
 	IO::Input::init( window );
+	IO::Input::setFocus( false );
 
 	world = new World();
 
@@ -89,8 +93,6 @@ bool App::init() {
 	gluPerspective(90, (float)width/height, 0.001f, 1000.0f);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-
-	IO::Input::setFocus( true );
 
 	GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
 	GLfloat mat_shininess[] = { 50.0 };
@@ -126,12 +128,17 @@ void App::poolEvents() {
 	Event e;
 
 	while (window->pollEvent(e)) {
+		cout << e.type << endl;
 		if (e.type == Event::Closed) {
 			window->close();
 		}else if(e.type == Event::LostFocus){
 			IO::Input::setFocus( false );
 		}else if(e.type == Event::GainedFocus){
 			IO::Input::setFocus( true );
+		}else if(e.type == Event::MouseButtonReleased){
+			if(!IO::Input::getFocus()){
+				IO::Input::setFocus( true );
+			}
 		}else if (e.type == Event::Resized){
 			float w = e.size.width; float h = e.size.height;
 			glViewport( 0,0,w,h );

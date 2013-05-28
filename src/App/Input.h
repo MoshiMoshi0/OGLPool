@@ -26,7 +26,6 @@ namespace OGLPool {
 			bool bPressed[ Mouse::ButtonCount ];
 			bool bReleased[ Mouse::ButtonCount ];
 
-		private:
 			Window* window;
 			ivec2 mousePos, oldMousePos, mouseDisp;
 			bool hasFocus;
@@ -77,7 +76,11 @@ namespace OGLPool {
 			static int getMouseDY(){ return instance->mouseDisp.y; }
 			static ivec2 getMouseDisplacement(){ return ivec2(instance->mouseDisp.x, instance->mouseDisp.y); }
 
-			static void setFocus( bool focus ){ instance->hasFocus = focus; }
+			static bool getFocus(){ return instance->hasFocus; }
+			static void setFocus( bool focus ){
+				instance->hasFocus = focus;
+				if( focus ) instance->oldMousePos = instance->mousePos = instance->getPosition( *(instance->window) );
+			}
 			static vec3 getMouseRayDir(){
 				int x = IO::Input::getMouseX();
 				int y = IO::Input::getMouseY();
