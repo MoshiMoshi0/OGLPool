@@ -21,7 +21,8 @@ void CollisionTester::setBodies( RigidBody* e0, RigidBody* e1 ){ this->e0 = e0; 
 bool CollisionTester::narrowphase( ContactManifold* manifold ){
 	manifold->setBodies( e0, e1 );
 	if( overlapTest( manifold ) ) return true;
-	return sweptTest( manifold );
+	return false;
+	//return sweptTest( manifold );
 }
 
 bool CollisionTester::broadphase(){
