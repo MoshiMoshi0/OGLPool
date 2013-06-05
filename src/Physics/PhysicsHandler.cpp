@@ -95,22 +95,7 @@ void PhysicsHandler::solveCollisions( const vector< RigidBody* > bodies, float d
 		}
 	);*/
 
-	cout << "------------------------------------" << endl;
-	for( auto& m : solverManifolds ){
-		for( auto& p : m->points ){
-			if( !p ) continue;
-			cout << p->appliedImpulse << " " << p->appliedImpulseLateral1 << " " << p->appliedImpulseLateral2 << endl;
-		}
-	}
-	cout << endl;
 	solver.solveGroup( bodies, solverManifolds, dt );
-	for( auto& m : solverManifolds ){
-		for( auto& p : m->points ){
-			if( !p ) continue;
-			cout << p->appliedImpulse << " " << p->appliedImpulseLateral1 << " " << p->appliedImpulseLateral2 << endl;
-		}
-	}
-	cout << "------------------------------------" << endl;
 	solverManifolds.clear();
 }
 

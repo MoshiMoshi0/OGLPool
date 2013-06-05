@@ -128,7 +128,6 @@ void App::poolEvents() {
 	Event e;
 
 	while (window->pollEvent(e)) {
-		cout << e.type << endl;
 		if (e.type == Event::Closed) {
 			window->close();
 		}else if(e.type == Event::LostFocus){

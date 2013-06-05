@@ -78,8 +78,6 @@ void World::render(){
 	for( auto it = bodies.begin(); it != bodies.end(); it++ ){
 		RigidBody* e = (*it);
 		e->render();
-		if( e->getType() == RigidBody::MESH )
-		e->getBoundingBox().render();
 	}
 }
 
