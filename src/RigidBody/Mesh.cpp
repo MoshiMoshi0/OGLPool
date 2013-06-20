@@ -30,9 +30,9 @@ void Mesh::beginTriangle(){
 	assert( normals.size() % 3 == 0 );
 	assert( colors.size() % 3 == 0 );
 
-	vertices.reserve( vertices.size() + 3 );
-	normals.reserve( normals.size() + 3 );
-	colors.reserve( colors.size() + 3 );
+	//vertices.resize( vertices.size() + 3 );
+	//normals.resize( normals.size() + 3 );
+	//colors.resize( colors.size() + 3 );
 }
 
 void Mesh::endTriangle(){
@@ -47,12 +47,12 @@ void Mesh::render(){
 	glEnableClientState(GL_COLOR_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
 
-	glVertexPointer(triangleCount * 3, GL_FLOAT, 0, value_ptr( vertices[0] ));
-	glColorPointer(triangleCount * 3, GL_FLOAT, 0, value_ptr( colors[0] ));
+	glVertexPointer(3, GL_FLOAT, 0, value_ptr( vertices[0] ));
+	glColorPointer(3, GL_FLOAT, 0, value_ptr( colors[0] ));
 	glNormalPointer(GL_FLOAT, 0, value_ptr( normals[0] ));
 
 	glPushMatrix();
-	applyTransform();
+	//applyTransform();
 	glDrawArrays(GL_TRIANGLES, 0, triangleCount * 3);
 	glPopMatrix();
 
@@ -62,7 +62,7 @@ void Mesh::render(){
 }
 
 void Mesh::build(){
-	triangles.reserve( triangleCount );
+	//triangles.reserve( triangleCount );
 
 	for( int i = 0; i < triangleCount; i++ ){
 		int i0 = i * 3 + 0;
@@ -73,7 +73,7 @@ void Mesh::build(){
 		vec3 v1 = vertices[i1];
 		vec3 v2 = vertices[i2];
 
-		triangles[i] = Triangle3( v0, v1, v2 );
+		triangles.push_back( Triangle3( v0, v1, v2 ) );
 	}
 
 	boundingBox = BoundingBox::get( vertices, 0.1f );
@@ -91,9 +91,10 @@ void Mesh::calculateNormals(){
 
 	vec3 n = normalize( cross( b-a, c-a ) );
 
-	normals[ triangleCount * 3 + 0 ] = n;
+	/*normals[ triangleCount * 3 + 0 ] = n;
 	normals[ triangleCount * 3 + 1 ] = n;
-	normals[ triangleCount * 3 + 2 ] = n;
+	normals[ triangleCount * 3 + 2 ] = n;*/
+	for( int i = 0; i < 3; i++ ) normal(n);
 }
 
 void Mesh::vertex( vec3 v ){ vertices.push_back( v ); }
