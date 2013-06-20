@@ -31,4 +31,8 @@ void Polygon::addEdge( Edge2 edge ){
 	edges.push_back( edge );
 }
 
+vector< Edge2 >& Polygon::getEdges() {
+	return edges;
+}
+
 } /* namespace OGLPool */

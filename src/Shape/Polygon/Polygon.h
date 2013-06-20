@@ -25,6 +25,7 @@ public:
 
 	void addPoint( vec2 point );
 	void addEdge( Edge2 edge );
+	vector< Edge2 >& getEdges();
 protected:
 	vector< vec2 > points;
 	vector< Edge2 > edges;
