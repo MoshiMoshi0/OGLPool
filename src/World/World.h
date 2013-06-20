@@ -11,7 +11,8 @@
 #include <vector>
 #include <RigidBody/RigidBody.h>
 #include <Physics/PhysicsHandler.h>
-#include <RigidBody/Mesh.h>
+#include <Util/Table/CueTable.h>
+
 using namespace std;
 using namespace OGLPool::Physics;
 
@@ -31,7 +32,8 @@ private:
 	vec3 gravity;
 
 	PhysicsHandler physics;
-	Mesh mesh;
+	CueTable ct;
+
 };
 
 } /* namespace OGLPool */

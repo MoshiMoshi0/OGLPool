@@ -10,30 +10,20 @@
 #include <RigidBody/Plane.h>
 #include <iostream>
 #include <App/Input.h>
+#include <Shape/Polygon/SmoothRandomPolygon.h>
 using namespace std;
 
 namespace OGLPool {
 
-World::World() {
+World::World() : ct(CueTable(SmoothRandomPolygon(SmoothRandomPolygon::ROUND,10,20), vector <vec2> ())){
 	addEntity( new Plane( vec3(0,1,0), vec3() ) );
 	addEntity( new Plane( vec3(-1,0,0), vec3(50,50,0) ) );
 	addEntity( new Plane( vec3(1,0,0), vec3(-50,50,0) ) );
 	addEntity( new Plane( vec3(0,0,-1), vec3(0,50,50) ) );
 	addEntity( new Plane( vec3(0,0,1), vec3(0,50,-50) ) );
+	addEntity( ct.tableMesh );
 
 	gravity = vec3(0,-10,0);
-
-	mesh.beginTriangle();
-	mesh.vertex( vec3(0.0, 50.0, 20.0) );
-	mesh.vertex( vec3(-50.0, 0.0, 20.0) );
-	mesh.vertex( vec3(50.0, 0.0, 20.0) );
-
-	mesh.color( vec3(1.0, 0.0, 0.0) );
-	mesh.color( vec3(0.0, 1.0, 0.0) );
-	mesh.color( vec3(0.0, 0.0, 1.0) );
-	mesh.calculateNormals();
-	mesh.endTriangle();
-	mesh.build();
 }
 
 World::~World() {
@@ -50,8 +40,7 @@ void World::render(){
 		RigidBody* e = (*it);
 		e->render();
 	}
-
-	mesh.render();
+	//mesh.render();
 }
 
 void World::update( float dt ){
