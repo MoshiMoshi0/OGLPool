@@ -156,6 +156,7 @@ void SmoothRandomPolygon::createRound(){
 		tightness = glm::min( glm::min( t, u ) - 0.05f, tightness );
 	}
 
+	edges.clear();
 	for( uint i = 0, j = n - 1; i < n; j = i++ ){
 		vector< vec2 > bezierPts;
 		getBezierPoints( points[j], first[j], second[i], points[i], bezierPts, 20 );
@@ -163,7 +164,7 @@ void SmoothRandomPolygon::createRound(){
 		bezierControlEdges.push_back( Edge2(points[j], first[j]) );
 		bezierControlEdges.push_back( Edge2(second[i], points[i]) );
 		for (uint k = 0; k < bezierPts.size() - 1; k++) {
-			bezierEdges.push_back(Edge2(bezierPts[k], bezierPts[k + 1]));
+			edges.push_back(Edge2(bezierPts[k], bezierPts[k + 1]));
 		}
 	}
 }
