@@ -84,7 +84,7 @@ void Mesh::build(){
 		triangles.push_back( Triangle3( v0, v1, v2 ) );
 	}
 
-	boundingBox = BoundingBox::get( vertices, 0.1f );
+	boundingBox = BoundingBox3::get( vertices, 0.1f );
 	pos = boundingBox.pos;
 }
 

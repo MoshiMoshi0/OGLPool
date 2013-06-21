@@ -93,8 +93,8 @@ bool SphereTriangleTester::sweptTest( ContactManifold* info ){
 }
 
 bool SphereTriangleTester::broadphase(){
-	BoundingBox tb = BoundingBox::get( {t->getVertex(0), t->getVertex(1), t->getVertex(2)}, 0.1f );
-	return BoundingBox::intersects( s->getBoundingBox(), tb );
+	BoundingBox3 tb = BoundingBox3::get( {t->getVertex(0), t->getVertex(1), t->getVertex(2)}, 0.1f );
+	return BoundingBox3::intersects( s->getBoundingBox(), tb );
 }
 
 void SphereTriangleTester::setBodies( Sphere* s, Triangle3* t ){ this->s = s; this->t = t; CollisionTester::setBodies( s, 0 ); }

@@ -15,25 +15,30 @@ using namespace std;
 using namespace glm;
 
 namespace OGLPool {
+
+template< class T >
 class BoundingBox : public Shape {
 public:
-	static bool intersects( const BoundingBox& b0, const BoundingBox& b1 );
-	static BoundingBox get( vector< vec3 > points, float skin, bool addSkin = true );
-	static BoundingBox get( vec3 min, vec3 max, float skin, bool addSkin = true );
+	static bool intersects( const BoundingBox<T>& b0, const BoundingBox<T>& b1 );
+	static BoundingBox get( vector< T > points, float skin, bool addSkin = true );
+	static BoundingBox get( T min, T max, float skin, bool addSkin = true );
 
 	BoundingBox();
 	virtual ~BoundingBox();
 
 	void render() const;
 
-	vec3 min;
-	vec3 max;
-	vec3 minDyn;
-	vec3 maxDyn;
-	vec3 pos;
+	T min;
+	T max;
+	T minDyn;
+	T maxDyn;
+	T pos;
 
 	float skin;
 };
+
+typedef BoundingBox< vec2 > BoundingBox2;
+typedef BoundingBox< vec3 > BoundingBox3;
 
 } /* namespace OGLPool */
 #endif /* BOUNDINGBOX_H_ */

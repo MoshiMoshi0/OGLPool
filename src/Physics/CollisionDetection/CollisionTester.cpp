@@ -28,10 +28,10 @@ bool CollisionTester::narrowphase( ContactManifold* manifold ){
 bool CollisionTester::broadphase(){
 	if( (e0 && e0->mass == 0) && (e1 && e1->mass == 0) ) return false;
 
-	const BoundingBox& b0 = e0->getBoundingBox();
-	const BoundingBox& b1 = e1->getBoundingBox();
+	const BoundingBox3& b0 = e0->getBoundingBox();
+	const BoundingBox3& b1 = e1->getBoundingBox();
 
-	return BoundingBox::intersects( b0, b1 );
+	return BoundingBox3::intersects( b0, b1 );
 }
 
 } /* namespace OGLPool */

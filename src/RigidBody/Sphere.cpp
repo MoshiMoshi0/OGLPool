@@ -29,7 +29,7 @@ Sphere::Sphere( float radius ) : RigidBody() {
 	gluQuadricDrawStyle( quadric, GLU_SMOOTH );
 	gluQuadricNormals( quadric, GLU_FLAT );
 
-	boundingBox = BoundingBox::get( vec3(1,1,1) * -radius, vec3(1,1,1) * radius, 0.1f );
+	boundingBox = BoundingBox3::get( vec3(1,1,1) * -radius, vec3(1,1,1) * radius, 0.1f );
 }
 
 Sphere::Sphere( float radius, vec3 pos ) : Sphere( radius ) {

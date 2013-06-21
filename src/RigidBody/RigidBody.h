@@ -70,7 +70,7 @@ public:
 	virtual void setTorque(vec3 torque);
 	virtual vec3 getLinVel() const;
 	virtual void setLinVel(vec3 vel);
-	virtual const BoundingBox& getBoundingBox();
+	virtual const BoundingBox3& getBoundingBox();
 	virtual float getBoundingSphereRadius() const = 0;
 
 	float mass;
@@ -94,7 +94,7 @@ public:
 	float linearDamping;
 	float angularDamping;
 
-	BoundingBox boundingBox;
+	BoundingBox3 boundingBox;
 
 	int id;
 };

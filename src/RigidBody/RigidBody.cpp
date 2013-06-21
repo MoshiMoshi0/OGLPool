@@ -104,7 +104,7 @@ void RigidBody::setTorque( vec3 torque ) { this->torque = torque; }
 vec3 RigidBody::getLinVel() const { return linVel; }
 void RigidBody::setLinVel( vec3 vel ) { this->linVel = vel; }
 
-const BoundingBox& RigidBody::getBoundingBox() {
+const BoundingBox3& RigidBody::getBoundingBox() {
 	boundingBox.pos = pos;
 	boundingBox.minDyn = -abs(linVel) / 60.f;
 	boundingBox.maxDyn = abs(linVel) / 60.f;

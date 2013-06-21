@@ -14,10 +14,13 @@
 
 namespace OGLPool {
 
-BoundingBox::BoundingBox() : min(vec3()), max(vec3()), minDyn(vec3()), maxDyn(vec3()), pos(vec3()), skin(0) {}
-BoundingBox::~BoundingBox(){}
+template< class T >
+BoundingBox<T>::BoundingBox() : min(T()), max(T()), minDyn(T()), maxDyn(T()), pos(T()), skin(0) {}
+template< class T >
+BoundingBox<T>::~BoundingBox(){}
 
-void BoundingBox::render() const{
+template<>
+void BoundingBox<vec3>::render() const{
 	vec3 c = pos;
 	vec3 e = (max - min) / 2.0f;
 	float ex = e.x;
@@ -37,8 +40,25 @@ void BoundingBox::render() const{
 	debugDraw->drawLine( c + vec3(ex,-ey,-ez), c + vec3(ex,ey,-ez) );
 }
 
-bool BoundingBox::intersects( const BoundingBox& b0, const BoundingBox& b1 ){
-	for( uint i = 0; i < 3; i++ ) {
+template<>
+void BoundingBox<vec2>::render() const{
+	vec3 c = vec3( pos.x, 0, pos.y );
+	vec2 e = (max - min) / 2.0f;
+	float ex = e.x;
+	float ey = e.y;
+
+	auto debugDraw = Debug::getDebugDraw();
+	debugDraw->setColor( 1,0,0 );
+	debugDraw->drawLine( c + vec3(ex,0,ey), c + vec3(-ex,0,ey) );
+	debugDraw->drawLine( c + vec3(-ex,0,ey), c + vec3(-ex,0,-ey) );
+	debugDraw->drawLine( c + vec3(-ex,0,-ey), c + vec3(ex,0,-ey) );
+	debugDraw->drawLine( c + vec3(ex,0,-ey), c + vec3(ex,0,ey) );
+}
+
+template< class T >
+bool BoundingBox<T>::intersects( const BoundingBox<T>& b0, const BoundingBox<T>& b1 ){
+	static uint size = T().length();
+	for( uint i = 0; i < size; i++ ) {
 		float min0 = b0.pos[i] + b0.min[i] + b0.minDyn[i];
 		float max0 = b0.pos[i] + b0.max[i] + b0.maxDyn[i];
 
@@ -52,10 +72,12 @@ bool BoundingBox::intersects( const BoundingBox& b0, const BoundingBox& b1 ){
 	return true;
 }
 
-BoundingBox BoundingBox::get( vector< vec3 > points, float skin, bool addSkin ){
-	BoundingBox bb;
-	bb.min = vec3(numeric_limits<float>::max(), numeric_limits<float>::max(), numeric_limits<float>::max());
-	bb.max = vec3(-numeric_limits<float>::max(), -numeric_limits<float>::max(), -numeric_limits<float>::max());
+template< class T >
+BoundingBox<T> BoundingBox<T>::get( vector< T > points, float skin, bool addSkin ){
+	BoundingBox<T> bb;
+
+	bb.min = T(numeric_limits<float>::max());
+	bb.max = T(-numeric_limits<float>::max());
 
 	for( auto& p : points ){
 		for( int i = 0; i < 3; i++ ){
@@ -69,28 +91,31 @@ BoundingBox BoundingBox::get( vector< vec3 > points, float skin, bool addSkin ){
 	bb.max -= bb.pos;
 
 	if( addSkin ){
-		bb.min -= vec3(1,1,1) * skin;
-		bb.max += vec3(1,1,1) * skin;
+		bb.min -= T(1) * skin;
+		bb.max += T(1) * skin;
 	}
 
 	bb.skin = skin;
 	return bb;
 }
 
-BoundingBox BoundingBox::get( vec3 min, vec3 max, float skin, bool addSkin ){
-	BoundingBox bb;
+template< class T >
+BoundingBox<T> BoundingBox<T>::get( T min, T max, float skin, bool addSkin ){
+	BoundingBox<T> bb;
 
 	bb.min = min;
 	bb.max = max;
 
 	if( addSkin ){
-		bb.min -= vec3(1,1,1) * skin;
-		bb.max += vec3(1,1,1) * skin;
+		bb.min -= T(1) * skin;
+		bb.max += T(1) * skin;
 	}
 
 	bb.skin = skin;
 	return bb;
 }
 
+template class BoundingBox< vec2 >;
+template class BoundingBox< vec3 >;
 
 } /* namespace OGLPool */

@@ -19,10 +19,10 @@ SphereMeshTester::SphereMeshTester( Sphere* s, Mesh* m ){ setBodies( s, m ); }
 SphereMeshTester::~SphereMeshTester(){}
 
 bool SphereMeshTester::broadphase(){
-	BoundingBox sb = s->getBoundingBox();
-	BoundingBox mb = m->getBoundingBox();
+	BoundingBox3 sb = s->getBoundingBox();
+	BoundingBox3 mb = m->getBoundingBox();
 
-	if( !BoundingBox::intersects( sb, mb ) ) return false;
+	if( !BoundingBox3::intersects( sb, mb ) ) return false;
 
 	triangleCachePool.clear();
 	for( auto& triangle : m->triangles ){
