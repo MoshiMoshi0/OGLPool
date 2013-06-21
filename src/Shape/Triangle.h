@@ -26,8 +26,11 @@ public:
 
 	//@TODO getPlane();
 	Edge<T> getEdge( int i );
+	Edge<T>* getEdges();
+	const Edge<T>* getEdges() const;
 	T getVertex( int i );
 	T* getVertices();
+	const T* getVertices() const;
 	vec3 getNormal();
 	T& operator[](int i);
 

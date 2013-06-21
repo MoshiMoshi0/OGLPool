@@ -38,6 +38,16 @@ Edge<T> Triangle<T>::getEdge( int i ){
 }
 
 template< class T >
+Edge<T>* Triangle<T>::getEdges(){
+	return edges;
+}
+
+template< class T >
+const Edge<T>* Triangle<T>::getEdges() const{
+	return edges;
+}
+
+template< class T >
 T Triangle<T>::getVertex( int i ){
 	assert( i <= 2 );
 	return vertices[ i ];
@@ -45,6 +55,11 @@ T Triangle<T>::getVertex( int i ){
 
 template< class T >
 T* Triangle<T>::getVertices(){
+	return vertices;
+}
+
+template< class T >
+const T* Triangle<T>::getVertices() const {
 	return vertices;
 }
 
