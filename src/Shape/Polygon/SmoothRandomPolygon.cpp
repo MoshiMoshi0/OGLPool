@@ -14,6 +14,8 @@
 using namespace glm;
 using namespace std;
 
+//#define DEBUGBEZIER
+
 namespace OGLPool {
 
 SmoothRandomPolygon::SmoothRandomPolygon( Type type, uint numSides, uint numPoints) : SmoothRandomPolygon( type, numSides, numPoints, 1.0f ) {}
@@ -156,14 +158,23 @@ void SmoothRandomPolygon::createRound(){
 		tightness = glm::min( glm::min( t, u ) - 0.05f, tightness );
 	}
 
+#ifndef DEBUGBEZIER
+	Polygon::clear();
+#endif
 	for( uint i = 0, j = n - 1; i < n; j = i++ ){
 		vector< vec2 > bezierPts;
 		getBezierPoints( points[j], first[j], second[i], points[i], bezierPts, 20 );
 
+#ifdef DEBUGBEZIER
 		bezierControlEdges.push_back( Edge2(points[j], first[j]) );
 		bezierControlEdges.push_back( Edge2(second[i], points[i]) );
+#endif
 		for (uint k = 0; k < bezierPts.size() - 1; k++) {
+#ifdef DEBUGBEZIER
 			bezierEdges.push_back(Edge2(bezierPts[k], bezierPts[k + 1]));
+#else
+			edges.push_back(Edge2(bezierPts[k], bezierPts[k + 1]));
+#endif
 		}
 	}
 }
@@ -184,6 +195,7 @@ void SmoothRandomPolygon::draw(){
 	glColor3f( 0,0,1 );
 	Polygon::render();
 
+#ifdef DEBUGBEZIER
 	glColor3f( 1,0,0 );
 	glBegin( GL_LINES );
 	for( auto& edge : bezierEdges ){
@@ -199,6 +211,7 @@ void SmoothRandomPolygon::draw(){
 		glVertex3f( edge[1].x, 0, edge[1].y );
 	}
 	glEnd();
+#endif
 }
 
 } /* namespace OGLPool */
