@@ -15,7 +15,7 @@ using namespace std;
 
 namespace OGLPool {
 
-class RandomPolygon: public Polygon {
+class RandomPolygon : public Polygon2 {
 public:
 	RandomPolygon( uint numSides, uint numPoints );
 	virtual ~RandomPolygon();

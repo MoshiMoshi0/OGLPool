@@ -16,19 +16,23 @@ using namespace std;
 
 namespace OGLPool {
 
+template< class T >
 class Polygon : public Shape {
 public:
 	Polygon();
 	virtual ~Polygon();
 
-	void draw();
+	void render();
 
-	void addPoint( vec2 point );
-	void addEdge( Edge2 edge );
+	void addPoint( T point );
+	void addEdge( Edge<T> edge );
 protected:
-	vector< vec2 > points;
-	vector< Edge2 > edges;
+	vector< T > points;
+	vector< Edge<T> > edges;
 };
+
+typedef Polygon< vec2 > Polygon2;
+typedef Polygon< vec3 > Polygon3;
 
 } /* namespace OGLPool */
 #endif /* POLYGON_H_ */

@@ -10,25 +10,30 @@
 
 namespace OGLPool {
 
-Polygon::Polygon() {}
+template< class T >
+Polygon<T>::Polygon() {}
 
-Polygon::~Polygon() {}
+template< class T >
+Polygon<T>::~Polygon() {}
 
-void Polygon::draw(){
-	glBegin( GL_LINES );
-		for( auto& edge : edges ){
-			glVertex3f( edge[0].x, 0, edge[0].y );
-			glVertex3f( edge[1].x, 0, edge[1].y );
-		}
-	glEnd();
+template< class T >
+void Polygon<T>::render(){
+	for( auto& edge : edges ){
+		edge.render();
+	}
 }
 
-void Polygon::addPoint( vec2 point ){
+template< class T >
+void Polygon<T>::addPoint( T point ){
 	points.push_back( point );
 }
 
-void Polygon::addEdge( Edge2 edge ){
+template< class T >
+void Polygon<T>::addEdge( Edge<T> edge ){
 	edges.push_back( edge );
 }
+
+template class Polygon< vec2 >;
+template class Polygon< vec3 >;
 
 } /* namespace OGLPool */

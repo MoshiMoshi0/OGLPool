@@ -182,7 +182,7 @@ void SmoothRandomPolygon::getBezierPoints( const vec2& p0, const vec2& p1, const
 
 void SmoothRandomPolygon::draw(){
 	glColor3f( 0,0,1 );
-	Polygon::draw();
+	Polygon::render();
 
 	glColor3f( 1,0,0 );
 	glBegin( GL_LINES );
