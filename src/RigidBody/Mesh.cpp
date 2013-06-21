@@ -31,9 +31,9 @@ void Mesh::beginTriangle(){
 	assert( normals.size() % 3 == 0 );
 	assert( colors.size() % 3 == 0 );
 
-	vertices.reserve( vertices.size() + 3 );
-	normals.reserve( normals.size() + 3 );
-	colors.reserve( colors.size() + 3 );
+	//vertices.resize( vertices.size() + 3 );
+	//normals.resize( normals.size() + 3 );
+	//colors.resize( colors.size() + 3 );
 }
 
 void Mesh::endTriangle(){
@@ -70,7 +70,7 @@ void Mesh::render(){
 }
 
 void Mesh::build(){
-	triangles.reserve( triangleCount - 1 );
+	//triangles.reserve( triangleCount );
 
 	for( uint i = 0; i < triangleCount; i++ ){
 		uint i0 = i * 3 + 0;
@@ -91,9 +91,9 @@ void Mesh::build(){
 void Mesh::calculateNormals(){
 	assert( vertices.size() % 3 == 0 );
 
-	uint i0 = triangleCount * 3 + 0;
-	uint i1 = triangleCount * 3 + 1;
-	uint i2 = triangleCount * 3 + 2;
+	const uint i0 = triangleCount * 3 + 0;
+	const uint i1 = triangleCount * 3 + 1;
+	const uint i2 = triangleCount * 3 + 2;
 
 	vec3 a = vertices[i0];
 	vec3 b = vertices[i1];
@@ -101,12 +101,8 @@ void Mesh::calculateNormals(){
 
 	vec3 n = normalize( cross( b-a, c-a ) );
 
-	normals.push_back( n );
-	normals.push_back( n );
-	normals.push_back( n );
-	//normals[i0] = n;
-	//normals[i1] = n;
-	//normals[i2] = n;
+
+	for( int i = 0; i < 3; i++ ) normal(n);
 }
 
 void Mesh::vertex( vec3 v ){ vertices.push_back( v ); }
