@@ -23,9 +23,15 @@ public:
 	virtual ~Polygon();
 
 	void render();
+	void clear();
 
 	void addPoint( T point );
 	void addEdge( Edge<T> edge );
+
+	vector<T>& getPoints();
+	const vector<T>& getPoints() const;
+	vector< Edge<T> >& getEdges();
+	const vector< Edge<T> >& getEdges() const;
 protected:
 	vector< T > points;
 	vector< Edge<T> > edges;

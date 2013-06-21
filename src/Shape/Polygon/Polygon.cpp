@@ -24,6 +24,12 @@ void Polygon<T>::render(){
 }
 
 template< class T >
+void Polygon<T>::clear(){
+	points.clear();
+	edges.clear();
+}
+
+template< class T >
 void Polygon<T>::addPoint( T point ){
 	points.push_back( point );
 }
@@ -31,6 +37,26 @@ void Polygon<T>::addPoint( T point ){
 template< class T >
 void Polygon<T>::addEdge( Edge<T> edge ){
 	edges.push_back( edge );
+}
+
+template< class T >
+vector< T >& Polygon<T>::getPoints(){
+	return points;
+}
+
+template< class T >
+const vector< T >& Polygon<T>::getPoints() const {
+	return points;
+}
+
+template< class T >
+vector< Edge<T> >& Polygon<T>::getEdges(){
+	return edges;
+}
+
+template< class T >
+const vector< Edge<T> >& Polygon<T>::getEdges() const {
+	return edges;
 }
 
 template class Polygon< vec2 >;
