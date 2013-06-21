@@ -22,10 +22,10 @@ public:
 	Circle( vec2 p, float r );
 	virtual ~Circle();
 
-	vec2 c;
-	float r;
-
 	bool inside( vec2 p );
+
+	vec2 center;
+	float radius;
 };
 
 } /* namespace OGLPool */

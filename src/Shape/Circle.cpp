@@ -10,12 +10,12 @@
 namespace OGLPool {
 
 Circle::Circle() {}
-Circle::Circle( vec2 p, float r ) : c(p), r(r) {}
+Circle::Circle( vec2 p, float r ) : center(p), radius(r) {}
 
 Circle::~Circle() {}
 
 bool Circle::inside( vec2 p ){
-	return dot( c-p, c-p ) < r * r;
+	return dot( center-p, center-p ) < radius * radius;
 }
 
 Circle Circle::circumCircle(vec2 p1, vec2 p2, vec2 p3) {
@@ -32,10 +32,10 @@ Circle Circle::circumCircle(vec2 p1, vec2 p2, vec2 p3) {
 		float cx = (p1Sq*(p2.y - p3.y) + p2Sq*(p3.y - p1.y) + p3Sq*(p1.y - p2.y)) / den;
 		float cy = (p1Sq*(p3.x - p2.x) + p2Sq*(p1.x - p3.x) + p3Sq*(p2.x - p1.x)) / den;
 
-		circle.c = vec2(cx, cy);
+		circle.center = vec2(cx, cy);
 	}
 
-	circle.r = distance( circle.c, p1 );
+	circle.radius = distance( circle.center, p1 );
 	return circle;
 }
 
