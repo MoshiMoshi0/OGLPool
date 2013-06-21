@@ -111,4 +111,6 @@ const BoundingBox3& RigidBody::getBoundingBox() {
 	return boundingBox;
 }
 
+float RigidBody::getBoundingSphereRadius() const { return 0.0f; }
+
 } /* namespace OGLPool */

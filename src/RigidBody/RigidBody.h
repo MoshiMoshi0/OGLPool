@@ -71,7 +71,7 @@ public:
 	virtual vec3 getLinVel() const;
 	virtual void setLinVel(vec3 vel);
 	virtual const BoundingBox3& getBoundingBox();
-	virtual float getBoundingSphereRadius() const = 0;
+	virtual float getBoundingSphereRadius() const;
 
 	float mass;
 	float massInv;
