@@ -15,7 +15,7 @@ public:
 	Shape();
 	virtual ~Shape();
 
-	virtual void render(){}
+	virtual void render() const {}
 };
 
 } /* namespace OGLPool */
