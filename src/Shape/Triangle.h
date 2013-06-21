@@ -22,6 +22,8 @@ public:
 	Triangle( Edge<T> e0, Edge<T> e1, Edge<T> e2 );
 	virtual ~Triangle();
 
+	void render() const;
+
 	//@TODO getPlane();
 	Edge<T> getEdge( int i );
 	T getVertex( int i );

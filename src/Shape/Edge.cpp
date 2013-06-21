@@ -6,6 +6,7 @@
  */
 
 #include "Edge.h"
+#include <SFML/OpenGL.hpp>
 
 namespace OGLPool {
 
@@ -21,6 +22,22 @@ Edge<T>::Edge( T v0, T v1 ) {
 
 template< class T >
 Edge<T>::~Edge() {}
+
+template<>
+void Edge<vec2>::render() const {
+	glBegin(GL_LINES);
+		glVertex3f( vertices[0].x, 0, vertices[0].y );
+		glVertex3f( vertices[1].x, 0, vertices[1].y );
+	glEnd();
+}
+
+template<>
+void Edge<vec3>::render() const {
+	glBegin(GL_LINES);
+		glVertex3f( vertices[0].x, vertices[0].y, vertices[0].z );
+		glVertex3f( vertices[1].x, vertices[1].y, vertices[1].z );
+	glEnd();
+}
 
 template< class T >
 T Edge<T>::closestPoint( T point ){

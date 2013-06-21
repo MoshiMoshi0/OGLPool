@@ -27,6 +27,11 @@ template< class T >
 Triangle<T>::~Triangle() {}
 
 template< class T >
+void Triangle<T>::render() const {
+	for( int i = 0; i < 3; i++ ) edges[i].render();
+}
+
+template< class T >
 Edge<T> Triangle<T>::getEdge( int i ){
 	assert( i <= 2 );
 	return edges[ i ];

@@ -21,6 +21,8 @@ public:
 	Edge( T v0, T v1 );
 	virtual ~Edge();
 
+	void render() const;
+
 	T closestPoint( T point );
 	T& operator[](int i);
 	T getCenter();
