@@ -8,19 +8,20 @@
 #include "World.h"
 #include <RigidBody/Sphere.h>
 #include <RigidBody/Plane.h>
-#include <RigidBody/Mesh.h>
+#include <Shape/Polygon/RandomPolygon.h>
 #include <iostream>
 #include <App/Input.h>
 using namespace std;
 
 namespace OGLPool {
 
-World::World() {
+World::World() : ct( CueTable( RandomPolygon( 10, 20 ), vector<vec2>() ) ) {
 	addEntity( new Plane( vec3(0,1,0), vec3() ) );
 	addEntity( new Plane( vec3(-1,0,0), vec3(50,50,0) ) );
 	addEntity( new Plane( vec3(1,0,0), vec3(-50,50,0) ) );
 	addEntity( new Plane( vec3(0,0,-1), vec3(0,50,50) ) );
 	addEntity( new Plane( vec3(0,0,1), vec3(0,50,-50) ) );
+	addEntity( ct.tableMesh );
 
 	gravity = vec3(0,-10,0);
 }

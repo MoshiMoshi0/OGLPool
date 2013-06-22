@@ -30,10 +30,6 @@ void Mesh::beginTriangle(){
 	assert( vertices.size() % 3 == 0 );
 	assert( normals.size() % 3 == 0 );
 	assert( colors.size() % 3 == 0 );
-
-	//vertices.resize( vertices.size() + 3 );
-	//normals.resize( normals.size() + 3 );
-	//colors.resize( colors.size() + 3 );
 }
 
 void Mesh::endTriangle(){
@@ -54,7 +50,7 @@ void Mesh::render(){
 	glNormalPointer(GL_FLOAT, 0, value_ptr( normals[0] ));
 
 	glPushMatrix();
-	//applyTransform();
+	applyTransform();
 	glDrawArrays(GL_TRIANGLES, 0, triangleCount * 3);
 	glPopMatrix();
 
@@ -64,22 +60,20 @@ void Mesh::render(){
 
 	auto debugDraw = Debug::getDebugDraw();
 	for( auto& t : triangles ){
-		vec3 c = (t[0] + t[1] + t[2]) / 3.0f;
-		debugDraw->drawVector( c, t.getNormal() * 2.0f );
+		const vec3 c = (t[0] + t[1] + t[2]) / 3.0f;
+		debugDraw->drawVector( pos + c, t.getNormal() * 2.0f );
 	}
 }
 
 void Mesh::build(){
-	//triangles.reserve( triangleCount );
-
 	for( uint i = 0; i < triangleCount; i++ ){
-		uint i0 = i * 3 + 0;
-		uint i1 = i * 3 + 1;
-		uint i2 = i * 3 + 2;
+		const uint i0 = i * 3 + 0;
+		const uint i1 = i * 3 + 1;
+		const uint i2 = i * 3 + 2;
 
-		vec3 v0 = vertices[i0];
-		vec3 v1 = vertices[i1];
-		vec3 v2 = vertices[i2];
+		const vec3 v0 = vertices[i0];
+		const vec3 v1 = vertices[i1];
+		const vec3 v2 = vertices[i2];
 
 		triangles.push_back( Triangle3( v0, v1, v2 ) );
 	}
@@ -95,12 +89,11 @@ void Mesh::calculateNormals(){
 	const uint i1 = triangleCount * 3 + 1;
 	const uint i2 = triangleCount * 3 + 2;
 
-	vec3 a = vertices[i0];
-	vec3 b = vertices[i1];
-	vec3 c = vertices[i2];
+	const vec3 a = vertices[i0];
+	const vec3 b = vertices[i1];
+	const vec3 c = vertices[i2];
 
-	vec3 n = normalize( cross( b-a, c-a ) );
-
+	const vec3 n = normalize( cross( b-a, c-a ) );
 
 	for( int i = 0; i < 3; i++ ) normal(n);
 }

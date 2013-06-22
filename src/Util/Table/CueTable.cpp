@@ -12,16 +12,14 @@ using namespace std;
 
 namespace OGLPool {
 
-CueTable::CueTable(Polygon shape, vector<vec2> holePoints) {
-
+CueTable::CueTable(Polygon2 shape, vector<vec2> holePoints) {
 	tableMesh = 0;
 	createTableMesh(shape);
-
 }
 
 CueTable::~CueTable() {}
 
-void CueTable::createTableMesh(Polygon& shape){
+void CueTable::createTableMesh(Polygon2& shape){
 	tableMesh = new Mesh();
 	
 	float size = 5.0f;
