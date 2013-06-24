@@ -9,8 +9,8 @@
 #define APP_H_
 
 #include <SFML/Graphics.hpp>
-#include <World/Camera/FpsCamera.h>
 #include <World/World.h>
+#include <Menu/Menu.h>
 
 using namespace sf;
 namespace OGLPool {
@@ -32,7 +32,7 @@ private:
 	void update( float dt );
 
 	World* world;
-	Camera* camera;
+	Menu* menu;
 	RenderWindow* window;
 	bool initialized;
 };

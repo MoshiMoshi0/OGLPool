@@ -13,6 +13,8 @@
 #include <App/Input.h>
 #include <Util/UDebug/Debug.h>
 #include <windows.h>
+#include <Menu/TestMenu.h>
+#include <World/RandomTableWorld.h>
 using namespace std;
 
 namespace OGLPool {
@@ -21,9 +23,9 @@ App::App( int width, int height ) {
 	this->width = width;
 	this->height = height;
 
-	camera = 0;
 	window = 0;
 	world = 0;
+	menu = 0;
 	initialized = false;
 }
 
@@ -51,21 +53,26 @@ void App::run() {
 }
 
 void App::draw() {
-	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-	glLoadIdentity();
 	window->clear();
-	camera->applyView();
 
-	world->render();
-	Debug::render();
+	if( !menu ){
+		menu->render();
+	}else{
+		world->render();
+		Debug::render();
+	}
+
 	window->display();
 }
 
 void App::update( float dt ) {
 	IO::Input::update();
 	if( IO::Input::getFocus() ){
-		camera->update( dt );
-		world->update( dt );
+		if( !menu ){
+			menu->update(dt);
+		}else{
+			world->update( dt );
+		}
 	}
 }
 
@@ -77,10 +84,8 @@ bool App::init() {
 	IO::Input::init( window );
 	IO::Input::setFocus( false );
 
-	world = new World();
-
-	camera = new FpsCamera( vec3(15, 15, 15) );
-	camera->setLookAt( vec3() );
+	menu = new TestMenu( window );
+	world = new RandomTableWorld();
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
@@ -118,7 +123,6 @@ bool App::init() {
 void App::deinit() {
 	if( window ) delete window;
 	if( world ) delete world;
-	if( camera ) delete camera;
 
 	Debug::deinit();
 	initialized = false;
