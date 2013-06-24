@@ -10,11 +10,9 @@
 
 #include <vector>
 #include <RigidBody/RigidBody.h>
-#include <Physics/PhysicsHandler.h>
-#include <Util/Table/CueTable.h>
+#include <World/Camera/Camera.h>
 
 using namespace std;
-using namespace OGLPool::Physics;
 
 namespace OGLPool {
 
@@ -23,16 +21,13 @@ public:
 	World();
 	virtual ~World();
 
-	void render();
-	void update( float dt );
+	virtual void render();
+	virtual void update( float dt );
 
-	void addEntity( RigidBody* e );
-private:
+	virtual void addBody( RigidBody* e );
+protected:
+	Camera* camera;
 	vector< RigidBody* > bodies;
-	vec3 gravity;
-
-	PhysicsHandler physics;
-	CueTable ct;
 };
 
 } /* namespace OGLPool */
