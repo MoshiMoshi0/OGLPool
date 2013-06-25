@@ -20,6 +20,7 @@ namespace OGLPool {
 
 class CueTable {
 public:
+	CueTable();
 	CueTable(Polygon2 shape, vector<vec2> holePoints);
 	virtual ~CueTable();
 	void createTableMesh(Polygon2& shape);
