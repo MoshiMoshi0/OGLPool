@@ -26,6 +26,8 @@ public:
 	virtual void update( float dt );
 	virtual void addComponent( MenuComponent* component );
 
+	virtual bool isChanged();
+
 	vector< MenuComponent* > components;
 	RenderWindow* window;
 };

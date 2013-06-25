@@ -38,4 +38,12 @@ void Menu::addComponent( MenuComponent* component ){
 	components.push_back( component );
 }
 
+bool Menu::isChanged(){
+	for( auto& component : components ){
+		if( component->isChanged() ) return true;
+	}
+
+	return false;
+}
+
 } /* namespace OGLPool */
