@@ -48,7 +48,7 @@ void GameWorld::update( float dt ){
 		e->applyForce( gravity * e->mass );
 	}
 
-	//physics.processBodies( bodies, dt );
+	physics.processBodies( bodies, dt );
 
 	if( IO::Input::onKeyPressed( IO::Input::R ) ){
 		Sphere* s = new Sphere( 5, vec3( 0, 30, 0 ) );

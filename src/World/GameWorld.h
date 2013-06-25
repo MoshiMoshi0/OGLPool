@@ -27,7 +27,6 @@ public:
 	void render();
 	void update( float dt );
 private:
-	vector< RigidBody* > bodies;
 	vec3 gravity;
 
 	PhysicsHandler physics;
