@@ -14,6 +14,7 @@ SliderComponent::SliderComponent( vec2 pos, Menu* menu, RenderWindow* window ) :
 	this->pos = pos;
 	this->length = 100;
 	this->halfLength = length / 2.0f;
+	this->isGrabbed = false;
 	sliderCenter = RectangleShape( Vector2f(20,15) );
 	sliderCenter.setPosition( pos.x, pos.y );
 }
