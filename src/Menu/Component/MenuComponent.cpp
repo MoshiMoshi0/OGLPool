@@ -9,13 +9,15 @@
 
 namespace OGLPool {
 
-MenuComponent::MenuComponent( Menu* menu ){
+MenuComponent::MenuComponent( Menu* menu, RenderWindow* window ){
 	this->menu = menu;
+	this->window = window;
 }
 
 MenuComponent::~MenuComponent(){}
 
 void MenuComponent::render(){}
+
 void MenuComponent::update( float dt ){}
 
 } /* namespace OGLPool */

@@ -9,19 +9,25 @@
 #define MENUCOMPONENT_H_
 
 #include "..\Menu.h"
+#include <vector>
+#include <SFML/Graphics/Shape.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
+using namespace std;
+using namespace sf;
 
 namespace OGLPool {
 
 class Menu;
 class MenuComponent {
 public:
-	MenuComponent( Menu* menu );
+	MenuComponent( Menu* menu, RenderWindow* window );
 	virtual ~MenuComponent();
 
 	virtual void render();
 	virtual void update( float dt );
 
 	Menu* menu;
+	RenderWindow* window;
 };
 
 } /* namespace OGLPool */
