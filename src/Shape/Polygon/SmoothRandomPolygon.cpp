@@ -18,18 +18,25 @@ using namespace std;
 
 namespace OGLPool {
 
-SmoothRandomPolygon::SmoothRandomPolygon( Type type, uint numSides, uint numPoints) : SmoothRandomPolygon( type, numSides, numPoints, 1.0f ) {}
+SmoothRandomPolygon::SmoothRandomPolygon(){}
+SmoothRandomPolygon::~SmoothRandomPolygon() {}
 
-SmoothRandomPolygon::SmoothRandomPolygon( Type type, uint numSides, uint numPoints, float tightness ) : RandomPolygon(numSides,numPoints) {
-	this->tightness = tightness;
-	switch ( type ) {
-		case RANDOM: createRandom(); break;
-		case ROUND: createRound(); break;
-		default: assert(0);
+bool SmoothRandomPolygon::generate(Type type, uint numSides, uint numPoints, float scale, float tightness, uint numTries){
+	if( generate( numSides, numSides, scale, numTries ) ){
+		this->tightness = tightness;
+		switch ( type ) {
+			case RANDOM: createRandom(); break;
+			case ROUND: createRound(); break;
+			default: assert(0);
+		}
+		return true;
 	}
+	return false;
 }
 
-SmoothRandomPolygon::~SmoothRandomPolygon() {}
+bool SmoothRandomPolygon::generate(uint numPoints, uint numSides, float scale, uint numTries){
+	return RandomPolygon::generate( numPoints, numSides, scale, numTries );
+}
 
 void SmoothRandomPolygon::createRandom(){
 	unordered_set<int> smoothEdges;
