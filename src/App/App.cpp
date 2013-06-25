@@ -14,7 +14,7 @@
 #include <Util/UDebug/Debug.h>
 #include <windows.h>
 #include <Menu/TestMenu.h>
-#include <World/RandomTableWorld.h>
+#include <World/GameWorld.h>
 using namespace std;
 
 namespace OGLPool {
@@ -85,7 +85,7 @@ bool App::init() {
 	IO::Input::setFocus( false );
 
 	menu = new TestMenu( window );
-	world = new RandomTableWorld();
+	world = new GameWorld();
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);

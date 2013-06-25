@@ -13,7 +13,7 @@
 namespace OGLPool {
 
 RandomTableWorld::RandomTableWorld() {
-	camera = new CinematicCamera( vec3(30,100,0) );
+	camera = new CinematicCamera( vec3(30,60,0) );
 }
 
 RandomTableWorld::~RandomTableWorld(){}
