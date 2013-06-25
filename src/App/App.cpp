@@ -55,7 +55,7 @@ void App::run() {
 void App::draw() {
 	window->clear();
 
-	if( !menu ){
+	if( menu ){
 		menu->render();
 	}else{
 		world->render();
@@ -68,7 +68,7 @@ void App::draw() {
 void App::update( float dt ) {
 	IO::Input::update();
 	if( IO::Input::getFocus() ){
-		if( !menu ){
+		if( menu ){
 			menu->update(dt);
 		}else{
 			world->update( dt );
