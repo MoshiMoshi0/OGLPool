@@ -25,6 +25,7 @@ public:
 	virtual void update( float dt );
 
 	virtual void addBody( RigidBody* e );
+	void clearBodies();
 protected:
 	Camera* camera;
 	vector< RigidBody* > bodies;

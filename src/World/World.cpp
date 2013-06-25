@@ -18,12 +18,7 @@ World::World() {
 }
 
 World::~World() {
-	bodies.erase( remove_if( bodies.begin(), bodies.end(),
-		[](RigidBody* element) -> bool {
-			delete element;
-			return true;
-		}
-	), bodies.end() );
+	clearBodies();
 
 	if( camera ) delete camera;
 }
@@ -51,6 +46,15 @@ void World::update( float dt ){
 
 void World::addBody( RigidBody* e ){
 	bodies.push_back( e );
+}
+
+void World::clearBodies(){
+	bodies.erase( remove_if( bodies.begin(), bodies.end(),
+		[](RigidBody* element) -> bool {
+			delete element;
+			return true;
+		}
+	), bodies.end() );
 }
 
 } /* namespace OGLPool */
