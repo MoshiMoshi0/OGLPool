@@ -15,7 +15,7 @@ Edge<T>::Edge() {}
 template< class T >
 Edge<T>::Edge( T v0, T v1 ) {
 	vertices[ 0 ] = v0; vertices[ 1 ] = v1;
-	direction = normalize( v1 - v0 );
+	direction = ( v1 - v0 ) / length( v1 - v0 );
 	extent = length( v1 - v0 ) / 2.0f;
 	center = (v1 + v0) / 2.0f;
 }
@@ -53,6 +53,17 @@ T& Edge<T>::operator[](int i){
 	return vertices[ i ];
 }
 
+template< class T >
+T& Edge<T>::at( int i ){
+	assert( i <= 1 );
+	return vertices[i];
+}
+
+template< class T >
+const T& Edge<T>::at( int i ) const {
+	assert( i <= 1 );
+	return vertices[i];
+}
 
 template< class T >
 T Edge<T>::getCenter(){
