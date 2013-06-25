@@ -16,11 +16,16 @@ namespace OGLPool {
 
 class SliderComponent : public MenuComponent {
 public:
-	SliderComponent( vec2 pos, Menu* menu );
+	SliderComponent( vec2 pos, Menu* menu, RenderWindow* window );
 	virtual ~SliderComponent();
 
 	void render();
 	void update( float dt );
+
+	vec2 pos;
+	float length;
+	bool isGrabbed;
+	RectangleShape sliderCenter;
 };
 
 } /* namespace OGLPool */
