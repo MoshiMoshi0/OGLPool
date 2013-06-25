@@ -16,9 +16,6 @@ class TestMenu : public Menu {
 public:
 	TestMenu( RenderWindow* window );
 	virtual ~TestMenu();
-
-	void render();
-	void update(float dt);
 };
 
 } /* namespace OGLPool */
