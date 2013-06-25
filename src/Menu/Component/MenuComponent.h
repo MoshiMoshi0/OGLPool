@@ -25,9 +25,14 @@ public:
 
 	virtual void render();
 	virtual void update( float dt );
+	virtual bool isChanged();
 
+	bool changed;
 	Menu* menu;
 	RenderWindow* window;
+
+protected:
+	virtual void setChanged( bool changed );
 };
 
 } /* namespace OGLPool */
