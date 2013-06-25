@@ -16,13 +16,17 @@ using namespace std;
 
 namespace OGLPool {
 
-GameWorld::GameWorld() : ct( CueTable( RandomPolygon( 10, 20 ), vector<vec2>() ) ) {
+GameWorld::GameWorld(){
+	RandomPolygon shape;
+	shape.generate( 20, 5, 20 );
+	cueTable = CueTable( shape, vector<vec2>() );
+
 	addBody( new Plane( vec3(0,1,0), vec3() ) );
 	addBody( new Plane( vec3(-1,0,0), vec3(50,50,0) ) );
 	addBody( new Plane( vec3(1,0,0), vec3(-50,50,0) ) );
 	addBody( new Plane( vec3(0,0,-1), vec3(0,50,50) ) );
 	addBody( new Plane( vec3(0,0,1), vec3(0,50,-50) ) );
-	addBody( ct.tableMesh );
+	addBody( cueTable.tableMesh );
 
 	gravity = vec3(0,-10,0);
 

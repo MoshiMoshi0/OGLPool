@@ -31,7 +31,7 @@ private:
 	vec3 gravity;
 
 	PhysicsHandler physics;
-	CueTable ct;
+	CueTable cueTable;
 };
 
 } /* namespace OGLPool */
