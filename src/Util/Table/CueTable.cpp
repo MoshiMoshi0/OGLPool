@@ -17,7 +17,9 @@ CueTable::CueTable(Polygon2 shape, vector<vec2> holePoints) {
 	createTableMesh(shape);
 }
 
-CueTable::~CueTable() {}
+CueTable::~CueTable() {
+	if( tableMesh ) delete tableMesh;
+}
 
 void CueTable::createTableMesh(Polygon2& shape){
 	tableMesh = new Mesh();
