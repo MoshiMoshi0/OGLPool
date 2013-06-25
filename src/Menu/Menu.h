@@ -24,6 +24,7 @@ public:
 
 	virtual void render();
 	virtual void update( float dt );
+	virtual void addComponent( MenuComponent* component );
 
 	vector< MenuComponent* > components;
 	RenderWindow* window;

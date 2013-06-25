@@ -34,4 +34,8 @@ void Menu::update( float dt ){
 	}
 }
 
+void Menu::addComponent( MenuComponent* component ){
+	components.push_back( component );
+}
+
 } /* namespace OGLPool */
