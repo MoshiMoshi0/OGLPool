@@ -21,8 +21,8 @@ namespace OGLPool {
 SmoothRandomPolygon::SmoothRandomPolygon(){}
 SmoothRandomPolygon::~SmoothRandomPolygon() {}
 
-bool SmoothRandomPolygon::generate(Type type, uint numSides, uint numPoints, float scale, float tightness, uint numTries){
-	if( generate( numSides, numSides, scale, numTries ) ){
+bool SmoothRandomPolygon::generate(Type type, uint numPoints, uint numSides, float scale, float tightness, uint numTries){
+	if( generate( numPoints, numSides, scale, numTries ) ){
 		this->tightness = tightness;
 		switch ( type ) {
 			case RANDOM: createRandom(); break;

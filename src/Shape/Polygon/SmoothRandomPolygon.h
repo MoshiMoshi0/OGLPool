@@ -22,7 +22,7 @@ public:
 	virtual ~SmoothRandomPolygon();
 
 	void draw();
-	bool generate(Type type, uint numSides, uint numPoints, float scale, float tightness = 1.0f, uint numTries = 1000);
+	bool generate(Type type, uint numPoints, uint numSides, float scale, float tightness = 1.0f, uint numTries = 1000);
 
 	vector<Edge2> bezierEdges;
 	vector<Edge2> bezierControlEdges;
