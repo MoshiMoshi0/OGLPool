@@ -22,9 +22,18 @@ public:
 	void render();
 	void update( float dt );
 
-	vec2 pos;
+	float getPercent();
+	float getValue();
+	float getValue( float min, float max );
+	void setValue( float value );
+
 	float length;
+	float halfLength;
+	float value;
+
 	bool isGrabbed;
+
+	vec2 pos;
 	RectangleShape sliderCenter;
 };
 
