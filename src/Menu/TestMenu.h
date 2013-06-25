@@ -12,6 +12,7 @@
 #include <World/World.h>
 #include <Util/Table/CueTable.h>
 #include "Component/SliderComponent.h"
+#include "Component/LabelComponent.h"
 
 namespace OGLPool {
 
@@ -24,14 +25,20 @@ public:
 	void update( float dt );
 	void generateTable();
 
+	CueTable cueTable;
 	World* world;
-	CueTable* cueTable;
 
 	SliderComponent* seedSlider;
 	SliderComponent* polygonSidesSlider;
 	SliderComponent* polygonPointsSlider;
 	SliderComponent* polygonNumTriesSlider;
 	SliderComponent* polygonScaleSlider;
+
+	LabelComponent* seedLabel;
+	LabelComponent* polygonSidesLabel;
+	LabelComponent* polygonPointsLabel;
+	LabelComponent* polygonNumTriesLabel;
+	LabelComponent* polygonScaleLabel;
 };
 
 } /* namespace OGLPool */
