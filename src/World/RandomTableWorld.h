@@ -19,8 +19,6 @@ public:
 	virtual ~RandomTableWorld();
 
 	void update( float dt );
-
-	CueTable ct;
 };
 
 } /* namespace OGLPool */

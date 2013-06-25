@@ -12,9 +12,8 @@
 
 namespace OGLPool {
 
-RandomTableWorld::RandomTableWorld() : ct( CueTable( RandomPolygon( 10, 20 ), vector<vec2>() ) ) {
-	camera = new CinematicCamera( vec3(30,30,0) );
-	addBody( ct.tableMesh );
+RandomTableWorld::RandomTableWorld() {
+	camera = new CinematicCamera( vec3(30,100,0) );
 }
 
 RandomTableWorld::~RandomTableWorld(){}
