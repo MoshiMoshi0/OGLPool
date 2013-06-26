@@ -26,7 +26,6 @@ CueTable::CueTable(Polygon2 shape, int numOfHoles) {
 CueTable::~CueTable() {}
 
 void CueTable::addPockets(Polygon2& shape, int numOfHoles){
-
 	vector< Edge2 > edges = shape.getEdges();
 	for(int i = 0; i < numOfHoles; ){
 		Edge2 edge = edges[rand() % edges.size()];
@@ -36,11 +35,10 @@ void CueTable::addPockets(Polygon2& shape, int numOfHoles){
 			i++;
 		}
 	}
-
 }
 
 bool CueTable::insertPocket(Polygon2& shape, vec2 holePos){
-	Circle circle(holePos, 1.0f);
+	const Circle circle(holePos, 1.0f);
 	auto edges = &shape.getEdges();
 	int countEdges = 0;
 
@@ -80,31 +78,30 @@ bool CueTable::insertPocket(Polygon2& shape, vec2 holePos){
 		switch (intType) {
 			case IMPALE: {
 				it = edges->erase( it );
-
 				it = edges->insert(it, Edge2(edge0, hit0));
 
-				vector<Edge2> pocketEdges = generatePocketEdges(circle, Edge2(edge0, hit0), Edge2(hit1, edge1), 2);
+				vector<Edge2> pocketEdges = generatePocketEdges(circle, Edge2(edge0, hit0), Edge2(hit1, edge1), 10);
 				for( auto& e : pocketEdges )
 					it = edges->insert( it + 1, e );
 
 				it = edges->insert(it + 1, Edge2(hit1, edge1));
+				it--;
 
 				cout << "remove" << endl;
 				break;
 			}
 			case POKE: {
-				//vector<Edge2> pocketEdges = generatePocketEdges(circle, *it, *(it+1), 10);
+				vector<Edge2> pocketEdges = generatePocketEdges(circle, *it, *(it+1), 10);
 				it->at(1) = hit0;
-				//for( auto& e : pocketEdges )
-				//	it = edges->insert( it + 1, e );
-				cout << "alter1" << endl;
+				for( auto& e : pocketEdges )
+					it = edges->insert( it + 1, e );
+
 				break;
 			}
-			case EXITWOUND:
+			case EXITWOUND: {
 				it->at(0) = hit1;
-				cout << "alter0" << endl;
 				break;
-
+			}
 			case COMPLETELYINSIDE:
 			case FALLSHORT:
 			case PAST:
@@ -119,25 +116,31 @@ bool CueTable::insertPocket(Polygon2& shape, vec2 holePos){
 	return true;
 }
 
-vector <Edge2> CueTable::generatePocketEdges(Circle circle, Edge2 startEdge, Edge2 endEdge, int qualityCoef){
+vector <Edge2> CueTable::generatePocketEdges( const Circle& circle, const Edge2& startEdge, const Edge2& endEdge, int quality ){
 	vector <Edge2> pocketEdges;
 
-	float startAngle = orientedAngle(startEdge.getDirection(),vec2(1,0)) + 180;
-	float endAngle = orientedAngle(endEdge.getDirection(), vec2(1,0)) + 180;
+	float startAngle = orientedAngle(-startEdge.getDirection(),vec2(0,1));
+	float endAngle = orientedAngle(endEdge.getDirection(), vec2(0,1));
 	float startRad = radians( startAngle );
 	//float endRad = radians( endAngle );
 
-	float alpha = (endAngle - startAngle) / (float) (qualityCoef - 1);
+	float alpha = (endAngle - startAngle) / (float)(quality - 1);
 	float alphaRad = radians( alpha );
 
-	cout << alpha << " " << orientedAngle( vec2(0,-1), vec2(1,0)) + 180 << " " << endAngle << endl;
 	float tangetialFactor = tan( alphaRad );
 	float radialFactor = cos( alphaRad );
 
-	float x = circle.radius * cos(startRad);
-	float y = circle.radius * sin(startRad);
-	for (int i = 0; i < qualityCoef; i++){
-		vec2 v0(x, y);
+	float x = circle.radius * cos( 0.0f );
+	float y = circle.radius * sin( 0.0f );
+
+	auto rotate = [=]( float x, float y) -> vec2 {
+		vec3 i = vec3( x, 0, y );
+		vec3 r = angleAxis(startAngle + 90, vec3(0,1,0) ) * i;
+		return vec2( r.x, r.z );
+	};
+
+	for (int i = 0; i < quality - 1; i++){
+		vec2 v0 = circle.center + rotate( x,y );
 
 		float tx = -y;
 		float ty = x;
@@ -148,10 +151,8 @@ vector <Edge2> CueTable::generatePocketEdges(Circle circle, Edge2 startEdge, Edg
 		x *= radialFactor;
 		y *= radialFactor;
 
-		vec2 v1(x, y);
-
-		cout << v0.x << " " <<v0.y << " " << v1.x << " " <<v1.y<<endl;
-		pocketEdges.push_back( Edge2(v0 + circle.center, v1 + circle.center) );
+		vec2 v1 = circle.center + rotate( x,y );
+		pocketEdges.push_back( Edge2(v0, v1) );
 	}
 
 	return pocketEdges;

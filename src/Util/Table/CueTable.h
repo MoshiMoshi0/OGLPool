@@ -37,7 +37,7 @@ public:
 	virtual ~CueTable();
 	void addPockets(Polygon2& shape, int numOfHoles);
 	bool insertPocket(Polygon2& shape, vec2 holePos);
-	vector <Edge2> generatePocketEdges(Circle circle, Edge2 startEdge, Edge2 endEdge, int qualityCoef);
+	vector <Edge2> generatePocketEdges( const Circle& circle, const Edge2& startEdge, const Edge2& endEdge, int quality );
 	void createTableMesh(Polygon2& shape);
 	IntersectionType circleIntersection(Edge2 edge, Circle circle, float& alpha0, float& alpha1);
 	

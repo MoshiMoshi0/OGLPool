@@ -8,14 +8,14 @@
 #include "World.h"
 #include <RigidBody/Sphere.h>
 #include <RigidBody/Plane.h>
-#include <Shape/Polygon/RandomPolygon.h>
+#include <Shape/Polygon/SmoothRandomPolygon.h>
 #include <iostream>
 #include <App/Input.h>
 using namespace std;
 
 namespace OGLPool {
 
-World::World() : ct( CueTable( RandomPolygon( 10, 20 ), 6) ) {
+World::World() : ct( CueTable( SmoothRandomPolygon( SmoothRandomPolygon::ROUND, 10, 20 ), 6) ) {
 	addEntity( new Plane( vec3(0,1,0), vec3() ) );
 	addEntity( new Plane( vec3(-1,0,0), vec3(50,50,0) ) );
 	addEntity( new Plane( vec3(1,0,0), vec3(-50,50,0) ) );
