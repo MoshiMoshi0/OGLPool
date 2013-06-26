@@ -14,7 +14,7 @@ Circle::Circle( vec2 p, float r ) : center(p), radius(r) {}
 
 Circle::~Circle() {}
 
-bool Circle::inside( vec2 p ){
+bool Circle::inside( vec2 p ) const {
 	return dot( center-p, center-p ) <= radius * radius;
 }
 

@@ -66,17 +66,17 @@ const T& Edge<T>::at( int i ) const {
 }
 
 template< class T >
-T Edge<T>::getCenter(){
+T Edge<T>::getCenter() const {
 	return center;
 }
 
 template< class T >
-T Edge<T>::getDirection(){
+T Edge<T>::getDirection() const {
 	return direction;
 }
 
 template< class T >
-float Edge<T>::getExtent(){
+float Edge<T>::getExtent() const {
 	return extent;
 }
 
