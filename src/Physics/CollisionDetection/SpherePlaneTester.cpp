@@ -27,7 +27,9 @@ bool SpherePlaneTester::overlapTest( ContactManifold* info ){
 }
 
 bool SpherePlaneTester::sweptTest( ContactManifold* info ){
-	vec3 vel = s->linVel * Time::DELTA_TIME;
+	assert(0);
+	return false;
+	/*vec3 vel = s->linVel * Time::DELTA_TIME;
 	float dist = dot( p->normal, s->pos ) - dot( p->normal, p->pos );
 	float denom = dot( p->normal, vel );
 	if( denom * dist >= 0.0f ){
@@ -40,7 +42,7 @@ bool SpherePlaneTester::sweptTest( ContactManifold* info ){
 
 	vec3 point = s->pos + t * vel - r * p->normal;
 	info->addContact( point, p->normal, 0, t );
-	return true;
+	return true;*/
 }
 
 void SpherePlaneTester::setBodies( Sphere* s, Plane* p ){ this->s = s; this->p = p; CollisionTester::setBodies( s, p ); }

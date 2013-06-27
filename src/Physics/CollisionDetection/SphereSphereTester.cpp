@@ -27,7 +27,9 @@ bool SphereSphereTester::overlapTest( ContactManifold* info ){
 }
 
 bool SphereSphereTester::sweptTest( ContactManifold* info ){
-	vec3 dv = (s1->linVel - s0->linVel) * Time::DELTA_TIME;
+	assert(0);
+	return false;
+	/*vec3 dv = (s1->linVel - s0->linVel) * Time::DELTA_TIME;
 	vec3 dp = s1->pos - s0->pos;
 
 	float a = dot( dv, dv );
@@ -56,7 +58,7 @@ bool SphereSphereTester::sweptTest( ContactManifold* info ){
 		return true;
 	}
 
-	return false;
+	return false;*/
 }
 
 void SphereSphereTester::setBodies( Sphere* s0, Sphere* s1 ){ this->s0 = s0; this->s1 = s1; CollisionTester::setBodies( s0, s1 ); }
