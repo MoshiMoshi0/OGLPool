@@ -15,20 +15,18 @@ using namespace std;
 
 namespace OGLPool {
 
-RandomPolygon::RandomPolygon(uint numSides, uint numPoints) {
-	generate(numPoints, numSides);
-}
-
+RandomPolygon::RandomPolygon() {}
 RandomPolygon::~RandomPolygon() {}
 
-void RandomPolygon::generate(uint numPoints, uint numSides) {
+bool RandomPolygon::generate(uint numPoints, uint numSides, float scale, uint numTries) {
 	Delaunay dt;
 	vector<vec2> rndPoints;
 	vector<DEdge> dtEdges;
-	for (int i = 0, valid = 0; !valid; assert( i++ < 10000 )) {
+
+	for (uint i = 0, valid = 0; !valid;) {
 		rndPoints.clear();
 		while (rndPoints.size() < numPoints) {
-			rndPoints.push_back(linearRand(vec2(-1.0f, -1.0f), vec2(1.0f, 1.0f)) * 20.0f);
+			rndPoints.push_back(linearRand(vec2(-1.0f, -1.0f), vec2(1.0f, 1.0f)) * scale);
 		}
 
 		dt.triangulate(rndPoints);
@@ -38,8 +36,12 @@ void RandomPolygon::generate(uint numPoints, uint numSides) {
 		if (valid) {
 			valid &= validateBoundary(getBoundary(dtEdges), rndPoints, 60, 4);
 		}
+
+		if( i++ > numTries )
+			return false;
 	}
 	buildPolygon(getBoundary(dtEdges), rndPoints);
+	return true;
 }
 
 bool RandomPolygon::fixSides(vector<DEdge>& edges, uint numSides) {

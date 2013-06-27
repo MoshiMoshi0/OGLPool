@@ -9,17 +9,22 @@
 #define APP_H_
 
 #include <SFML/Graphics.hpp>
-#include <World/Camera/FpsCamera.h>
 #include <World/World.h>
+#include <Menu/Menu.h>
 
 using namespace sf;
 namespace OGLPool {
 
+class Menu;
 class App {
 public:
 	App( int width, int height );
 	virtual ~App();
 	int start();
+
+	void setMenu( Menu* menu );
+	void setWorld( World* world );
+	RenderWindow* getWindow();
 
 	int width;
 	int height;
@@ -32,9 +37,11 @@ private:
 	void update( float dt );
 
 	World* world;
-	Camera* camera;
+	World* nextWorld;
+	Menu* menu;
+	Menu* nextMenu;
 	RenderWindow* window;
-	bool initialized;
+	bool initialized, changeWorld, changeMenu;
 };
 
 } /* namespace OGLPool */

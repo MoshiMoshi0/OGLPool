@@ -18,15 +18,16 @@ public:
 		ROUND, RANDOM
 	};
 
-	SmoothRandomPolygon( Type type, uint numSides, uint numPoints );
-	SmoothRandomPolygon( Type type, uint numSides, uint numPoints, float tightness );
+	SmoothRandomPolygon();
 	virtual ~SmoothRandomPolygon();
 
 	void draw();
+	bool generate(Type type, uint numPoints, uint numSides, float scale, float tightness = 1.0f, uint numTries = 1000);
 
 	vector<Edge2> bezierEdges;
 	vector<Edge2> bezierControlEdges;
 private:
+	bool generate(uint numPoints, uint numSides, float scale, uint numTries = 1000);
 	void createRandom();
 	void createRound();
 	void getBezierPoints( const vec2& p0, const vec2& p1, const vec2& p2, const vec2& p3, vector<vec2>& bezierPts, uint quality );

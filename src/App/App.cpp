@@ -13,6 +13,8 @@
 #include <App/Input.h>
 #include <Util/UDebug/Debug.h>
 #include <windows.h>
+#include <Menu/RandomPolygonMenu.h>
+#include <World/GameWorld.h>
 using namespace std;
 
 namespace OGLPool {
@@ -21,9 +23,9 @@ App::App( int width, int height ) {
 	this->width = width;
 	this->height = height;
 
-	camera = 0;
 	window = 0;
 	world = 0;
+	menu = 0;
 	initialized = false;
 }
 
@@ -42,6 +44,20 @@ int App::start() {
 	return 0;
 }
 
+void App::setMenu( Menu* menu ){
+	this->nextMenu = menu;
+	changeMenu = true;
+}
+
+void App::setWorld( World* world ){
+	this->nextWorld = world;
+	changeWorld = true;
+}
+
+RenderWindow* App::getWindow(){
+	return window;
+}
+
 void App::run() {
 	while (window->isOpen()) {
 		poolEvents();
@@ -51,21 +67,37 @@ void App::run() {
 }
 
 void App::draw() {
-	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-	glLoadIdentity();
 	window->clear();
-	camera->applyView();
 
-	world->render();
-	Debug::render();
+	if( menu ){
+		menu->render();
+	}else{
+		world->render();
+		Debug::render();
+	}
+
 	window->display();
 }
 
 void App::update( float dt ) {
 	IO::Input::update();
 	if( IO::Input::getFocus() ){
-		camera->update( dt );
-		world->update( dt );
+		if( menu ){
+			menu->update(dt);
+		}else{
+			world->update( dt );
+		}
+	}
+
+	if( changeMenu ){
+		delete menu;
+		menu = nextMenu;
+		changeMenu = false;
+	}
+	if( changeWorld ){
+		delete world;
+		world = nextWorld;
+		changeWorld = false;
 	}
 }
 
@@ -77,10 +109,8 @@ bool App::init() {
 	IO::Input::init( window );
 	IO::Input::setFocus( false );
 
-	world = new World();
-
-	camera = new FpsCamera( vec3(15, 15, 15) );
-	camera->setLookAt( vec3() );
+	setMenu( new RandomPolygonMenu(this) );
+	setWorld( 0 );
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
@@ -118,7 +148,6 @@ bool App::init() {
 void App::deinit() {
 	if( window ) delete window;
 	if( world ) delete world;
-	if( camera ) delete camera;
 
 	Debug::deinit();
 	initialized = false;

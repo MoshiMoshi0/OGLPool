@@ -17,9 +17,10 @@ namespace OGLPool {
 
 class RandomPolygon : public Polygon2 {
 public:
-	RandomPolygon( uint numSides, uint numPoints );
+	RandomPolygon();
 	virtual ~RandomPolygon();
 
+	virtual bool generate(uint numPoints, uint numSides, float scale, uint numTries = 1000);
 private:
 	void removeUniverseEdges( int triIndex, vector<DEdge>& edges );
 	void buildPolygon(const vector<DEdge>& boundary, const vector<vec2>& rndPoints);
@@ -32,7 +33,6 @@ private:
 	vector<DEdge> getBoundary( const vector<DEdge>& edges );
 	vector<DEdge> sortBoundary(const vector<DEdge>& boundary);
 	DEdge getNextEdge(const vector<DEdge>& boundary, const DEdge& current);
-	void generate(uint numPoints, uint numSides);
 };
 
 } /* namespace OGLPool */
