@@ -13,7 +13,7 @@
 #include <App/Input.h>
 #include <Util/UDebug/Debug.h>
 #include <windows.h>
-#include <Menu/TestMenu.h>
+#include <Menu/RandomPolygonMenu.h>
 #include <World/GameWorld.h>
 using namespace std;
 
@@ -42,6 +42,20 @@ int App::start() {
 	run();
 	deinit();
 	return 0;
+}
+
+void App::setMenu( Menu* menu ){
+	this->nextMenu = menu;
+	changeMenu = true;
+}
+
+void App::setWorld( World* world ){
+	this->nextWorld = world;
+	changeWorld = true;
+}
+
+RenderWindow* App::getWindow(){
+	return window;
 }
 
 void App::run() {
@@ -74,6 +88,17 @@ void App::update( float dt ) {
 			world->update( dt );
 		}
 	}
+
+	if( changeMenu ){
+		delete menu;
+		menu = nextMenu;
+		changeMenu = false;
+	}
+	if( changeWorld ){
+		delete world;
+		world = nextWorld;
+		changeWorld = false;
+	}
 }
 
 bool App::init() {
@@ -84,8 +109,8 @@ bool App::init() {
 	IO::Input::init( window );
 	IO::Input::setFocus( false );
 
-	menu = new TestMenu( window );
-	world = new GameWorld();
+	setMenu( new RandomPolygonMenu(this) );
+	setWorld( 0 );
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
