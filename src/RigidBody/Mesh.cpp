@@ -50,7 +50,7 @@ void Mesh::render(){
 	glNormalPointer(GL_FLOAT, 0, value_ptr( normals[0] ));
 
 	glPushMatrix();
-	applyTransform();
+	//applyTransform();
 	glDrawArrays(GL_TRIANGLES, 0, triangleCount * 3);
 	glPopMatrix();
 
@@ -58,11 +58,11 @@ void Mesh::render(){
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
 
-	auto debugDraw = Debug::getDebugDraw();
+	/*auto debugDraw = Debug::getDebugDraw();
 	for( auto& t : triangles ){
 		const vec3 c = (t[0] + t[1] + t[2]) / 3.0f;
 		debugDraw->drawVector( pos + c, t.getNormal() * 2.0f );
-	}
+	}*/
 }
 
 void Mesh::build(){
