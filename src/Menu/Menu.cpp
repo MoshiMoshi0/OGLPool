@@ -9,8 +9,9 @@
 
 namespace OGLPool {
 
-Menu::Menu( RenderWindow* window ){
-	this->window = window;
+Menu::Menu( App* app ){
+	this->app = app;
+	this->window = app->getWindow();
 }
 
 Menu::~Menu(){
@@ -44,6 +45,10 @@ bool Menu::isChanged(){
 	}
 
 	return false;
+}
+
+RenderWindow* Menu::getWindow(){
+	return window;
 }
 
 } /* namespace OGLPool */

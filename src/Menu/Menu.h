@@ -11,15 +11,17 @@
 #include <vector>
 #include "Component/MenuComponent.h"
 #include <SFML/Graphics.hpp>
+#include <App/app.h>
 using namespace std;
 using namespace sf;
 
 namespace OGLPool {
 
+class App;
 class MenuComponent;
 class Menu {
 public:
-	Menu( RenderWindow* window );
+	Menu( App* app );
 	virtual ~Menu();
 
 	virtual void render();
@@ -27,8 +29,10 @@ public:
 	virtual void addComponent( MenuComponent* component );
 
 	virtual bool isChanged();
+	RenderWindow* getWindow();
 
 	vector< MenuComponent* > components;
+	App* app;
 	RenderWindow* window;
 };
 
