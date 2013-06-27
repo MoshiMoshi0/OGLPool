@@ -9,16 +9,14 @@
 #include <RigidBody/Plane.h>
 #include <RigidBody/Sphere.h>
 #include <World/Camera/FpsCamera.h>
-#include <Shape/Polygon/RandomPolygon.h>
+#include <Shape/Polygon/Polygon.h>
 #include <iostream>
 #include <App/Input.h>
 using namespace std;
 
 namespace OGLPool {
 
-GameWorld::GameWorld(){
-	RandomPolygon shape;
-	shape.generate( 20, 5, 20 );
+GameWorld::GameWorld( Polygon2 shape ){
 	cueTable = CueTable( shape, vector<vec2>() );
 
 	addBody( new Plane( vec3(0,1,0), vec3() ) );
