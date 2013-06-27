@@ -33,6 +33,8 @@ enum IntersectionType{
 
 class CueTable {
 public:
+	CueTable();
+	CueTable(const CueTable& other);
 	CueTable(Polygon2 shape, int numOfHoles);
 	virtual ~CueTable();
 

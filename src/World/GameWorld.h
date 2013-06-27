@@ -21,7 +21,7 @@ namespace OGLPool {
 
 class GameWorld : public World {
 public:
-	GameWorld( Polygon2 shape );
+	GameWorld( CueTable cueTable );
 	virtual ~GameWorld();
 
 	void render();

@@ -23,18 +23,21 @@ RandomPolygonMenu::RandomPolygonMenu( App* app ) : Menu( app ){
 	polygonPointsSlider = new SliderComponent( vec2(200, 60), this );
 	polygonNumTriesSlider = new SliderComponent( vec2(200, 80), this );
 	polygonScaleSlider = new SliderComponent( vec2(200, 100), this );
+	polygonHolesSlider = new SliderComponent( vec2(200, 120), this );
 
 	seedLabel = new LabelComponent( "0", vec2(260, 16), this );
 	polygonSidesLabel = new LabelComponent( "5", vec2(260, 36), this );
 	polygonPointsLabel = new LabelComponent( "5", vec2(260, 56), this );
 	polygonNumTriesLabel = new LabelComponent( "10", vec2(260, 76), this );
 	polygonScaleLabel = new LabelComponent( "8", vec2(260, 96), this );
+	polygonHolesLabel = new LabelComponent( "0", vec2(260, 116), this );
 
 	polygonTypeCheckbox = new CheckboxComponent( {"Smooth random polygon", "Random polygon"}, vec2(320, 20), this );
 	polygonTypeCheckbox->setSelected( 0 );
 
 	startButton = new ButtonComponent( "START", vec2( 650, 50), [=](){
-		app->setWorld( new GameWorld( cueTable.shape ) );
+		srand( seedSlider->getPercent() * RAND_MAX );
+		app->setWorld( new GameWorld( cueTable ) );
 		app->setMenu( 0 );
 	}, this );
 
@@ -47,18 +50,21 @@ RandomPolygonMenu::RandomPolygonMenu( App* app ) : Menu( app ){
 	addComponent( new LabelComponent( "Points", vec2(50, 56), this ) );
 	addComponent( new LabelComponent( "NumTries:", vec2(50, 76), this ) );
 	addComponent( new LabelComponent( "Scale:", vec2(50, 96), this ) );
+	addComponent( new LabelComponent( "Holes:", vec2(50, 116), this ) );
 
 	addComponent( seedSlider );
 	addComponent( polygonSidesSlider );
 	addComponent( polygonPointsSlider );
 	addComponent( polygonNumTriesSlider );
 	addComponent( polygonScaleSlider );
+	addComponent( polygonHolesSlider );
 
 	addComponent( seedLabel );
 	addComponent( polygonSidesLabel );
 	addComponent( polygonPointsLabel );
 	addComponent( polygonNumTriesLabel );
 	addComponent( polygonScaleLabel );
+	addComponent( polygonHolesLabel );
 
 	addComponent( polygonTypeCheckbox );
 	addComponent( startButton );
@@ -69,6 +75,7 @@ RandomPolygonMenu::RandomPolygonMenu( App* app ) : Menu( app ){
 	polygonPointsSlider->setValue( 0 );
 	polygonNumTriesSlider->setValue( 0 );
 	polygonScaleSlider->setValue( 0 );
+	polygonHolesSlider->setValue( 0 );
 
 	generateTable();
 }
@@ -78,7 +85,8 @@ void RandomPolygonMenu::generateTable(){
 	uint seed = seedSlider->getPercent() * RAND_MAX;
 	uint sides = polygonSidesSlider->getValue(5, 30);
 	uint points = polygonPointsSlider->getValue(5, 100);
-	uint numTries = polygonNumTriesSlider->getValue( 10, 1000 );
+	uint numTries = polygonNumTriesSlider->getValue( 10, 200 );
+	uint holes = polygonHolesSlider->getValue( 0, 20 );
 	float scale = polygonScaleSlider->getValue( 8, 100 );
 
 	static auto fToStr = [=] ( float t ) -> string { ostringstream os; os<<t; return os.str(); };
@@ -89,16 +97,14 @@ void RandomPolygonMenu::generateTable(){
 	polygonPointsLabel->setText( iToStr( points ) );
 	polygonNumTriesLabel->setText( iToStr( numTries ) );
 	polygonScaleLabel->setText( fToStr( scale ) );
+	polygonHolesLabel->setText( iToStr( holes ) );
 
 	srand( seed );
-
-
 	switch ( polygonTypeCheckbox->getSelectedIndex() ) {
 		case 0: {
 			SmoothRandomPolygon shape;
-
 			if( shape.generate( SmoothRandomPolygon::ROUND, points, sides, scale, 1.0f, numTries ) ){
-				cueTable = CueTable( shape, vector<vec2>() );
+				cueTable = CueTable( shape, holes );
 				world->addBody( cueTable.tableMesh );
 				errorLabel->setText( "" );
 			}else{
@@ -109,9 +115,8 @@ void RandomPolygonMenu::generateTable(){
 
 		case 1: {
 			RandomPolygon shape;
-
 			if( shape.generate( points, sides, scale, numTries ) ){
-				cueTable = CueTable( shape, vector<vec2>() );
+				cueTable = CueTable( shape, holes );
 				world->addBody( cueTable.tableMesh );
 				errorLabel->setText( "" );
 			}else{

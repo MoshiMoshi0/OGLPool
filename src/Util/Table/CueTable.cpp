@@ -18,10 +18,21 @@ using namespace glm;
 namespace OGLPool {
 
 CueTable::CueTable(){ tableMesh = 0; }
-CueTable::CueTable(Polygon2 shape, vector<vec2> holePoints) : CueTable() {
+CueTable::CueTable(const CueTable& other){
+	shape = other.shape;
+	tableMesh = new Mesh();
+
+	tableMesh->triangleCount = other.tableMesh->triangleCount;
+	for( auto& v : other.tableMesh->vertices ) tableMesh->vertex( v );
+	for( auto& c : other.tableMesh->colors ) tableMesh->color( c );
+	for( auto& n : other.tableMesh->normals ) tableMesh->normal( n );
+	tableMesh->build();
+}
+
+CueTable::CueTable(Polygon2 shape, int numOfHoles) : CueTable() {
 	this->shape = shape;
 
-	addPockets(shape,numOfHoles);
+	if( numOfHoles > 0 ) addPockets(shape,numOfHoles);
 	createTableMesh(shape);
 }
 
@@ -84,21 +95,19 @@ bool CueTable::insertPocket(Polygon2& shape, vec2 holePos){
 				it = edges->erase( it );
 				it = edges->insert(it, Edge2(edge0, hit0));
 
-				vector<Edge2> pocketEdges = generatePocketEdges(circle, Edge2(edge0, hit0), Edge2(hit1, edge1), 10);
+				/*vector<Edge2> pocketEdges = generatePocketEdges(circle, Edge2(edge0, hit0), Edge2(hit1, edge1), 10);
 				for( auto& e : pocketEdges )
-					it = edges->insert( it + 1, e );
+					it = edges->insert( it + 1, e );*/
 
 				it = edges->insert(it + 1, Edge2(hit1, edge1));
 				it--;
-
-				cout << "remove" << endl;
 				break;
 			}
 			case POKE: {
-				vector<Edge2> pocketEdges = generatePocketEdges(circle, *it, *(it+1), 10);
 				it->at(1) = hit0;
+				/*vector<Edge2> pocketEdges = generatePocketEdges(circle, *it, *(it+1), 10);
 				for( auto& e : pocketEdges )
-					it = edges->insert( it + 1, e );
+					it = edges->insert( it + 1, e );*/
 
 				break;
 			}
@@ -126,7 +135,7 @@ vector <Edge2> CueTable::generatePocketEdges( const Circle& circle, const Edge2&
 	float startAngle = orientedAngle(-startEdge.getDirection(),vec2(0,1));
 	float endAngle = orientedAngle(endEdge.getDirection(), vec2(0,1));
 	float startRad = radians( startAngle );
-	//float endRad = radians( endAngle );
+	float endRad = radians( endAngle );
 
 	float alpha = (endAngle - startAngle) / (float)(quality - 1);
 	float alphaRad = radians( alpha );

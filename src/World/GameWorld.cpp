@@ -16,8 +16,8 @@ using namespace std;
 
 namespace OGLPool {
 
-GameWorld::GameWorld( Polygon2 shape ){
-	cueTable = CueTable( shape, vector<vec2>() );
+GameWorld::GameWorld( CueTable cueTable ){
+	this->cueTable = CueTable( cueTable );
 
 	addBody( new Plane( vec3(0,1,0), vec3() ) );
 	addBody( new Plane( vec3(-1,0,0), vec3(50,50,0) ) );

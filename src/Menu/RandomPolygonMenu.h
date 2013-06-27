@@ -35,12 +35,14 @@ public:
 	SliderComponent* polygonPointsSlider;
 	SliderComponent* polygonNumTriesSlider;
 	SliderComponent* polygonScaleSlider;
+	SliderComponent* polygonHolesSlider;
 
 	LabelComponent* seedLabel;
 	LabelComponent* polygonSidesLabel;
 	LabelComponent* polygonPointsLabel;
 	LabelComponent* polygonNumTriesLabel;
 	LabelComponent* polygonScaleLabel;
+	LabelComponent* polygonHolesLabel;
 
 	CheckboxComponent* polygonTypeCheckbox;
 
