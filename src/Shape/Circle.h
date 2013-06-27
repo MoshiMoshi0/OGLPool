@@ -22,7 +22,7 @@ public:
 	Circle( vec2 p, float r );
 	virtual ~Circle();
 
-	bool inside( vec2 p );
+	bool inside( vec2 p ) const;
 
 	vec2 center;
 	float radius;

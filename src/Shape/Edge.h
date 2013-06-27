@@ -24,10 +24,14 @@ public:
 	void render() const;
 
 	T closestPoint( T point );
+
+	T& at( int i );
+	const T& at( int i ) const;
 	T& operator[](int i);
-	T getCenter();
-	T getDirection();
-	float getExtent();
+
+	T getCenter() const;
+	T getDirection() const;
+	float getExtent() const;
 private:
 	T vertices[ 2 ];
 	T center;
