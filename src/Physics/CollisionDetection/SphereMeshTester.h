@@ -22,7 +22,7 @@ public:
 	virtual ~SphereMeshTester();
 
 	bool broadphase();
-	bool narrowphase( ContactManifold* info );
+	bool narrowphase( ContactManifold* manifold );
 
 	void setBodies( Sphere* s, Mesh* m );
 

@@ -25,7 +25,7 @@ public:
 
 	bool broadphase();
 
-	float SegmentSqrDistance(const vec3& from, const vec3& to,const vec3 &p, vec3 &nearest);
+	float closestToSegment( const vec3& from, const vec3& to, const vec3 &p, vec3 &closest );
 
 	void setBodies( Sphere* s, Triangle3* t );
 

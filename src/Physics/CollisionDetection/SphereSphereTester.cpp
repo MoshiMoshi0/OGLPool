@@ -15,18 +15,18 @@ SphereSphereTester::SphereSphereTester( Sphere* s0, Sphere* s1 ){ setBodies( s0,
 
 SphereSphereTester::~SphereSphereTester(){}
 
-bool SphereSphereTester::overlapTest( ContactManifold* info ){
+bool SphereSphereTester::overlapTest( ContactManifold* manifold ){
 	vec3 dp = s0->pos - s1->pos;
 	float r = s0->radius + s1->radius;
 	if( dot( dp, dp ) <= r*r ){
 		vec3 n = normalize( dp );
-		info->addContact( 0.5f * ( s0->pos + s1->pos ), n, -(r - length( dp )) );
+		manifold->addContact( 0.5f * ( s0->pos + s1->pos ), n, -(r - length( dp )) );
 		return true;
 	}
 	return false;
 }
 
-bool SphereSphereTester::sweptTest( ContactManifold* info ){
+bool SphereSphereTester::sweptTest( ContactManifold* manifold ){
 	assert(0);
 	return false;
 	/*vec3 dv = (s1->linVel - s0->linVel) * Time::DELTA_TIME;
@@ -54,7 +54,7 @@ bool SphereSphereTester::sweptTest( ContactManifold* info ){
 
 		vec3 vcd = dp + t*dv;
 		vec3 point = s0->pos + t * s0->linVel + (s0->radius / rSum) * vcd;
-		info->addContact( point, normalize( dp ), 0, t );
+		manifold->addContact( point, normalize( dp ), 0, t );
 		return true;
 	}
 

@@ -25,7 +25,7 @@ ImpulseConstraintSolver::~ImpulseConstraintSolver(){
 	), solverBodyPool.end() );
 }
 
-void ImpulseConstraintSolver::setupContactConstraint( SolverConstraint& constraint, SolverBody* sb0, SolverBody* sb1, const vec3& r0, const vec3& r1, const vec3& n, ManifoldPoint* info, float& relaxation, vec3& vel, float& rel_vel ){
+void ImpulseConstraintSolver::setupContactConstraint( SolverConstraint& constraint, SolverBody* sb0, SolverBody* sb1, const vec3& r0, const vec3& r1, const vec3& n, ManifoldPoint* point, float& relaxation, vec3& vel, float& rel_vel ){
 	RigidBody* rb0 = sb0->originalBody;
 	RigidBody* rb1 = sb1->originalBody;
 
@@ -59,7 +59,7 @@ void ImpulseConstraintSolver::setupContactConstraint( SolverConstraint& constrai
 	constraint.appliedPushImpulse = 0.f;
 
 	float restitution = 0.0f;
-	float penetration = info->depth + infoGlobal.linearSlop;
+	float penetration = point->depth + infoGlobal.linearSlop;
 
 	vec3 vel1,vel2;
 
@@ -69,15 +69,15 @@ void ImpulseConstraintSolver::setupContactConstraint( SolverConstraint& constrai
 	vel = vel1 - vel2;
 	rel_vel = dot(n, vel);
 
-	constraint.friction = info->combinedFriction;
+	constraint.friction = point->combinedFriction;
 
-	restitution = info->combinedRestitution * -rel_vel;
+	restitution = point->combinedRestitution * -rel_vel;
 	if (restitution <= 0.0f){
 		restitution = 0.0f;
 	}
 
 	if (infoGlobal.solverMode & SOLVER_USE_WARMSTARTING){
-		constraint.appliedImpulse = info->appliedImpulse * infoGlobal.warmstartingFactor;
+		constraint.appliedImpulse = point->appliedImpulse * infoGlobal.warmstartingFactor;
 
 		if( rb0 ) sb0->internalApplyImpulse(constraint.contactNormal * sb0->massInv, constraint.angularComponent0, constraint.appliedImpulse);
 		if( rb1 ) sb1->internalApplyImpulse(constraint.contactNormal * sb1->massInv, -constraint.angularComponent1, -constraint.appliedImpulse);
@@ -128,15 +128,15 @@ void ImpulseConstraintSolver::setupContactConstraint( SolverConstraint& constrai
 	contactConstraintPool.push_back( constraint );
 }
 
-void ImpulseConstraintSolver::addFrictionConstraint( SolverBody* sb0, SolverBody* sb1, const vec3& r0, const vec3& r1, const vec3& n, ManifoldPoint* info, uint frictionIndex, float& relaxation ){
+void ImpulseConstraintSolver::addFrictionConstraint( SolverBody* sb0, SolverBody* sb1, const vec3& r0, const vec3& r1, const vec3& n, ManifoldPoint* point, uint frictionIndex, float& relaxation ){
 	SolverConstraint constraint(sb0, sb1);
 
 	RigidBody* rb0 = sb0->originalBody;
 	RigidBody* rb1 = sb1->originalBody;
 
-	constraint.friction = info->combinedFriction;
+	constraint.friction = point->combinedFriction;
 	constraint.frictionIndex = frictionIndex;
-	constraint.originalPoint = 0;
+	constraint.point = 0;
 
 	constraint.appliedImpulse = 0.0f;
 	constraint.appliedPushImpulse = 0.0f;
@@ -183,14 +183,14 @@ void ImpulseConstraintSolver::addFrictionConstraint( SolverBody* sb0, SolverBody
 	frictionConstraintPool.push_back( constraint );
 }
 
-void ImpulseConstraintSolver::addRollingFrictionConstraint( SolverBody* sb0, SolverBody* sb1, const vec3& r0, const vec3& r1, const vec3& n, ManifoldPoint* info, uint frictionIndex, float& relaxation ){
+void ImpulseConstraintSolver::addRollingFrictionConstraint( SolverBody* sb0, SolverBody* sb1, const vec3& r0, const vec3& r1, const vec3& n, ManifoldPoint* point, uint frictionIndex, float& relaxation ){
 	SolverConstraint constraint(sb0, sb1);
 
 	RigidBody* rb0 = sb0->originalBody;
 	RigidBody* rb1 = sb1->originalBody;
 
-	constraint.friction = info->combinedRollingFriction;
-	constraint.originalPoint = 0;
+	constraint.friction = point->combinedRollingFriction;
+	constraint.point = 0;
 	constraint.frictionIndex = frictionIndex;
 
 	constraint.appliedImpulse = 0.0f;
@@ -268,13 +268,13 @@ SolverBody* ImpulseConstraintSolver::initSolverBody( RigidBody* e ){
 	return solverBody;
 }
 
-void ImpulseConstraintSolver::setFrictionConstraintImpulse( SolverConstraint& constraint, SolverBody* sb0, SolverBody* sb1, ManifoldPoint* info ){
+void ImpulseConstraintSolver::setFrictionConstraintImpulse( SolverConstraint& constraint, SolverBody* sb0, SolverBody* sb1, ManifoldPoint* point ){
 	RigidBody* rb0 = sb0->originalBody;
 	RigidBody* rb1 = sb1->originalBody;
 
 	SolverConstraint& frictionConstraint1 = frictionConstraintPool[constraint.frictionIndex];
 	if (infoGlobal.solverMode & SOLVER_USE_WARMSTARTING) {
-		frictionConstraint1.appliedImpulse = info->appliedImpulseLateral1 * infoGlobal.warmstartingFactor;
+		frictionConstraint1.appliedImpulse = point->appliedImpulseLateral1 * infoGlobal.warmstartingFactor;
 		if (rb0) sb0->internalApplyImpulse(frictionConstraint1.contactNormal * rb0->massInv, frictionConstraint1.angularComponent0, frictionConstraint1.appliedImpulse);
 		if (rb1) sb1->internalApplyImpulse(frictionConstraint1.contactNormal * rb1->massInv, -frictionConstraint1.angularComponent1, -frictionConstraint1.appliedImpulse);
 	} else {
@@ -284,7 +284,7 @@ void ImpulseConstraintSolver::setFrictionConstraintImpulse( SolverConstraint& co
 	if ((infoGlobal.solverMode & SOLVER_USE_2_FRICTION_DIRECTIONS)){
 		SolverConstraint& frictionConstraint2 = frictionConstraintPool[constraint.frictionIndex+1];
 		if (infoGlobal.solverMode & SOLVER_USE_WARMSTARTING) {
-			frictionConstraint2.appliedImpulse = info->appliedImpulseLateral2  * infoGlobal.warmstartingFactor;
+			frictionConstraint2.appliedImpulse = point->appliedImpulseLateral2  * infoGlobal.warmstartingFactor;
 			if (rb0) sb0->internalApplyImpulse(frictionConstraint2.contactNormal * rb0->massInv, frictionConstraint2.angularComponent0, frictionConstraint2.appliedImpulse);
 			if (rb1) sb1->internalApplyImpulse(frictionConstraint2.contactNormal * rb1->massInv, -frictionConstraint2.angularComponent1, -frictionConstraint2.appliedImpulse);
 		} else {
@@ -314,7 +314,7 @@ void ImpulseConstraintSolver::convertContact( ContactManifold* manifold ){
 
 		uint frictionIndex = contactConstraintPool.size();
 		SolverConstraint constraint( sb0, sb1 );
-		constraint.originalPoint = info;
+		constraint.point = info;
 		constraint.frictionIndex = frictionConstraintPool.size();
 		setupContactConstraint( constraint, sb0, sb1, r0, r1, n, info, relaxation, vel, rel_vel );
 		if( rollingFrictionCount-- > 0 ){
@@ -366,7 +366,7 @@ void ImpulseConstraintSolver::convertContact( ContactManifold* manifold ){
 	}
 }
 
-void ImpulseConstraintSolver::solveSingleIteration( int iteration, const vector< RigidBody* >& bodies, const vector< ContactManifold* >& infos ){
+void ImpulseConstraintSolver::solveIteration( int iteration, const vector< RigidBody* >& bodies, const vector< ContactManifold* >& manifolds ){
 	if (iteration >= infoGlobal.iterations) assert(0);
 
 	if (infoGlobal.solverMode & SOLVER_RANDMIZE_ORDER){
@@ -377,7 +377,7 @@ void ImpulseConstraintSolver::solveSingleIteration( int iteration, const vector<
 	uint numPoolConstraints = contactConstraintPool.size();
 	for (uint j = 0; j < numPoolConstraints; j++){
 		SolverConstraint& solveManifold = contactConstraintPool[j];
-		resolveSingleConstraintRowLowerLimit(solveManifold);
+		resolveConstraintLowerLimit(solveManifold);
 	}
 
 	uint numFrictionPoolConstraints = frictionConstraintPool.size();
@@ -390,7 +390,7 @@ void ImpulseConstraintSolver::solveSingleIteration( int iteration, const vector<
 			solveManifold.lowerLimit = -(solveManifold.friction * totalImpulse);
 			solveManifold.upperLimit = solveManifold.friction * totalImpulse;
 
-			resolveSingleConstraintRowGeneric(solveManifold);
+			resolveConstraintGeneric(solveManifold);
 		}
 	}
 
@@ -408,12 +408,12 @@ void ImpulseConstraintSolver::solveSingleIteration( int iteration, const vector<
 			rollingFrictionConstraint.lowerLimit = -rollingFrictionMagnitude;
 			rollingFrictionConstraint.upperLimit = rollingFrictionMagnitude;
 
-			resolveSingleConstraintRowGeneric(rollingFrictionConstraint);
+			resolveConstraintGeneric(rollingFrictionConstraint);
 		}
 	}
 }
 
-void ImpulseConstraintSolver::resolveSingleConstraintRowLowerLimit( SolverConstraint& constraint ){
+void ImpulseConstraintSolver::resolveConstraintLowerLimit( SolverConstraint& constraint ){
 	SolverBody* rb0 = constraint.sb0;
 	SolverBody* rb1 = constraint.sb1;
 
@@ -435,7 +435,7 @@ void ImpulseConstraintSolver::resolveSingleConstraintRowLowerLimit( SolverConstr
 	rb1->internalApplyImpulse(-constraint.contactNormal * rb1->massInv, constraint.angularComponent1, deltaImpulse);
 }
 
-void ImpulseConstraintSolver::resolveSingleConstraintRowGeneric( SolverConstraint& constraint ){
+void ImpulseConstraintSolver::resolveConstraintGeneric( SolverConstraint& constraint ){
 	SolverBody* rb0 = constraint.sb0;
 	SolverBody* rb1 = constraint.sb1;
 
@@ -461,7 +461,7 @@ void ImpulseConstraintSolver::resolveSingleConstraintRowGeneric( SolverConstrain
 	rb1->internalApplyImpulse(-constraint.contactNormal * rb1->massInv, constraint.angularComponent1, deltaImpulse);
 }
 
-void ImpulseConstraintSolver::resolveSplitPenetrationImpulseCacheFriendly( SolverConstraint& constraint ){
+void ImpulseConstraintSolver::resolveSplitPenetrationImpulse( SolverConstraint& constraint ){
 	SolverBody* rb0 = constraint.sb0;
 	SolverBody* rb1 = constraint.sb1;
 
@@ -485,15 +485,15 @@ void ImpulseConstraintSolver::resolveSplitPenetrationImpulseCacheFriendly( Solve
 	}
 }
 
-void ImpulseConstraintSolver::solveGroup( const vector< RigidBody* >& bodies, const vector< ContactManifold* >& infos, float dt ){
+void ImpulseConstraintSolver::solveGroup( const vector< RigidBody* >& bodies, const vector< ContactManifold* >& manifolds, float dt ){
 	infoGlobal.timeStep = dt;
 
-	solveGroupSetup( bodies, infos );
-	solveGroupIterate( bodies, infos );
+	solveGroupSetup( bodies, manifolds );
+	solveGroupIterate( bodies, manifolds );
 	solveGroupFinish( bodies );
 }
 
-void ImpulseConstraintSolver::solveGroupSetup( const vector< RigidBody* >& bodies, const vector< ContactManifold* >& infos ){
+void ImpulseConstraintSolver::solveGroupSetup( const vector< RigidBody* >& bodies, const vector< ContactManifold* >& manifolds ){
 	solverBodyPool.erase( remove_if( solverBodyPool.begin(), solverBodyPool.end(),
 		[](SolverBody* element) -> bool {
 			delete element;
@@ -520,23 +520,23 @@ void ImpulseConstraintSolver::solveGroupSetup( const vector< RigidBody* >& bodie
 		}
 	}
 
-	for( uint i = 0; i < infos.size(); i++ ){
-		convertContact( infos[i] );
+	for( uint i = 0; i < manifolds.size(); i++ ){
+		convertContact( manifolds[i] );
 	}
 }
 
-void ImpulseConstraintSolver::solveGroupIterate( const vector< RigidBody* >& bodies, const vector< ContactManifold* >& infos ){
+void ImpulseConstraintSolver::solveGroupIterate( const vector< RigidBody* >& bodies, const vector< ContactManifold* >& manifolds ){
 	if (infoGlobal.splitImpulse){
 		for ( int iteration = 0; iteration < infoGlobal.iterations; iteration++) {
 			uint numPoolConstraints = contactConstraintPool.size();
 			for (uint j = 0 ; j < numPoolConstraints; j++) {
-				resolveSplitPenetrationImpulseCacheFriendly( contactConstraintPool[j] );
+				resolveSplitPenetrationImpulse( contactConstraintPool[j] );
 			}
 		}
 	}
 
 	for ( int iteration = 0; iteration < infoGlobal.iterations; iteration++){
-		solveSingleIteration(iteration, bodies, infos);
+		solveIteration(iteration, bodies, manifolds);
 	}
 }
 
@@ -545,7 +545,7 @@ void ImpulseConstraintSolver::solveGroupFinish( const vector< RigidBody* >& bodi
 		uint numPoolConstraints = contactConstraintPool.size();
 		for (uint i = 0; i < numPoolConstraints; i++){
 			const SolverConstraint& solveManifold = contactConstraintPool[i];
-			ManifoldPoint* info = solveManifold.originalPoint;
+			ManifoldPoint* info = solveManifold.point;
 			info->appliedImpulse = solveManifold.appliedImpulse;
 
 			info->appliedImpulseLateral1 = frictionConstraintPool[solveManifold.frictionIndex].appliedImpulse;

@@ -105,7 +105,7 @@ void ContactManifold::replaceManifoldPoint( ManifoldPoint* pt, int index ){
 }
 
 int ContactManifold::getCacheEntry( ManifoldPoint* pt ){
-	float shortestDist = 0.02f * contactBreakingTreshold * contactBreakingTreshold;// getContactBreakingThreshold() * getContactBreakingThreshold();
+	float shortestDist = 0.02f * contactBreakingTreshold * contactBreakingTreshold;
 
 	int nearestPoint = -1;
 	for( int i = 0; i < pointsAdded; i++ ) {

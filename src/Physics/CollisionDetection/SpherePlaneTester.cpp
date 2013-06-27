@@ -15,18 +15,18 @@ SpherePlaneTester::SpherePlaneTester( Sphere* s, Plane* p ){ setBodies( s, p ); 
 
 SpherePlaneTester::~SpherePlaneTester(){}
 
-bool SpherePlaneTester::overlapTest( ContactManifold* info ){
+bool SpherePlaneTester::overlapTest( ContactManifold* manifold ){
 	float dist = dot( p->normal, s->pos ) - dot( p->normal, p->pos );
 	if( dist > s->radius ) return false;
 
 	float penetration = s->radius - fabs( dist );
 	vec3 p0 = s->pos - p->normal * s->radius;
 	vec3 p1 = s->pos - p->normal * (s->radius - penetration);
-	info->addContact( p0, p1, p->normal, -penetration );
+	manifold->addContact( p0, p1, p->normal, -penetration );
 	return true;
 }
 
-bool SpherePlaneTester::sweptTest( ContactManifold* info ){
+bool SpherePlaneTester::sweptTest( ContactManifold* manifold ){
 	assert(0);
 	return false;
 	/*vec3 vel = s->linVel * Time::DELTA_TIME;
@@ -41,7 +41,7 @@ bool SpherePlaneTester::sweptTest( ContactManifold* info ){
 	if( t < 0 || t > 1 ) return false;
 
 	vec3 point = s->pos + t * vel - r * p->normal;
-	info->addContact( point, p->normal, 0, t );
+	manifold->addContact( point, p->normal, 0, t );
 	return true;*/
 }
 

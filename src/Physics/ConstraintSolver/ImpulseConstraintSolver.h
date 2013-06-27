@@ -26,21 +26,21 @@ public:
 	ImpulseConstraintSolver();
 	virtual ~ImpulseConstraintSolver();
 
-	void solveGroup( const vector< RigidBody* >& bodies, const vector< ContactManifold* >& infos, float dt );
-	void solveGroupSetup( const vector< RigidBody* >& bodies, const vector< ContactManifold* >& infos );
-	void solveGroupIterate( const vector< RigidBody* >& bodies, const vector< ContactManifold* >& infos );
+	void solveGroup( const vector< RigidBody* >& bodies, const vector< ContactManifold* >& manifolds, float dt );
+	void solveGroupSetup( const vector< RigidBody* >& bodies, const vector< ContactManifold* >& manifolds );
+	void solveGroupIterate( const vector< RigidBody* >& bodies, const vector< ContactManifold* >& manifolds );
 	void solveGroupFinish( const vector< RigidBody* >& bodies );
 
-	void convertContact( ContactManifold* info );
-	void solveSingleIteration( int iteration, const vector< RigidBody* >& bodies, const vector< ContactManifold* >& infos );
-	void resolveSingleConstraintRowLowerLimit( SolverConstraint& constraint );
-	void resolveSingleConstraintRowGeneric( SolverConstraint& constraint );
-	void resolveSplitPenetrationImpulseCacheFriendly( SolverConstraint& constraint );
-	void setFrictionConstraintImpulse( SolverConstraint& constraint, SolverBody* sb0, SolverBody* sb1, ManifoldPoint* info );
+	void convertContact( ContactManifold* point );
+	void solveIteration( int iteration, const vector< RigidBody* >& bodies, const vector< ContactManifold* >& manifolds );
+	void resolveConstraintLowerLimit( SolverConstraint& constraint );
+	void resolveConstraintGeneric( SolverConstraint& constraint );
+	void resolveSplitPenetrationImpulse( SolverConstraint& constraint );
+	void setFrictionConstraintImpulse( SolverConstraint& constraint, SolverBody* sb0, SolverBody* sb1, ManifoldPoint* point );
 
-	void setupContactConstraint( SolverConstraint& constraint, SolverBody* sb0, SolverBody* sb1, const vec3& r0, const vec3& r1, const vec3& n, ManifoldPoint* info, float& relaxation, vec3& vel, float& rel_vel );
-	void addFrictionConstraint( SolverBody* sb0, SolverBody* sb1, const vec3& r0, const vec3& r1, const vec3& n, ManifoldPoint* info, uint frictionIndex, float& relaxation );
-	void addRollingFrictionConstraint( SolverBody* sb0, SolverBody* sb1, const vec3& r0, const vec3& r1, const vec3& n, ManifoldPoint* info, uint frictionIndex, float& relaxation );
+	void setupContactConstraint( SolverConstraint& constraint, SolverBody* sb0, SolverBody* sb1, const vec3& r0, const vec3& r1, const vec3& n, ManifoldPoint* point, float& relaxation, vec3& vel, float& rel_vel );
+	void addFrictionConstraint( SolverBody* sb0, SolverBody* sb1, const vec3& r0, const vec3& r1, const vec3& n, ManifoldPoint* point, uint frictionIndex, float& relaxation );
+	void addRollingFrictionConstraint( SolverBody* sb0, SolverBody* sb1, const vec3& r0, const vec3& r1, const vec3& n, ManifoldPoint* point, uint frictionIndex, float& relaxation );
 
 	SolverBody* getSolverBody( RigidBody* e );
 	SolverBody* initSolverBody( RigidBody* e );

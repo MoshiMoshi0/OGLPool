@@ -35,13 +35,13 @@ bool SphereMeshTester::broadphase(){
 	return triangleCachePool.size() > 0;
 }
 
-bool SphereMeshTester::narrowphase( ContactManifold* info ){
+bool SphereMeshTester::narrowphase( ContactManifold* manifold ){
 	bool collided = false;
-	info->setBodies( s, m );
+	manifold->setBodies( s, m );
 	for( auto& triangle : triangleCachePool ){
 		SphereTriangleTester tester( s, &triangle );
 
-		if( tester.narrowphase( info ))
+		if( tester.narrowphase( manifold ))
 			collided = true;
 	}
 

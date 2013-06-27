@@ -70,10 +70,7 @@ struct SolverBody {
 	void writebackVelocityAndTransform(float timeStep, float splitImpulseTurnErp){
 		if( originalBody ){
 			writebackVelocity();
-
-			//if( dot( m_pushVelocity, m_pushVelocity ) != 0 || dot( m_turnVelocity, m_turnVelocity ) != 0 ){
-				Euler::integrate( pushVelocity, turnVelocity*splitImpulseTurnErp, pos, rot, timeStep );
-			//}
+			Euler::integrate( pushVelocity, turnVelocity*splitImpulseTurnErp, pos, rot, timeStep );
 		}
 	}
 };

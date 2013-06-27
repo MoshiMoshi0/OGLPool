@@ -20,8 +20,8 @@ public:
 	SpherePlaneTester( Sphere* s, Plane* p );
 	virtual ~SpherePlaneTester();
 
-	bool overlapTest( ContactManifold* info );
-	bool sweptTest( ContactManifold* info );
+	bool overlapTest( ContactManifold* manifold );
+	bool sweptTest( ContactManifold* manifold );
 
 	void setBodies( Sphere* s, Plane* p );
 

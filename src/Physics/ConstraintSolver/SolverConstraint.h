@@ -42,7 +42,7 @@ struct SolverConstraint {
 
 	uint frictionIndex;
 
-	ManifoldPoint* originalPoint;
+	ManifoldPoint* point;
 };
 
 }

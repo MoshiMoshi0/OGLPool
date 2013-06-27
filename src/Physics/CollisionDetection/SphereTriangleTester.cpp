@@ -14,7 +14,7 @@ SphereTriangleTester::SphereTriangleTester( Sphere* s, Triangle3* t ){ setBodies
 
 SphereTriangleTester::~SphereTriangleTester(){}
 
-float SphereTriangleTester::SegmentSqrDistance(const vec3& from, const vec3& to,const vec3 &p, vec3 &nearest) {
+float SphereTriangleTester::closestToSegment( const vec3& from, const vec3& to, const vec3 &p, vec3 &closest ) {
 	vec3 diff = p - from;
 	vec3 v = to - from;
 	float t = dot(v,diff);
@@ -31,11 +31,11 @@ float SphereTriangleTester::SegmentSqrDistance(const vec3& from, const vec3& to,
 	} else
 		t = 0.0f;
 
-	nearest = from + t*v;
+	closest = from + t*v;
 	return dot(diff, diff);
 }
 
-bool SphereTriangleTester::overlapTest( ContactManifold* info ){
+bool SphereTriangleTester::overlapTest( ContactManifold* manifold ){
 	const vec3* vertices = t->getVertices();
 	float radius = s->radius;
 
@@ -61,7 +61,7 @@ bool SphereTriangleTester::overlapTest( ContactManifold* info ){
 			for (int i = 0; i < 3; i++) {
 				Edge3 e = t->getEdge(i);
 
-				float distanceSqr = SegmentSqrDistance(e[0], e[1], s->pos, nearestOnEdge);
+				float distanceSqr = closestToSegment(e[0], e[1], s->pos, nearestOnEdge);
 				if (distanceSqr < contactCapsuleRadiusSqr) {
 					hasContact = true;
 					contactPoint = nearestOnEdge;
@@ -75,11 +75,11 @@ bool SphereTriangleTester::overlapTest( ContactManifold* info ){
 		float distanceSqr = dot( contactToCentre, contactToCentre );
 
 		if (distanceSqr < radius*radius) {
-			if (distanceSqr>epsilon<float>()) {
+			if (distanceSqr > epsilon<float>()) {
 				float distance = sqrt( distanceSqr );
-				info->addContact( contactPoint, normalize( contactToCentre ), -(radius-distance));
+				manifold->addContact( contactPoint, normalize( contactToCentre ), -(radius-distance));
 			} else {
-				info->addContact( contactPoint, normal, -radius );
+				manifold->addContact( contactPoint, normal, -radius );
 			}
 			return true;
 		}
@@ -89,6 +89,7 @@ bool SphereTriangleTester::overlapTest( ContactManifold* info ){
 }
 
 bool SphereTriangleTester::sweptTest( ContactManifold* info ){
+	assert(0);
 	return false;
 }
 
