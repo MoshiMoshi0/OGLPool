@@ -9,9 +9,9 @@
 
 namespace OGLPool {
 
-MenuComponent::MenuComponent( Menu* menu, RenderWindow* window ){
+MenuComponent::MenuComponent( Menu* menu ){
 	this->menu = menu;
-	this->window = window;
+	this->window = menu->getWindow();
 	this->changed = false;
 }
 

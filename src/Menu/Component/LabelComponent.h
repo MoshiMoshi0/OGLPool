@@ -18,7 +18,7 @@ namespace OGLPool {
 
 class LabelComponent : public MenuComponent {
 public:
-	LabelComponent( string text, vec2 pos, Menu* menu, RenderWindow* window );
+	LabelComponent( string text, vec2 pos, Menu* menu );
 	virtual ~LabelComponent();
 
 	void render();

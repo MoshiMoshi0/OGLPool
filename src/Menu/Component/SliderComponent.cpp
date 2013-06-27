@@ -10,7 +10,7 @@
 
 namespace OGLPool {
 
-SliderComponent::SliderComponent( vec2 pos, Menu* menu, RenderWindow* window ) : MenuComponent( menu, window ) {
+SliderComponent::SliderComponent( vec2 pos, Menu* menu ) : MenuComponent( menu ) {
 	this->pos = pos;
 	this->length = 100;
 	this->halfLength = length / 2.0f;

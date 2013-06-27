@@ -20,7 +20,7 @@ namespace OGLPool {
 class Menu;
 class MenuComponent {
 public:
-	MenuComponent( Menu* menu, RenderWindow* window );
+	MenuComponent( Menu* menu );
 	virtual ~MenuComponent();
 
 	virtual void render();

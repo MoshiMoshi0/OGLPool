@@ -16,7 +16,7 @@ namespace OGLPool {
 
 class SliderComponent : public MenuComponent {
 public:
-	SliderComponent( vec2 pos, Menu* menu, RenderWindow* window );
+	SliderComponent( vec2 pos, Menu* menu );
 	virtual ~SliderComponent();
 
 	void render();

@@ -9,7 +9,7 @@
 
 namespace OGLPool {
 
-LabelComponent::LabelComponent( string text, vec2 pos, Menu* menu, RenderWindow* window ) : MenuComponent( menu, window ){
+LabelComponent::LabelComponent( string text, vec2 pos, Menu* menu ) : MenuComponent( menu ){
 	this->text = text;
 	this->pos = pos;
 
