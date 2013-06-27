@@ -13,13 +13,15 @@
 #include <Util/Table/CueTable.h>
 #include "Component/SliderComponent.h"
 #include "Component/LabelComponent.h"
+#include "Component/CheckboxComponent.h"
+#include "Component/ButtonComponent.h"
 
 namespace OGLPool {
 
-class TestMenu : public Menu {
+class RandomPolygonMenu : public Menu {
 public:
-	TestMenu( RenderWindow* window );
-	virtual ~TestMenu();
+	RandomPolygonMenu( App* app );
+	virtual ~RandomPolygonMenu();
 
 	void render();
 	void update( float dt );
@@ -39,6 +41,11 @@ public:
 	LabelComponent* polygonPointsLabel;
 	LabelComponent* polygonNumTriesLabel;
 	LabelComponent* polygonScaleLabel;
+
+	CheckboxComponent* polygonTypeCheckbox;
+
+	ButtonComponent* startButton;
+	LabelComponent* errorLabel;
 };
 
 } /* namespace OGLPool */
