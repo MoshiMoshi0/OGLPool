@@ -14,6 +14,7 @@ namespace OGLPool {
 
 CueTable::CueTable(){ tableMesh = 0; }
 CueTable::CueTable(Polygon2 shape, vector<vec2> holePoints) : CueTable() {
+	this->shape = shape;
 	createTableMesh(shape);
 }
 

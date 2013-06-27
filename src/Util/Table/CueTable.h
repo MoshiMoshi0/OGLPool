@@ -26,6 +26,7 @@ public:
 	void createTableMesh(Polygon2& shape);
 	
 	Mesh* tableMesh;
+	Polygon2 shape;
 };
 
 } /* namespace OGLPool */
