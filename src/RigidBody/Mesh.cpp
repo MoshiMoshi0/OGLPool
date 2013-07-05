@@ -50,7 +50,7 @@ void Mesh::render(){
 	glNormalPointer(GL_FLOAT, 0, value_ptr( normals[0] ));
 
 	glPushMatrix();
-	//applyTransform();
+	applyTransform();
 	glDrawArrays(GL_TRIANGLES, 0, triangleCount * 3);
 	glPopMatrix();
 
@@ -58,18 +58,26 @@ void Mesh::render(){
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
 
-	/*auto debugDraw = Debug::getDebugDraw();
+	auto debugDraw = Debug::getDebugDraw();
+	debugDraw->setColor( 1,1,1 );
 	for( auto& t : triangles ){
 		const vec3 c = (t[0] + t[1] + t[2]) / 3.0f;
 		debugDraw->drawVector( pos + c, t.getNormal() * 2.0f );
-	}*/
+	}
 }
 
 void Mesh::build(){
+	boundingBox = BoundingBox3::get( vertices, 0.1f );
+	pos = boundingBox.pos;
+
 	for( uint i = 0; i < triangleCount; i++ ){
 		const uint i0 = i * 3 + 0;
 		const uint i1 = i * 3 + 1;
 		const uint i2 = i * 3 + 2;
+
+		vertices[i0] -= pos;
+		vertices[i1] -= pos;
+		vertices[i2] -= pos;
 
 		const vec3 v0 = vertices[i0];
 		const vec3 v1 = vertices[i1];
@@ -77,9 +85,6 @@ void Mesh::build(){
 
 		triangles.push_back( Triangle3( v0, v1, v2 ) );
 	}
-
-	boundingBox = BoundingBox3::get( vertices, 0.1f );
-	pos = boundingBox.pos;
 }
 
 void Mesh::calculateNormals(){
