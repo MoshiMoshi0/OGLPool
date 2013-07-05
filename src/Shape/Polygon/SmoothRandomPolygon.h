@@ -30,7 +30,6 @@ private:
 	bool generate(uint numPoints, uint numSides, float scale, uint numTries = 1000);
 	void createRandom();
 	void createRound();
-	void getBezierPoints( const vec2& p0, const vec2& p1, const vec2& p2, const vec2& p3, vector<vec2>& bezierPts, uint quality );
 	vector< float > tridiagonalSolve(const vector< float >& a, const vector< float >& b, const vector< float >& c, const vector< float >& rhs, uint n);
 	vector< float > cyclicSolve( const vector< float >& a, const vector< float >& b, const vector< float >& c, float alpha, float beta, const vector< float >& rhs, uint n );
 

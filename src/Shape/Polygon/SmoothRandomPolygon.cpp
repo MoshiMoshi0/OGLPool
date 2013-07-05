@@ -10,7 +10,6 @@
 #include <glm/gtc/epsilon.hpp>
 #include <SFML/OpenGL.hpp>
 #include <unordered_set>
-#include <Shape/Bezier.h>
 
 using namespace glm;
 using namespace std;
@@ -59,17 +58,15 @@ void SmoothRandomPolygon::smoothEdge(int randEdge){
 	vec2 p2 = edges[randEdge][1] - normalize(edges[next][1] - edges[next][0]) * 5.f;
 	vec2 p3 = edges[randEdge][1];
 
-	Bezier2 bezier( {p0, p1, p2, p3}, 20 );
+	vector<vec2> bezierPts;
+	getBezierPoints( p0, p1, p2, p3, bezierPts, 20 );
 
-#ifdef BEZIER_DEBUG
-	for (uint i = 0; i < bezier.bezierPoints.size() - 1; i++) {
-
-		bezierEdges.push_back(Edge2(bezier.bezierPoints[i], bezier.bezierPoints[i + 1]));
+	for (uint i = 0; i < bezierPts.size() - 1; i++) {
+		bezierEdges.push_back(Edge2(bezierPts[i], bezierPts[i + 1]));
 	}
-#endif
 
-	edges.erase(edges.begin() + randEdge);
-	edges.insert(edges.begin() + randEdge, bezierEdges.begin(), bezierEdges.end());
+	//edges.erase(edges.begin() + randEdge);
+	//edges.insert(edges.begin() + randEdge, bezierEdges.begin(), bezierEdges.end());
 }
 
 vector<float> SmoothRandomPolygon::tridiagonalSolve(const vector<float>& a, const vector<float>& b, const vector<float>& c, const vector<float>& rhs, uint n){
@@ -172,18 +169,32 @@ void SmoothRandomPolygon::createRound(){
 	Polygon::clear();
 #endif
 	for( uint i = 0, j = n - 1; i < n; j = i++ ){
-		Bezier2 bezier( {points[j], first[j], second[i], points[i]}, 20 );
+		vector< vec2 > bezierPts;
+		getBezierPoints( points[j], first[j], second[i], points[i], bezierPts, 20 );
+
 #ifdef DEBUGBEZIER
 		bezierControlEdges.push_back( Edge2(points[j], first[j]) );
 		bezierControlEdges.push_back( Edge2(second[i], points[i]) );
 #endif
-		for (uint k = 0; k < bezier.points.size() - 1; k++) {
+		for (uint k = 0; k < bezierPts.size() - 1; k++) {
 #ifdef DEBUGBEZIER
 			bezierEdges.push_back(Edge2(bezierPts[k], bezierPts[k + 1]));
 #else
-			edges.push_back(Edge2(bezier.points[k], bezier.points[k + 1]));
+			edges.push_back(Edge2(bezierPts[k], bezierPts[k + 1]));
 #endif
 		}
+	}
+}
+
+void SmoothRandomPolygon::getBezierPoints( const vec2& p0, const vec2& p1, const vec2& p2, const vec2& p3, vector<vec2>& bezierPts, uint quality ){
+	static const mat4 blend(1.f, -3.f, 3.f, -1.f, 0.f, 3.f, -6.f, 3.f, 0.f, 0.f, 3.f, -3.f, 0.f, 0.f, 0.f, 1.f);
+
+	float step = 1.0f / quality;
+
+	mat2x4 pMat = transpose(mat4x2(p0, p0 * (1 - tightness ) + p1 * tightness, p3 * (1 - tightness ) + p2 * tightness, p3));
+	for (uint i = 0; i <= quality; i++) {
+		float t = i * step;
+		bezierPts.push_back(vec4(1, t, t * t, t * t * t) * blend * pMat);
 	}
 }
 
