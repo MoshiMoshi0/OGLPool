@@ -9,7 +9,8 @@
 #include "Time.h"
 #include <SFML/OpenGL.hpp>
 #include <iostream>
-#include <time.h>
+#include <App/Time.h>
+#include <SFML/System/Time.hpp>
 #include <App/Input.h>
 #include <Util/UDebug/Debug.h>
 #include <windows.h>
@@ -24,8 +25,8 @@ App::App( int width, int height ) {
 	this->height = height;
 
 	window = 0;
-	world = 0;
-	menu = 0;
+	menu = nextMenu = 0;
+	world = nextWorld = 0;
 	initialized = false;
 }
 
@@ -59,9 +60,23 @@ RenderWindow* App::getWindow(){
 }
 
 void App::run() {
+	Clock clock;
+
+	sf::Time lastTime = clock.getElapsedTime();
+	double accum = 0.0;
 	while (window->isOpen()) {
+		sf::Time currentTime = clock.getElapsedTime();
+		sf::Time frameTime = currentTime - lastTime;
+		lastTime = currentTime;
+
+		accum += frameTime.asMilliseconds() / 1000.0f;
+		if( accum > 0.25f ) accum = 0.25f;
+
 		poolEvents();
-		update( Time::DELTA_TIME );
+		while( accum > Time::DELTA_TIME ){
+			update( Time::DELTA_TIME );
+			accum -= Time::DELTA_TIME;
+		}
 		draw();
 	}
 }
@@ -73,9 +88,9 @@ void App::draw() {
 		menu->render();
 	}else{
 		world->render();
-		Debug::render();
 	}
 
+	Debug::render();
 	window->display();
 }
 
@@ -87,17 +102,6 @@ void App::update( float dt ) {
 		}else{
 			world->update( dt );
 		}
-	}
-
-	if( changeMenu ){
-		delete menu;
-		menu = nextMenu;
-		changeMenu = false;
-	}
-	if( changeWorld ){
-		delete world;
-		world = nextWorld;
-		changeWorld = false;
 	}
 }
 
@@ -111,6 +115,7 @@ bool App::init() {
 
 	setMenu( new RandomPolygonMenu(this) );
 	setWorld( 0 );
+	//setWorld( new GameWorld( CueTable() ) );
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
@@ -148,6 +153,7 @@ bool App::init() {
 void App::deinit() {
 	if( window ) delete window;
 	if( world ) delete world;
+	if( menu ) delete menu;
 
 	Debug::deinit();
 	initialized = false;
@@ -176,6 +182,17 @@ void App::poolEvents() {
 
 	if( IO::Input::isKeyPressed( IO::Input::Escape ) ){
 		window->close();
+	}
+
+	if( changeMenu ){
+		if( menu ) delete menu;
+		menu = nextMenu;
+		changeMenu = false;
+	}
+	if( changeWorld ){
+		if( world ) delete world;
+		world = nextWorld;
+		changeWorld = false;
 	}
 }
 } /* namespace OGLPool */
