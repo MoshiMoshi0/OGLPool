@@ -6,14 +6,13 @@
  */
 
 #include "CueTable.h"
+#include <Shape/Bezier.h>
 #include <iostream>
 #include <glm/gtc/random.hpp>
 #include <glm/gtx/compatibility.hpp>
 
-
 using namespace std;
 using namespace glm;
-
 
 namespace OGLPool {
 
@@ -53,7 +52,7 @@ void CueTable::addPockets(Polygon2& shape, int numOfHoles){
 }
 
 bool CueTable::insertPocket(Polygon2& shape, vec2 holePos){
-	const Circle circle(holePos, 1.0f);
+	const Circle circle(holePos, 3.0f);
 	auto edges = &shape.getEdges();
 	int countEdges = 0;
 
@@ -95,9 +94,9 @@ bool CueTable::insertPocket(Polygon2& shape, vec2 holePos){
 				it = edges->erase( it );
 				it = edges->insert(it, Edge2(edge0, hit0));
 
-				/*vector<Edge2> pocketEdges = generatePocketEdges(circle, Edge2(edge0, hit0), Edge2(hit1, edge1), 10);
+				vector<Edge2> pocketEdges = generatePocketEdges(circle, Edge2(edge0, hit0), Edge2(hit1, edge1), 10);
 				for( auto& e : pocketEdges )
-					it = edges->insert( it + 1, e );*/
+					it = edges->insert( it + 1, e );
 
 				it = edges->insert(it + 1, Edge2(hit1, edge1));
 				it--;
@@ -105,14 +104,15 @@ bool CueTable::insertPocket(Polygon2& shape, vec2 holePos){
 			}
 			case POKE: {
 				it->at(1) = hit0;
-				/*vector<Edge2> pocketEdges = generatePocketEdges(circle, *it, *(it+1), 10);
-				for( auto& e : pocketEdges )
-					it = edges->insert( it + 1, e );*/
-
 				break;
 			}
 			case EXITWOUND: {
 				it->at(0) = hit1;
+
+				vector<Edge2> pocketEdges = generatePocketEdges(circle, *(it-1), *(it), 10);
+				for( auto& e : pocketEdges )
+					it = edges->insert( it + 1, e );
+
 				break;
 			}
 			case COMPLETELYINSIDE:
@@ -129,46 +129,17 @@ bool CueTable::insertPocket(Polygon2& shape, vec2 holePos){
 	return true;
 }
 
-vector <Edge2> CueTable::generatePocketEdges( const Circle& circle, const Edge2& startEdge, const Edge2& endEdge, int quality ){
-	vector <Edge2> pocketEdges;
+vector<Edge2> CueTable::generatePocketEdges( const Circle& circle, const Edge2& startEdge, const Edge2& endEdge, int quality ){
+	vec2 t0 = vec2( -startEdge.getDirection().y, startEdge.getDirection().x );
+	vec2 t1 = vec2( -endEdge.getDirection().y, endEdge.getDirection().x );
 
-	float startAngle = orientedAngle(-startEdge.getDirection(),vec2(0,1));
-	float endAngle = orientedAngle(endEdge.getDirection(), vec2(0,1));
-	float startRad = radians( startAngle );
-	float endRad = radians( endAngle );
+	vec2 p0 = startEdge.at(1);
+	vec2 p1 = p0 + t0 * 5.0f;
+	vec2 p3 = endEdge.at(0);
+	vec2 p2 = p3 + t1 * 5.0f;
 
-	float alpha = (endAngle - startAngle) / (float)(quality - 1);
-	float alphaRad = radians( alpha );
-
-	float tangetialFactor = tan( alphaRad );
-	float radialFactor = cos( alphaRad );
-
-	float x = circle.radius * cos( 0.0f );
-	float y = circle.radius * sin( 0.0f );
-
-	auto rotate = [=]( float x, float y) -> vec2 {
-		vec3 i = vec3( x, 0, y );
-		vec3 r = angleAxis(startAngle + 90, vec3(0,1,0) ) * i;
-		return vec2( r.x, r.z );
-	};
-
-	for (int i = 0; i < quality - 1; i++){
-		vec2 v0 = circle.center + rotate( x,y );
-
-		float tx = -y;
-		float ty = x;
-
-		x += tx * tangetialFactor;
-		y += ty * tangetialFactor;
-
-		x *= radialFactor;
-		y *= radialFactor;
-
-		vec2 v1 = circle.center + rotate( x,y );
-		pocketEdges.push_back( Edge2(v0, v1) );
-	}
-
-	return pocketEdges;
+	Bezier2 bezier( {p0, p1, p2, p3}, quality );
+	return bezier.edges;
 }
 
 IntersectionType CueTable::circleIntersection(Edge2 edge, Circle circle, float& alpha0, float& alpha1){
@@ -209,7 +180,13 @@ void CueTable::createTableMesh(Polygon2& shape){
 	
 	float size = 5.0f;
 	vec3 offset = vec3(0,1,0) * size;
-	for(auto& edge : shape.getEdges()){
+
+
+	vector<Edge2> edges = shape.getEdges();
+	int n = edges.size();
+	bool reverse = edges[0][0].x > edges[0][1].x;
+	for( int i = (reverse ? n - 1 : 0); reverse ? i >= 0 : i < n; reverse ? i-- : i++ ){
+		auto edge = edges[i];
 		vec3 v0 = vec3 (edge[0].x, 0,  edge[0].y);
 		vec3 v1 = vec3 (edge[1].x, 0,  edge[1].y);
 		vec3 v2 = v0 + offset;
